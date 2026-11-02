@@ -57,6 +57,8 @@ public sealed partial class DevicesPage : Page
 	{
 		PairingCode.Text = _receiver.PairingCode;
 		CodePanel.Visibility = (string.IsNullOrEmpty(_receiver.PairingCode) ? Visibility.Collapsed : Visibility.Visible);
+		DeviceName.Text = _receiver.ConnectedDevice;
+		DevicePanel.Visibility = (string.IsNullOrEmpty(_receiver.ConnectedDevice) ? Visibility.Collapsed : Visibility.Visible);
 		StatusText.Text = _receiver.Status;
 		StartButton.IsEnabled = !_receiver.IsRunning;
 		StopButton.IsEnabled = _receiver.IsRunning;

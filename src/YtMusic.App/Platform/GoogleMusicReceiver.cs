@@ -44,6 +44,8 @@ public sealed class GoogleMusicReceiver : ObservableObject, IDisposable
 
 	private string _status = "Desativado";
 
+	private string _device = "";
+
 	private bool _running;
 
 	private bool _connected;
@@ -59,6 +61,18 @@ public sealed class GoogleMusicReceiver : ObservableObject, IDisposable
 		private set
 		{
 			SetProperty(ref _code, value, "PairingCode");
+		}
+	}
+
+	public string ConnectedDevice
+	{
+		get
+		{
+			return _device;
+		}
+		private set
+		{
+			SetProperty(ref _device, value, "ConnectedDevice");
 		}
 	}
 
@@ -236,6 +250,11 @@ public sealed class GoogleMusicReceiver : ObservableObject, IDisposable
 		{
 			int @int = msg.GetProperty("count").GetInt32();
 			_connected = @int > 0;
+			ConnectedDevice = (msg.TryGetProperty("senders", out var senders) ? ReadDevice(senders) : "");
+			if (ConnectedDevice.Length > 0)
+			{
+				App.Diagnose("Receiver connected: " + ConnectedDevice);
+			}
 			Status = ((@int > 0) ? "Controle conectado • áudio neste computador" : "Aguardando controle.");
 			_vm.Playback.RemoteNext = ((@int > 0) ? ((Func<Task>)(() => SendControlAsync("next"))) : null);
 			_vm.Playback.RemotePrevious = ((@int > 0) ? ((Func<Task>)(() => SendControlAsync("previous"))) : null);
@@ -267,6 +286,40 @@ public sealed class GoogleMusicReceiver : ObservableObject, IDisposable
 				break;
 			}
 		}
+		}
+	}
+
+	private static string ReadDevice(JsonElement senders)
+	{
+		string[] array = (from x in senders.EnumerateArray()
+			select DeviceName(x) into x
+			where x.Length > 0
+			select x).Distinct().ToArray();
+		if (array.Length != 0)
+		{
+			return (array.Length == 1) ? array[0] : $"{array[0]} +{array.Length - 1}";
+		}
+		return (senders.GetArrayLength() > 0) ? "Celular" : "";
+	}
+
+	private static string DeviceName(JsonElement sender)
+	{
+		string text = Field("name");
+		string text2 = Field("brand");
+		string text3 = Field("model");
+		string text4 = ((text2.Length > 0) ? (char.ToUpperInvariant(text2[0]) + text2.Substring(1) + " " + text3) : text3).Trim();
+		if (text.Length == 0 || (text3.Length > 0 && text.Contains(text3, StringComparison.OrdinalIgnoreCase)))
+		{
+			text = ((text4.Length > 0) ? text4 : text);
+		}
+		return text.Substring(0, Math.Min(text.Length, 60));
+		string Field(string key)
+		{
+			if (!sender.TryGetProperty(key, out var value) || value.ValueKind != JsonValueKind.String)
+			{
+				return "";
+			}
+			return value.GetString()?.Trim() ?? "";
 		}
 	}
 
@@ -513,6 +566,7 @@ public sealed class GoogleMusicReceiver : ObservableObject, IDisposable
 		}
 		_connected = false;
 		_expectedRemoteTrack = null;
+		ConnectedDevice = "";
 		IsRunning = false;
 		PairingCode = "";
 		Status = "Desativado";

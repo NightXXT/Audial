@@ -25,6 +25,19 @@
                         </StackPanel>
                     </Grid>
                     <TextBox x:Name="ReceiverName" Header="Nome deste computador na rede" Text="Audial Windows" MaxLength="60" />
+                    <Border x:Name="DevicePanel" Visibility="Collapsed" Background="{StaticResource Brush.Subtle}" CornerRadius="12" Padding="16">
+                        <Grid ColumnSpacing="14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Glyph="&#xE8EA;" FontSize="22" Foreground="{StaticResource Brush.Rose}" />
+                            <StackPanel Grid.Column="1" Spacing="2">
+                                <TextBlock Text="CONTROLANDO AGORA" Style="{StaticResource Text.Label}" />
+                                <TextBlock x:Name="DeviceName" Style="{StaticResource Text.Heading}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
                     <Border x:Name="CodePanel" Visibility="Collapsed" Background="{StaticResource Brush.Subtle}" CornerRadius="12" Padding="16">
                         <Grid ColumnSpacing="12">
                             <Grid.ColumnDefinitions>
