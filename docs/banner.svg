@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 420" width="1280" height="420" role="img" aria-label="Audial, um cliente nativo de música para Windows 11">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2A1224"/>
+      <stop offset="0.55" stop-color="#14141F"/>
+      <stop offset="1" stop-color="#0D0E12"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#F43F5E"/>
+      <stop offset="1" stop-color="#EC4899"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F43F5E" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#F43F5E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="420" rx="24" fill="url(#bg)"/>
+  <circle cx="1040" cy="210" r="260" fill="url(#glow)"/>
+  <g fill="url(#accent)">
+    <rect x="808" y="182" width="16" height="56" rx="8"/>
+    <rect x="840" y="146" width="16" height="128" rx="8"/>
+    <rect x="872" y="112" width="16" height="196" rx="8"/>
+    <rect x="904" y="158" width="16" height="104" rx="8"/>
+    <rect x="1160" y="158" width="16" height="104" rx="8"/>
+    <rect x="1192" y="122" width="16" height="176" rx="8"/>
+    <rect x="1224" y="172" width="16" height="76" rx="8"/>
+  </g>
+  <circle cx="1040" cy="210" r="96" fill="url(#accent)"/>
+  <path d="M1012 160 L1012 260 L1096 210 Z" fill="#FFFFFF"/>
+  <text x="72" y="196" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="104" font-weight="700" fill="#FFFFFF" letter-spacing="-3">Audial</text>
+  <text x="76" y="252" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="30" fill="#D4D4D8">Sua música em um app nativo de verdade.</text>
+  <text x="76" y="300" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#FB7185" letter-spacing="2">WINUI 3  ·  .NET 8  ·  WINDOWS 11</text>
+</svg>
