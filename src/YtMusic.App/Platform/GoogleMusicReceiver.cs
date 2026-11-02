@@ -520,7 +520,9 @@ public sealed class GoogleMusicReceiver : ObservableObject, IDisposable
 
 	private void OnTrackChanged(object? sender, EventArgs e)
 	{
-		if (_connected && _vm.CurrentTrack?.Id != _expectedRemoteTrack)
+		// The receiver stops the current track before every change, which leaves the queue empty for a moment.
+		Track current = _vm.CurrentTrack;
+		if (_connected && (object)current != null && current.Id != _expectedRemoteTrack)
 		{
 			Stop();
 			Status = "Controle encerrado ao iniciar outra fila neste computador.";
