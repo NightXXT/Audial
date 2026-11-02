@@ -49,10 +49,7 @@ public sealed class UpdateService
 	public async Task<AppUpdate?> CheckAsync(CancellationToken ct)
 	{
 		using HttpResponseMessage response = await Http.GetAsync(LatestRelease, ct);
-		if (!response.IsSuccessStatusCode)
-		{
-			return null;
-		}
+		response.EnsureSuccessStatusCode();
 		using JsonDocument document = JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
 		JsonElement root = document.RootElement;
 		string tag = root.GetProperty("tag_name").GetString() ?? "";
