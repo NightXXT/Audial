@@ -60,8 +60,7 @@
                         <TextBlock Text="Integrações" Style="{StaticResource Text.Heading}" />
                     </StackPanel>
                     <ToggleSwitch IsOn="{x:Bind ViewModel.DiscordPresenceEnabled, Mode=TwoWay}" Header="Mostrar no Discord o que estou ouvindo" />
-                    <TextBox Text="{x:Bind ViewModel.DiscordApplicationId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="ID da aplicação do Discord" PlaceholderText="Ex.: 123456789012345678" />
-                    <TextBlock Text="Mostra só o título e o artista enquanto a música toca. Crie uma aplicação no Discord Developer Portal e copie o Application ID. O Discord para computador precisa estar aberto." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+                    <TextBlock Text="Mostra a música, o artista, a capa e o tempo enquanto toca, com botões para ouvir a faixa e baixar o Audial. O Discord para computador precisa estar aberto." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
                 </StackPanel>
             </Border>
             <Border Style="{StaticResource Card.Border}">

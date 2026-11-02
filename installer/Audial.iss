@@ -1,8 +1,8 @@
-; Instalador do Audial. Compile o app em Release x64 antes de gerar:
+﻿; Instalador do Audial. Compile o app em Release x64 antes de gerar:
 ; .tools\innosetup\ISCC.exe installer\Audial.iss
 
 #define AppName "Audial"
-#define AppVersion "8.7.5"
+#define AppVersion "8.7.6"
 #define AppExe "YtMusicDesktop.exe"
 #define BuildDir "..\src\YtMusic.App\bin\x64\Release\net8.0-windows10.0.19041.0\win-x64"
 
