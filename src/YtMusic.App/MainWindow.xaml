@@ -13,7 +13,7 @@
                 <Grid x:Name="TitleBar" Padding="16,0,160,0" Background="{StaticResource Brush.Background}">
                     <Grid.Children>
 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-    <Image Source="ms-appx:///Assets/Design/ref-00.png" Width="16" Height="16" />
+    <Image Source="ms-appx:///Assets/Logo.png" Width="16" Height="16" />
     <TextBlock Text="AUDIAL" FontSize="{StaticResource FontSize.Label}" FontWeight="SemiBold" CharacterSpacing="80" VerticalAlignment="Center" />
     <TextBlock Text="—" FontSize="{StaticResource FontSize.Label}" Foreground="{StaticResource Brush.TextMuted}" VerticalAlignment="Center" />
     <TextBlock Text="YouTube Music Client" FontSize="{StaticResource FontSize.Label}" Foreground="{StaticResource Brush.TextSecondary}" VerticalAlignment="Center" />
@@ -170,7 +170,7 @@ Mais espaço para descobrir, ouvir e se encontrar." Foreground="{StaticResource 
         <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
     <StackPanel Orientation="Horizontal" Spacing="8" Padding="16">
-        <Image Source="ms-appx:///Assets/Design/ref-00.png" Width="32" Height="32" />
+        <Image Source="ms-appx:///Assets/Logo.png" Width="32" Height="32" />
         <StackPanel VerticalAlignment="Center">
             <TextBlock Text="Audial" FontSize="{StaticResource FontSize.Heading}" FontWeight="Bold" CharacterSpacing="-5" />
             <TextBlock Text="YT MUSIC" FontSize="10" FontWeight="SemiBold" CharacterSpacing="40" Foreground="{StaticResource Brush.Rose}" />
@@ -285,7 +285,7 @@ Mais espaço para descobrir, ouvir e se encontrar." Foreground="{StaticResource 
                 </Grid>
                 <tb:TaskbarIcon LeftClickCommand="{x:Bind ShowWindowCommand}" x:Name="Tray" ToolTipText="Audial" NoLeftClickDelay="True">
                     <tb:TaskbarIcon.IconSource>
-                        <tb:GeneratedIconSource Text="♪" Foreground="#FFFFFFFF" Background="#FFFF4659" />
+                        <tb:GeneratedIconSource Text="A" Foreground="#FFFFFFFF" Background="#FFF43F5E" />
                     </tb:TaskbarIcon.IconSource>
                     <tb:TaskbarIcon.ContextFlyout>
                         <MenuFlyout>

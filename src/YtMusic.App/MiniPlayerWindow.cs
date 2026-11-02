@@ -207,6 +207,7 @@ public sealed class MiniPlayerWindow : Window
 		{
 			ViewModel.PropertyChanged -= OnPlayerChanged;
 		};
+		base.AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "AppIcon.ico"));
 		AppWindowTitleBar titleBar = base.AppWindow.TitleBar;
 		titleBar.BackgroundColor = WindowColor;
 		titleBar.InactiveBackgroundColor = WindowColor;

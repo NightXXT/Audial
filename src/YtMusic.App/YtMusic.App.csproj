@@ -5,7 +5,8 @@
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <RootNamespace>YtMusic.App</RootNamespace>
     <AssemblyName>YtMusicDesktop</AssemblyName>
-    <Version>8.7.4</Version>
+    <Version>8.7.5</Version>
+    <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x64</Platforms>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
