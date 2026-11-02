@@ -45,11 +45,11 @@
 
 ## Recursos
 
-- Início com recomendações, mixes, recentes e álbuns
-- Busca com filtros e botão para tocar um mix direto
+- Início com recomendações, recentes, álbuns e mixes que tocam com um clique
+- Busca com filtros de músicas, playlists, artistas e álbuns
 - Fila com reprodução, remoção e limpeza
 - Reprodução por LibVLC, com busca na faixa e volume
-- Atalhos globais do app, como `Ctrl+K`, `Ctrl+Q` e `Ctrl+M`
+- Atalhos de teclado, como `Ctrl+K`, `Ctrl+Q` e `Ctrl+M`
 - Status no Discord, ícone na bandeja e controles de mídia do Windows
 - Tokens cifrados pelo Windows (DPAPI)
 
