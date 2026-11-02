@@ -60,7 +60,12 @@
                     <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.DurationText, Mode=OneWay}" Style="{StaticResource Text.Time}" FontSize="11" VerticalAlignment="Center" />
                 </Grid>
             </Grid>
-            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <StackPanel Grid.Column="2" Spacing="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <StackPanel x:Name="RemoteDevice" Visibility="Collapsed" Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
+                    <FontIcon Glyph="&#xE8EA;" FontSize="12" Foreground="{StaticResource Brush.Rose}" />
+                    <TextBlock x:Name="RemoteDeviceName" FontSize="11" FontWeight="SemiBold" MaxWidth="220" TextTrimming="CharacterEllipsis" Foreground="{StaticResource Brush.Rose}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
                 <Button Click="OnQueue" Style="{StaticResource Button.Icon}" AutomationProperties.Name="Fila de reprodução" ToolTipService.ToolTip="Fila de reprodução">
                     <FontIcon Glyph="&#xE8FD;" FontSize="17" />
                 </Button>
@@ -75,6 +80,7 @@
                 <Button Click="OnNowPlaying" Style="{StaticResource Button.Icon}" AutomationProperties.Name="Tocando agora" ToolTipService.ToolTip="Tocando agora">
                     <FontIcon Glyph="&#xE740;" FontSize="16" />
                 </Button>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Border>

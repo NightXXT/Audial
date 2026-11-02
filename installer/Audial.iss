@@ -2,7 +2,7 @@
 ; .tools\innosetup\ISCC.exe installer\Audial.iss
 
 #define AppName "Audial"
-#define AppVersion "8.7.3"
+#define AppVersion "8.7.4"
 #define AppExe "YtMusicDesktop.exe"
 #define BuildDir "..\src\YtMusic.App\bin\x64\Release\net8.0-windows10.0.19041.0\win-x64"
 

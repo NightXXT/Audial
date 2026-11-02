@@ -39,6 +39,21 @@ public sealed partial class PlayerBar : UserControl
 	{
 		ViewModel = App.GetService<PlayerViewModel>();
 		InitializeComponent();
+		GoogleMusicReceiver receiver = App.GetService<GoogleMusicReceiver>();
+		PropertyChangedEventHandler handler = delegate(object? _, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "ConnectedDevice")
+			{
+				RemoteDeviceName.Text = receiver.ConnectedDevice;
+				RemoteDevice.Visibility = (string.IsNullOrEmpty(receiver.ConnectedDevice) ? Visibility.Collapsed : Visibility.Visible);
+				ToolTipService.SetToolTip(RemoteDevice, "Controlado por " + receiver.ConnectedDevice);
+			}
+		};
+		receiver.PropertyChanged += handler;
+		base.Unloaded += delegate
+		{
+			receiver.PropertyChanged -= handler;
+		};
 	}
 
 	private void OnSeekPointerPressed(object sender, PointerRoutedEventArgs e)
