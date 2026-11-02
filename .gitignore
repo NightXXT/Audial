@@ -1,0 +1,23 @@
+bin/
+obj/
+.tools/
+dist/
+.decompiled/
+.decoded-xaml/
+
+# Binários grandes: veja "Dependências locais" no README
+src/YtMusic.App/libvlc/
+src/YtMusic.App/receiver/node.exe
+src/YtMusic.App/receiver/node_modules/
+
+# Nunca versionar credenciais
+*.pfx
+*.pem
+*.key
+.env
+.env.*
+client_secret*.json
+credentials*.json
+*oauth*.json
+.vs/
+*.user

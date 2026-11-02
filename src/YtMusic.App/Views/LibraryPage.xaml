@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:YtMusic.App.Controls" xmlns:models="using:YtMusic.Core.Models" xmlns:platform="using:YtMusic.App.Platform" x:Class="YtMusic.App.Views.LibraryPage" xmlns:dt0="using:YtMusic.Core.Models">
+    <Page.Content>
+        <Grid Style="{StaticResource Page.Root}" RowSpacing="12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.Children>
+                <StackPanel Spacing="6" Margin="0,0,0,12">
+                    <StackPanel.Children>
+                        <TextBlock x:Name="PageTitle" Text="Sua biblioteca" Style="{StaticResource Text.Title}" />
+                        <TextBlock Text="Sua coleção do YouTube Music, em um novo ambiente." Style="{StaticResource Text.Secondary}" />
+                    </StackPanel.Children>
+                </StackPanel>
+                <controls:StatePanel SignInCommand="{x:Bind ViewModel.SignInCommand}" RetryCommand="{x:Bind ViewModel.ReloadCommand}" Message="{x:Bind ViewModel.StateMessage, Mode=OneWay}" State="{x:Bind ViewModel.State, Mode=OneWay}" Grid.Row="1" />
+                <GridView ItemClick="OnPlaylistClick" Visibility="{x:Bind ViewModel.IsContent, Mode=OneWay}" ItemsSource="{x:Bind ViewModel.Playlists}" Grid.Row="1" IsItemClickEnabled="True" SelectionMode="None">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="dt0:PlaylistSummary">
+                                <StackPanel Width="{StaticResource Size.Artwork.Card}" Spacing="6" Margin="4">
+                                    <StackPanel.Children>
+                                        <Border Width="{StaticResource Size.Artwork.Card}" Height="{StaticResource Size.Artwork.Card}" CornerRadius="{StaticResource Radius.Card}" Background="{StaticResource Brush.SurfaceRaised}">
+                                            <Border.Child>
+                                                <Image Source="{x:Bind platform:UiHelpers.Image(ArtworkUrl)}" Stretch="UniformToFill" />
+                                            </Border.Child>
+                                        </Border>
+                                        <TextBlock Text="{x:Bind Title}" Style="{StaticResource Text.Body}" FontWeight="SemiBold" />
+                                        <TextBlock Text="{x:Bind platform:UiHelpers.Count(ItemCount)}" Style="{StaticResource Text.Secondary}" />
+                                    </StackPanel.Children>
+                                </StackPanel>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+            </Grid.Children>
+        </Grid>
+    </Page.Content>
+</Page>

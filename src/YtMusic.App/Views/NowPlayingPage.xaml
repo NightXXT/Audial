@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:platform="using:YtMusic.App.Platform" xmlns:dt0="using:YtMusic.Core.Models" x:Class="YtMusic.App.Views.NowPlayingPage">
+    <Page.KeyboardAccelerators>
+        <KeyboardAccelerator Key="Escape" Invoked="OnEscape" />
+    </Page.KeyboardAccelerators>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Padding="32,20,32,32" RowSpacing="20" SizeChanged="OnContentSizeChanged">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#503E2038" Offset="0" />
+                    <GradientStop Color="#00111319" Offset="1" />
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Button Click="OnBack" Style="{StaticResource Button.Glass}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE72B;" FontSize="14" />
+                        <TextBlock Text="Voltar à navegação" />
+                        <TextBlock Text="ESC" Style="{StaticResource Text.Label}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <TextBlock Grid.Column="1" Text="TOCANDO AGORA" Style="{StaticResource Text.Label}" Foreground="{StaticResource Brush.Rose}" CharacterSpacing="180" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <Button Grid.Column="2" Click="OnMiniPlayer" Style="{StaticResource Button.Glass}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE8A7;" FontSize="14" />
+                        <TextBlock Text="Mini Player" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+            <Grid x:Name="Columns" Grid.Row="1" ColumnSpacing="32" RowSpacing="24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="LeftColumn" Width="*" />
+                    <ColumnDefinition x:Name="RightColumn" Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Spacing="12" MaxWidth="440" HorizontalAlignment="Center">
+                    <Grid Width="360" Height="360" CornerRadius="16" Background="{StaticResource Brush.SurfaceRaised}" BorderBrush="{StaticResource Brush.Border}" BorderThickness="1" HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE8D6;" FontSize="72" Foreground="{StaticResource Brush.Rose}" />
+                        <Image Source="{x:Bind platform:UiHelpers.Image(ViewModel.ArtworkUrl), Mode=OneWay}" Stretch="UniformToFill" />
+                    </Grid>
+                    <TextBlock Text="{x:Bind ViewModel.Title, Mode=OneWay}" Style="{StaticResource Text.Title}" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" Margin="0,8,0,0" />
+                    <HyperlinkButton Click="OnArtist" Padding="0" Foreground="{StaticResource Brush.Rose}" Visibility="{x:Bind ViewModel.HasTrack, Mode=OneWay}">
+                        <TextBlock Text="{x:Bind ViewModel.Artist, Mode=OneWay}" FontSize="16" />
+                    </HyperlinkButton>
+                    <TextBlock Text="{x:Bind ViewModel.Album, Mode=OneWay}" Style="{StaticResource Text.Secondary}" />
+                    <TextBlock Visibility="{x:Bind platform:UiHelpers.Not(ViewModel.HasTrack), Mode=OneWay}" Text="Escolha uma faixa para começar." Style="{StaticResource Text.Secondary}" />
+                    <TextBlock Visibility="{x:Bind ViewModel.IsDemoTrack, Mode=OneWay}" Text="DEMONSTRAÇÃO • reprodução simulada, sem áudio" Foreground="{StaticResource Brush.Rose}" FontSize="12" />
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="40" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{x:Bind ViewModel.ElapsedText, Mode=OneWay}" Style="{StaticResource Text.Time}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                        <Slider x:Name="Seek" Grid.Column="1" ValueChanged="OnSeekChanged" IsEnabled="{x:Bind ViewModel.HasTrack, Mode=OneWay}" Minimum="0" IsThumbToolTipEnabled="False" VerticalAlignment="Center" AutomationProperties.Name="Progresso" />
+                        <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.DurationText, Mode=OneWay}" Style="{StaticResource Text.Time}" VerticalAlignment="Center" />
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
+                        <Button Command="{x:Bind ViewModel.PreviousCommand}" Style="{StaticResource Button.Icon}" AutomationProperties.Name="Anterior">
+                            <FontIcon Glyph="&#xE892;" FontSize="20" />
+                        </Button>
+                        <Button Command="{x:Bind ViewModel.PlayPauseCommand}" Style="{StaticResource Button.Play}" Background="{StaticResource Brush.PlayGradient}" AutomationProperties.Name="Reproduzir ou pausar">
+                            <FontIcon Glyph="{x:Bind platform:UiHelpers.PlayGlyph(ViewModel.IsPlaying), Mode=OneWay}" FontSize="20" />
+                        </Button>
+                        <Button Command="{x:Bind ViewModel.NextCommand}" Style="{StaticResource Button.Icon}" AutomationProperties.Name="Próxima">
+                            <FontIcon Glyph="&#xE893;" FontSize="20" />
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+                <Border x:Name="SidePanel" Grid.Column="1" Style="{StaticResource Card.Border}" MinHeight="520" VerticalAlignment="Top">
+                    <StackPanel Spacing="14">
+                        <StackPanel x:Name="Tabs" Orientation="Horizontal" Spacing="8">
+                            <Button Click="OnTabClick" Tag="next" Content="A seguir" Style="{StaticResource Button.Chip}" />
+                            <Button Click="OnTabClick" Tag="lyrics" Content="Letra" Style="{StaticResource Button.Chip}" />
+                        </StackPanel>
+                        <StackPanel x:Name="NextPanel" Spacing="12">
+                            <TextBlock Text="{x:Bind Queue.Summary, Mode=OneWay}" Style="{StaticResource Text.Secondary}" />
+                            <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto">
+                                <ItemsRepeater ItemsSource="{x:Bind Queue.UpNext}">
+                                    <ItemsRepeater.Layout>
+                                        <StackLayout Spacing="4" />
+                                    </ItemsRepeater.Layout>
+                                    <ItemsRepeater.ItemTemplate>
+                                        <DataTemplate x:DataType="dt0:Track">
+                                            <Button Click="OnUpNextClick" Background="Transparent" BorderThickness="0" Padding="8" CornerRadius="8" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AutomationProperties.Name="{x:Bind Title}">
+                                                <Grid ColumnSpacing="12">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Width="{StaticResource Size.Artwork.Row}" Height="{StaticResource Size.Artwork.Row}" CornerRadius="6" Background="{StaticResource Brush.SurfaceRaised}">
+                                                        <Image Source="{x:Bind platform:UiHelpers.Image(ArtworkUrl)}" Stretch="UniformToFill" />
+                                                    </Border>
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                        <TextBlock Text="{x:Bind Title}" Style="{StaticResource Text.Body}" FontSize="13" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{x:Bind Artist}" Style="{StaticResource Text.Time}" TextTrimming="CharacterEllipsis" />
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="2" Text="{x:Bind platform:UiHelpers.Duration(Duration)}" Style="{StaticResource Text.Time}" VerticalAlignment="Center" />
+                                                </Grid>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsRepeater.ItemTemplate>
+                                </ItemsRepeater>
+                            </ScrollViewer>
+                            <Button Click="OnOpenQueue" Content="Abrir fila completa" Style="{StaticResource Button.Glass}" />
+                        </StackPanel>
+                        <StackPanel x:Name="LyricsPanel" Spacing="12" Visibility="Collapsed" Padding="0,48,0,0">
+                            <TextBlock Text="Letra indisponível" Style="{StaticResource Text.Heading}" HorizontalAlignment="Center" />
+                            <TextBlock Text="O Audial ainda não tem integração licenciada para mostrar letras." Style="{StaticResource Text.Secondary}" TextWrapping="Wrap" TextTrimming="None" TextAlignment="Center" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="YtMusic.App.Controls.StatePanel">
+    <UserControl.Content>
+        <Grid x:Name="Root" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="460">
+            <Grid.Children>
+                <StackPanel x:Name="LoadingPanel" Spacing="12" HorizontalAlignment="Center" Visibility="Collapsed">
+                    <StackPanel.Children>
+                        <ProgressRing IsActive="True" Width="40" Height="40" />
+                        <TextBlock Text="Carregando…" Style="{StaticResource Text.Secondary}" HorizontalAlignment="Center" />
+                    </StackPanel.Children>
+                </StackPanel>
+                <StackPanel x:Name="MessagePanel" Spacing="12" HorizontalAlignment="Center" Visibility="Collapsed">
+                    <StackPanel.Children>
+                        <FontIcon x:Name="Icon" FontSize="36" Glyph="" Foreground="{StaticResource Brush.TextSecondary}" />
+                        <TextBlock x:Name="MessageText" Style="{StaticResource Text.Body}" TextWrapping="Wrap" TextAlignment="Center" TextTrimming="None" />
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                            <StackPanel.Children>
+                                <Button Click="OnRetry" x:Name="RetryButton" Content="Tentar de novo" Visibility="Collapsed" />
+                                <Button Click="OnSignIn" x:Name="SignInButton" Content="Entrar" Style="{StaticResource Button.Accent}" Visibility="Collapsed" />
+                            </StackPanel.Children>
+                        </StackPanel>
+                    </StackPanel.Children>
+                </StackPanel>
+            </Grid.Children>
+        </Grid>
+    </UserControl.Content>
+</UserControl>

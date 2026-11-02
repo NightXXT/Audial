@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:platform="using:YtMusic.App.Platform" x:Class="YtMusic.App.Controls.PlayerBar">
+    <Border Background="{StaticResource Brush.Background}" BorderBrush="{StaticResource Brush.Border}" BorderThickness="0,1,0,0" Height="{StaticResource Size.PlayerBar.Height}">
+        <Grid Padding="24,0" ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="200" />
+                <ColumnDefinition Width="2*" MaxWidth="672" />
+                <ColumnDefinition Width="*" MinWidth="220" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+                <Grid Width="{StaticResource Size.Artwork.PlayerBar}" Height="{StaticResource Size.Artwork.PlayerBar}" CornerRadius="{StaticResource Radius.Artwork}" Background="{StaticResource Brush.AccentGradient}">
+                    <FontIcon Glyph="&#xE8D6;" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Brush.AccentText}" />
+                    <Image Source="{x:Bind platform:UiHelpers.Image(ViewModel.ArtworkUrl), Mode=OneWay}" Stretch="UniformToFill" />
+                </Grid>
+                <StackPanel VerticalAlignment="Center" MaxWidth="200">
+                    <Button Click="OnNowPlaying" Background="Transparent" BorderThickness="0" Padding="0" AutomationProperties.Name="Abrir Tocando agora">
+                        <TextBlock Text="{x:Bind ViewModel.Title, Mode=OneWay}" Style="{StaticResource Text.Body}" FontSize="13" FontWeight="SemiBold" />
+                    </Button>
+                    <TextBlock Text="{x:Bind ViewModel.Artist, Mode=OneWay}" Style="{StaticResource Text.Time}" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Visibility="{x:Bind ViewModel.IsDemoTrack, Mode=OneWay}" Text="DEMO — simulado" Foreground="{StaticResource Brush.Warning}" FontSize="{StaticResource FontSize.Label}" />
+                </StackPanel>
+            </StackPanel>
+            <Grid Grid.Column="1" VerticalAlignment="Center" RowSpacing="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
+                    <Button Command="{x:Bind ViewModel.PreviousCommand}" Style="{StaticResource Button.Icon}" AutomationProperties.Name="Anterior">
+                        <FontIcon Glyph="&#xE892;" FontSize="18" />
+                    </Button>
+                    <Button Command="{x:Bind ViewModel.PlayPauseCommand}" Style="{StaticResource Button.Play}" Background="{StaticResource Brush.PlayGradient}" Width="40" Height="40" MinWidth="40" MinHeight="40" CornerRadius="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="Reproduzir ou pausar">
+                        <Button.Resources>
+                            <LinearGradientBrush x:Key="ButtonBackgroundPointerOver" StartPoint="0,1" EndPoint="1,0">
+                                <GradientStop Color="#FFFB7185" Offset="0" />
+                                <GradientStop Color="#FFF751A1" Offset="1" />
+                            </LinearGradientBrush>
+                            <LinearGradientBrush x:Key="ButtonBackgroundPressed" StartPoint="0,1" EndPoint="1,0">
+                                <GradientStop Color="#FFE11D48" Offset="0" />
+                                <GradientStop Color="#FFDB2777" Offset="1" />
+                            </LinearGradientBrush>
+                        </Button.Resources>
+                        <Grid Width="24" Height="24">
+                            <FontIcon Visibility="{x:Bind platform:UiHelpers.Not(ViewModel.IsLoading), Mode=OneWay}" Glyph="{x:Bind platform:UiHelpers.PlayGlyph(ViewModel.IsPlaying), Mode=OneWay}" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <ProgressRing IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Visibility="{x:Bind platform:UiHelpers.Visible(ViewModel.IsLoading), Mode=OneWay}" Width="20" Height="20" />
+                        </Grid>
+                    </Button>
+                    <Button Command="{x:Bind ViewModel.NextCommand}" Style="{StaticResource Button.Icon}" AutomationProperties.Name="Próxima">
+                        <FontIcon Glyph="&#xE893;" FontSize="18" />
+                    </Button>
+                </StackPanel>
+                <Grid Grid.Row="1" ColumnSpacing="8" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="40" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{x:Bind ViewModel.ElapsedText, Mode=OneWay}" Style="{StaticResource Text.Time}" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    <Slider Grid.Column="1" KeyUp="OnSeekKeyUp" PointerReleased="OnSeekPointerReleased" PointerPressed="OnSeekPointerPressed" IsEnabled="{x:Bind ViewModel.HasTrack, Mode=OneWay}" Value="{x:Bind ViewModel.PositionSeconds, Mode=OneWay}" Maximum="{x:Bind ViewModel.DurationSeconds, Mode=OneWay}" x:Name="SeekSlider" Minimum="0" IsThumbToolTipEnabled="False" VerticalAlignment="Center" AutomationProperties.Name="Progresso" />
+                    <TextBlock Grid.Column="2" Text="{x:Bind ViewModel.DurationText, Mode=OneWay}" Style="{StaticResource Text.Time}" FontSize="11" VerticalAlignment="Center" />
+                </Grid>
+            </Grid>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Click="OnQueue" Style="{StaticResource Button.Icon}" AutomationProperties.Name="Fila de reprodução" ToolTipService.ToolTip="Fila de reprodução">
+                    <FontIcon Glyph="&#xE8FD;" FontSize="17" />
+                </Button>
+                <Button Click="OnDevices" Style="{StaticResource Button.Icon}" AutomationProperties.Name="Dispositivos" ToolTipService.ToolTip="Dispositivos">
+                    <FontIcon Glyph="&#xEC15;" FontSize="17" />
+                </Button>
+                <FontIcon Glyph="&#xE767;" FontSize="16" Foreground="{StaticResource Brush.TextSecondary}" />
+                <Slider Value="{x:Bind ViewModel.Volume, Mode=TwoWay}" Width="84" Minimum="0" Maximum="100" VerticalAlignment="Center" AutomationProperties.Name="Volume" />
+                <Button Click="OnMiniPlayer" Style="{StaticResource Button.Icon}" AutomationProperties.Name="Mini Player" ToolTipService.ToolTip="Mini Player">
+                    <FontIcon Glyph="&#xE8A7;" FontSize="16" />
+                </Button>
+                <Button Click="OnNowPlaying" Style="{StaticResource Button.Icon}" AutomationProperties.Name="Tocando agora" ToolTipService.ToolTip="Tocando agora">
+                    <FontIcon Glyph="&#xE740;" FontSize="16" />
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

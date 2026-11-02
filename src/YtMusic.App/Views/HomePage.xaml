@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:platform="using:YtMusic.App.Platform" xmlns:dt0="using:YtMusic.App.Views" x:Class="YtMusic.App.Views.HomePage">
+    <ScrollViewer VerticalScrollBarVisibility="Hidden">
+        <StackPanel Padding="24,20,24,32" Spacing="28">
+            <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{x:Bind Greeting}" Style="{StaticResource Text.Title}" />
+                    <TextBlock Text="{x:Bind RecommendationCaption}" Style="{StaticResource Text.Secondary}" />
+                </StackPanel>
+                <Border Grid.Column="1" Background="{StaticResource Brush.Surface}" CornerRadius="10" Padding="4" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="2">
+                        <Button Content="Para Você" Style="{StaticResource Button.Chip}" Background="{StaticResource Brush.Accent}" Foreground="{StaticResource Brush.AccentText}" BorderThickness="0" CornerRadius="8" />
+                        <Button Click="OnMoodClick" Content="Foco" Tag="músicas para foco" Style="{StaticResource Button.Chip}" Background="Transparent" BorderThickness="0" CornerRadius="8" />
+                        <Button Click="OnMoodClick" Content="Energia" Tag="músicas energia" Style="{StaticResource Button.Chip}" Background="Transparent" BorderThickness="0" CornerRadius="8" />
+                        <Button Click="OnMoodClick" Content="Relaxar" Tag="músicas para relaxar" Style="{StaticResource Button.Chip}" Background="Transparent" BorderThickness="0" CornerRadius="8" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <ItemsRepeater ItemsSource="{x:Bind Quick}">
+                <ItemsRepeater.Layout>
+                    <UniformGridLayout MinItemWidth="170" MinColumnSpacing="12" MinRowSpacing="12" ItemsStretch="Fill" />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="dt0:HomeCard">
+                        <Button Click="OnCardClick" AutomationProperties.Name="{x:Bind Title}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="8" CornerRadius="8" BorderThickness="0" Background="{StaticResource Brush.Surface}">
+                            <Grid ColumnSpacing="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="56" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Width="56" Height="56" CornerRadius="6" Background="{StaticResource Brush.SurfaceRaised}">
+                                    <Image Source="{x:Bind platform:UiHelpers.Image(Artwork)}" Stretch="UniformToFill" />
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Bind Title}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{x:Bind Detail}" Style="{StaticResource Text.Time}" TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+            <StackPanel Spacing="16">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Width="8" Height="26" CornerRadius="4" Background="{StaticResource Brush.AccentGradient}" VerticalAlignment="Center" />
+                        <TextBlock Text="Seus mixes" Style="{StaticResource Text.Title}" FontSize="24" />
+                    </StackPanel>
+                    <Button Click="OnAllMixes" Content="Ver todos  ›" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Brush.Rose}" FontSize="12" />
+                </Grid>
+                <ProgressRing x:Name="Busy" Width="24" Height="24" IsActive="False" Visibility="Collapsed" HorizontalAlignment="Left" />
+                <TextBlock x:Name="LoadMessage" Visibility="Collapsed" Style="{StaticResource Text.Secondary}" TextWrapping="Wrap" TextTrimming="None" />
+                <ItemsRepeater ItemsSource="{x:Bind Featured}">
+                    <ItemsRepeater.Layout>
+                        <UniformGridLayout MinItemWidth="280" MinItemHeight="220" MinColumnSpacing="16" MinRowSpacing="16" ItemsStretch="Fill" MaximumRowsOrColumns="3" />
+                    </ItemsRepeater.Layout>
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="dt0:HomeCard">
+                            <Grid>
+                                <Button Click="OnCardClick" AutomationProperties.Name="{x:Bind Title}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="0" CornerRadius="12" BorderThickness="0" Background="{StaticResource Brush.AccentGradient}">
+                                <Grid>
+                                    <Image Source="{x:Bind platform:UiHelpers.Image(Artwork)}" Stretch="UniformToFill" Opacity="0.35" />
+                                    <Rectangle>
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#330D0E12" Offset="0" />
+                                                <GradientStop Color="#CC0D0E12" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <StackPanel Padding="20,20,84,20" Spacing="2" VerticalAlignment="Bottom">
+                                        <TextBlock Text="{x:Bind Title}" FontSize="20" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{x:Bind Subtitle}" FontSize="12" TextTrimming="CharacterEllipsis" Foreground="{StaticResource Brush.TextSecondary}" />
+                                    </StackPanel>
+                                </Grid>
+                                </Button>
+                                <Button Click="OnMixPlayClick" Style="{StaticResource Button.Play}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20" AutomationProperties.Name="Reproduzir mix" ToolTipService.ToolTip="Reproduzir">
+                                    <FontIcon Glyph="&#xE768;" FontSize="18" />
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+            </StackPanel>
+            <StackPanel Spacing="16">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Width="8" Height="26" CornerRadius="4" Background="{StaticResource Brush.AccentSecondary}" VerticalAlignment="Center" />
+                        <TextBlock Text="Tocadas recentemente" Style="{StaticResource Text.Title}" FontSize="24" />
+                    </StackPanel>
+                    <Button Click="OnAllRecent" Content="Ver tudo  ›" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Brush.Rose}" FontSize="12" />
+                </Grid>
+                <TextBlock x:Name="EmptyHistory" Text="Suas últimas músicas ouvidas neste computador vão aparecer aqui." Style="{StaticResource Text.Secondary}" TextWrapping="Wrap" TextTrimming="None" Visibility="Collapsed" />
+                <ScrollViewer HorizontalScrollBarVisibility="Hidden" HorizontalScrollMode="Auto" VerticalScrollMode="Disabled">
+                    <ItemsRepeater ItemsSource="{x:Bind Recent}">
+                        <ItemsRepeater.Layout>
+                            <StackLayout Orientation="Horizontal" Spacing="16" />
+                        </ItemsRepeater.Layout>
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate x:DataType="dt0:HomeCard">
+                                <Grid Width="196">
+                                    <Button Click="OnCardClick" AutomationProperties.Name="{x:Bind Title}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="10" CornerRadius="12" BorderThickness="0" Background="{StaticResource Brush.Surface}">
+                                        <StackPanel Spacing="10">
+                                            <Border Width="176" Height="176" CornerRadius="8" Background="{StaticResource Brush.SurfaceRaised}">
+                                                <Image Source="{x:Bind platform:UiHelpers.Image(Artwork)}" Stretch="UniformToFill" />
+                                            </Border>
+                                            <StackPanel>
+                                                <TextBlock Text="{x:Bind Title}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Text="{x:Bind Subtitle}" Style="{StaticResource Text.Time}" TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Click="OnRecentMoreClick" AutomationProperties.Name="Mais opções" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,14,14,0" Width="30" Height="30" Padding="0" CornerRadius="15" Background="#99000000" BorderThickness="0" ToolTipService.ToolTip="Mais opções">
+                                        <FontIcon Glyph="&#xE712;" FontSize="14" />
+                                    </Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                </ScrollViewer>
+            </StackPanel>
+            <StackPanel Spacing="16">
+                <TextBlock Text="Álbuns em destaque" Style="{StaticResource Text.Title}" FontSize="24" />
+                <ScrollViewer HorizontalScrollBarVisibility="Hidden" HorizontalScrollMode="Auto" VerticalScrollMode="Disabled">
+                    <ItemsRepeater ItemsSource="{x:Bind Albums}">
+                        <ItemsRepeater.Layout>
+                            <StackLayout Orientation="Horizontal" Spacing="16" />
+                        </ItemsRepeater.Layout>
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate x:DataType="dt0:HomeCard">
+                                <Button Click="OnCardClick" AutomationProperties.Name="{x:Bind Title}" Width="176" Padding="10" CornerRadius="12" BorderThickness="0" Background="{StaticResource Brush.Surface}" HorizontalContentAlignment="Stretch">
+                                    <StackPanel Spacing="10">
+                                        <Border Width="156" Height="156" CornerRadius="8" Background="{StaticResource Brush.SurfaceRaised}">
+                                            <Image Source="{x:Bind platform:UiHelpers.Image(Artwork)}" Stretch="UniformToFill" />
+                                        </Border>
+                                        <StackPanel>
+                                            <TextBlock Text="{x:Bind Title}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{x:Bind Subtitle}" Style="{StaticResource Text.Time}" TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                </ScrollViewer>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

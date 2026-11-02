@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:YtMusic.App.Controls" xmlns:platform="using:YtMusic.App.Platform" xmlns:tb="using:H.NotifyIcon" x:Class="YtMusic.App.MainWindow" Title="Audial — YouTube Music Client">
+    <Window.SystemBackdrop>
+        <MicaBackdrop Kind="BaseAlt" />
+    </Window.SystemBackdrop>
+    <Window.Content>
+        <Grid x:Name="Root" Background="{StaticResource Brush.Background}" RequestedTheme="Dark">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.Children>
+                <Grid x:Name="TitleBar" Padding="16,0,160,0" Background="{StaticResource Brush.Background}">
+                    <Grid.Children>
+<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+    <Image Source="ms-appx:///Assets/Design/ref-00.png" Width="16" Height="16" />
+    <TextBlock Text="AUDIAL" FontSize="{StaticResource FontSize.Label}" FontWeight="SemiBold" CharacterSpacing="80" VerticalAlignment="Center" />
+    <TextBlock Text="—" FontSize="{StaticResource FontSize.Label}" Foreground="{StaticResource Brush.TextMuted}" VerticalAlignment="Center" />
+    <TextBlock Text="YouTube Music Client" FontSize="{StaticResource FontSize.Label}" Foreground="{StaticResource Brush.TextSecondary}" VerticalAlignment="Center" />
+    <TextBlock Visibility="{x:Bind Shell.IsDemo}" Text="DEMO VISUAL • SEM ÁUDIO" Foreground="{StaticResource Brush.Rose}" FontSize="10" VerticalAlignment="Center" Margin="18,0,0,0" />
+</StackPanel>
+                    </Grid.Children>
+                </Grid>
+                <Grid SizeChanged="OnWelcomeSizeChanged" x:Name="Welcome" Grid.Row="1" Padding="40,24,40,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.Children>
+                        <Grid ColumnSpacing="36" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition x:Name="ArtColumn" Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.Children>
+                                <Grid x:Name="WelcomeArt" Height="460" MaxWidth="500">
+                                    <Grid.Children>
+                                        <Ellipse Width="400" Height="400" Stroke="#25E9BCB9" StrokeThickness="1" />
+                                        <Ellipse Width="332" Height="332" Stroke="#25E9BCB9" StrokeThickness="1" StrokeDashArray="5,6" />
+                                        <Ellipse Width="244" Height="244" Stroke="#20E9BCB9" StrokeThickness="1" />
+                                        <Border Width="198" Height="198" CornerRadius="14" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0" Opacity="0,55">
+                                            <Border.RenderTransform>
+                                                <RotateTransform Angle="-12" CenterX="99" CenterY="99" />
+                                            </Border.RenderTransform>
+                                            <Border.Child>
+                                                <Image Source="ms-appx:///Assets/Artwork/ruby.png" Stretch="UniformToFill" />
+                                            </Border.Child>
+                                        </Border>
+                                        <Border Width="204" Height="204" CornerRadius="14" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,12,28" Opacity="0,8">
+                                            <Border.RenderTransform>
+                                                <RotateTransform Angle="12" CenterX="102" CenterY="102" />
+                                            </Border.RenderTransform>
+                                            <Border.Child>
+                                                <Image Source="ms-appx:///Assets/Artwork/night.png" Stretch="UniformToFill" />
+                                            </Border.Child>
+                                        </Border>
+                                        <Border Width="246" Height="270" CornerRadius="16" Background="{StaticResource Brush.Surface}" BorderBrush="{StaticResource Brush.Border}" BorderThickness="1">
+                                            <Border.RenderTransform>
+                                                <RotateTransform Angle="-3" CenterX="123" CenterY="135" />
+                                            </Border.RenderTransform>
+                                            <Border.Child>
+                                                <Grid>
+                                                    <Grid.Children>
+                                                        <Image Source="ms-appx:///Assets/Artwork/prism.png" Stretch="UniformToFill" />
+                                                        <Border Margin="12" Padding="12,10" VerticalAlignment="Bottom" CornerRadius="10" Background="#EB111319">
+                                                            <Border.Child>
+                                                                <StackPanel Spacing="3">
+                                                                    <StackPanel.Children>
+                                                                        <TextBlock Text="Spectral Horizons" FontWeight="SemiBold" />
+                                                                        <TextBlock Text="Arte de demonstração" Style="{StaticResource Text.Secondary}" />
+                                                                    </StackPanel.Children>
+                                                                </StackPanel>
+                                                            </Border.Child>
+                                                        </Border>
+                                                    </Grid.Children>
+                                                </Grid>
+                                            </Border.Child>
+                                        </Border>
+                                    </Grid.Children>
+                                </Grid>
+                                <StackPanel Grid.Column="1" MaxWidth="490" HorizontalAlignment="Stretch" VerticalAlignment="Center" Spacing="20">
+                                    <StackPanel.Children>
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <StackPanel.Children>
+                                                <Border Width="44" Height="44" Background="{StaticResource Brush.SurfaceRaised}" CornerRadius="13">
+                                                    <Border.Child>
+                                                        <FontIcon Glyph="" Foreground="{StaticResource Brush.Rose}" />
+                                                    </Border.Child>
+                                                </Border>
+                                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                                    <StackPanel.Children>
+                                                        <TextBlock Text="AUDIAL" FontSize="17" FontWeight="SemiBold" CharacterSpacing="140" />
+                                                        <TextBlock Text="Seu espaço para a música" Style="{StaticResource Text.Secondary}" />
+                                                    </StackPanel.Children>
+                                                </StackPanel>
+                                            </StackPanel.Children>
+                                        </StackPanel>
+                                        <StackPanel Spacing="10">
+                                            <StackPanel.Children>
+                                                <TextBlock Text="Sua música, em um
+novo ambiente." FontSize="36" FontWeight="SemiBold" LineHeight="43" TextWrapping="Wrap" />
+                                                <TextBlock Text="Uma experiência pensada para o seu desktop.
+Mais espaço para descobrir, ouvir e se encontrar." Foreground="{StaticResource Brush.TextSecondary}" FontSize="14" LineHeight="22" TextWrapping="Wrap" />
+                                            </StackPanel.Children>
+                                        </StackPanel>
+                                        <Border Padding="24" Background="{StaticResource Brush.Glass}" BorderBrush="{StaticResource Brush.Border}" BorderThickness="1" CornerRadius="16">
+                                            <Border.Child>
+                                                <StackPanel Spacing="14">
+                                                    <StackPanel.Children>
+                                                        <TextBlock Text="COMECE POR AQUI" Foreground="{StaticResource Brush.Rose}" FontSize="11" CharacterSpacing="140" FontWeight="SemiBold" />
+                                                        <TextBlock Text="Conecte sua conta ou conheça o conceito." TextWrapping="Wrap" />
+                                                        <Button Click="OnWelcomeSignIn" x:Name="LoginButton" Style="{StaticResource Button.Accent}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" AutomationProperties.Name="Continuar com Google">
+                                                            <Button.Content>
+                                                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                                                    <StackPanel.Children>
+                                                                        <TextBlock Text="G" FontWeight="Bold" FontSize="18" />
+                                                                        <TextBlock Text="Continuar com Google" VerticalAlignment="Center" />
+                                                                    </StackPanel.Children>
+                                                                </StackPanel>
+                                                            </Button.Content>
+                                                        </Button>
+                                                        <Button Click="OnConfigureGoogle" Content="Configurar acesso ao Google" Background="#00FFFFFF" BorderThickness="0" HorizontalAlignment="Center" FontSize="12" Padding="8,2" />
+                                                        <Button Click="OnPublicMusic" Content="Explorar catálogo do Music" Style="{StaticResource Button.Glass}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+                                                        <Button Click="OnExploreDemo" x:Name="DemoButton" Content="Ver demonstração visual (sem áudio)" Style="{StaticResource Button.Glass}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+                                                        <StackPanel x:Name="LoginProgress" Orientation="Horizontal" Spacing="10" Visibility="Collapsed">
+                                                            <StackPanel.Children>
+                                                                <ProgressRing Width="20" Height="20" IsActive="True" />
+                                                                <TextBlock Text="Conclua no navegador…" VerticalAlignment="Center" FontSize="12" />
+                                                                <Button Click="OnCancelLogin" Content="Cancelar" Padding="8,4" />
+                                                            </StackPanel.Children>
+                                                        </StackPanel>
+                                                        <TextBlock Text="{x:Bind Shell.StatusMessage, Mode=OneWay}" TextWrapping="Wrap" Foreground="{StaticResource Brush.Danger}" FontSize="12" />
+                                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                                            <StackPanel.Children>
+                                                                <FontIcon Glyph="" FontSize="12" Foreground="{StaticResource Brush.TextSecondary}" />
+                                                                <TextBlock Text="Autorização no navegador. Sua senha fica com o Google." TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource Brush.TextSecondary}" MaxWidth="330" />
+                                                            </StackPanel.Children>
+                                                        </StackPanel>
+                                                    </StackPanel.Children>
+                                                </StackPanel>
+                                            </Border.Child>
+                                        </Border>
+                                    </StackPanel.Children>
+                                </StackPanel>
+                            </Grid.Children>
+                        </Grid>
+                        <Border Grid.Row="1" Margin="0,24,0,0" BorderBrush="{StaticResource Brush.Border}" BorderThickness="0,1,0,0" Padding="0,16,0,0">
+                            <Border.Child>
+                                <TextBlock Text="Conceito independente • Sem afiliação com Google ou YouTube" Foreground="{StaticResource Brush.TextSecondary}" FontSize="11" TextWrapping="Wrap" />
+                            </Border.Child>
+                        </Border>
+                    </Grid.Children>
+                </Grid>
+                <Grid x:Name="Workspace" Grid.Row="1" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="88" />
+                    </Grid.RowDefinitions>
+                    <Grid.Children>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="240" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.Children>
+<Grid Background="{StaticResource Brush.Surface}" BorderBrush="{StaticResource Brush.Border}" BorderThickness="0,0,1,0">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <StackPanel Orientation="Horizontal" Spacing="8" Padding="16">
+        <Image Source="ms-appx:///Assets/Design/ref-00.png" Width="32" Height="32" />
+        <StackPanel VerticalAlignment="Center">
+            <TextBlock Text="Audial" FontSize="{StaticResource FontSize.Heading}" FontWeight="Bold" CharacterSpacing="-5" />
+            <TextBlock Text="YT MUSIC" FontSize="10" FontWeight="SemiBold" CharacterSpacing="40" Foreground="{StaticResource Brush.Rose}" />
+        </StackPanel>
+    </StackPanel>
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden" Padding="8,0">
+        <StackPanel x:Name="Sidebar" Spacing="2">
+            <Button Click="OnSidebarClick" Tag="home" Content="Início" Style="{StaticResource Button.Nav}" />
+<Button Click="OnSidebarClick" Tag="search" Content="Buscar" Style="{StaticResource Button.Nav}" />
+<Button Click="OnSidebarClick" Tag="artist" Content="Artista" Style="{StaticResource Button.Nav}" />
+<Button Click="OnSidebarClick" Tag="library" Content="Biblioteca" Style="{StaticResource Button.Nav}" />
+<Button Click="OnSidebarClick" Tag="queue" Content="Fila" Style="{StaticResource Button.Nav}" />
+<Button Click="OnSidebarClick" Tag="devices" Content="Dispositivos" Style="{StaticResource Button.Nav}" />
+<Button Click="OnSidebarClick" Tag="playing" Content="Tocando Agora" Style="{StaticResource Button.Nav}" />
+<Button Click="OnSidebarClick" Tag="mini" Content="Mini Player" Style="{StaticResource Button.Nav}" />
+<Button Click="OnSidebarClick" Tag="together" Content="Ouvir junto" Style="{StaticResource Button.Nav}" />
+<Button Click="OnSidebarClick" Tag="settings" Content="Configurações" Style="{StaticResource Button.Nav}" />
+            <Rectangle Height="1" Fill="{StaticResource Brush.Border}" Margin="8,8" />
+            <TextBlock Text="PLAYLISTS EM DESTAQUE" Style="{StaticResource Text.Label}" Margin="12,4,12,4" />
+            <Button Click="OnSidebarClick" Tag="liked" Content="Músicas Curtidas" Style="{StaticResource Button.Nav}" FontSize="12" />
+            <ItemsControl x:Name="SidebarCollections">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Click="OnCollectionClick" Style="{StaticResource Button.Nav}" FontSize="12">
+                            <Button.Content>
+                                <Binding Path="Title" />
+                            </Button.Content>
+                            <Button.Tag>
+                                <Binding Path="Id" />
+                            </Button.Tag>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Click="OnSidebarClick" Tag="albums" Content="Seus álbuns" Style="{StaticResource Button.Nav}" FontSize="12" />
+        </StackPanel>
+    </ScrollViewer>
+    <Grid Grid.Row="2" Padding="12,8" ColumnSpacing="8" BorderBrush="{StaticResource Brush.Border}" BorderThickness="0,1,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="32" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Border Width="32" Height="32" CornerRadius="16" Background="{StaticResource Brush.AccentGradient}" VerticalAlignment="Center">
+            <TextBlock Text="AU" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Border>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock Text="{x:Bind Shell.AccountText, Mode=OneWay}" FontSize="12" FontWeight="Medium" TextTrimming="CharacterEllipsis" />
+            <Button Click="OnConnectAccount" Visibility="{x:Bind platform:UiHelpers.Not(Shell.IsSignedIn), Mode=OneWay}" Content="Conectar conta" FontSize="11" Background="#00FFFFFF" BorderThickness="0" Padding="0,1" Foreground="{StaticResource Brush.Rose}" />
+            <Button Click="OnSignOut" Visibility="{x:Bind Shell.IsSignedIn, Mode=OneWay}" Content="Sair da conta" FontSize="11" Background="#00FFFFFF" BorderThickness="0" Padding="0,1" Foreground="{StaticResource Brush.TextSecondary}" />
+        </StackPanel>
+        <Button Click="OnSidebarClick" Grid.Column="2" Tag="settings" Style="{StaticResource Button.Icon}" AutomationProperties.Name="Configurações">
+            <FontIcon Glyph="&#xE713;" FontSize="18" />
+        </Button>
+    </Grid>
+</Grid>
+                                <Grid Grid.Column="1">
+<Grid.Background>
+    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FF0D0E12" Offset="0" />
+        <GradientStop Color="#FF121317" Offset="0.5" />
+        <GradientStop Color="#FF0D0E12" Offset="1" />
+    </LinearGradientBrush>
+</Grid.Background>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="56" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.Children>
+<Grid Padding="24,0" ColumnSpacing="16" BorderBrush="{StaticResource Brush.Border}" BorderThickness="0,0,0,1">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
+    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+        <Button Click="OnNavigateBack" Style="{StaticResource Button.Icon}" Width="32" Height="32" CornerRadius="16" AutomationProperties.Name="Voltar">
+            <FontIcon Glyph="&#xE72B;" FontSize="14" />
+        </Button>
+        <Button Click="OnNavigateForward" Style="{StaticResource Button.Icon}" Width="32" Height="32" CornerRadius="16" AutomationProperties.Name="Avançar">
+            <FontIcon Glyph="&#xE72A;" FontSize="14" />
+        </Button>
+    </StackPanel>
+    <Grid Grid.Column="1" MaxWidth="576" VerticalAlignment="Center">
+        <TextBox KeyDown="OnGlobalSearchKeyDown" x:Name="GlobalSearch" PlaceholderText="Buscar músicas, álbuns ou artistas no YouTube Music" Height="36" MinHeight="36" CornerRadius="8" Background="{StaticResource Brush.Surface}" BorderBrush="{StaticResource Brush.Border}" BorderThickness="1" Padding="36,7,64,7" FontSize="12" VerticalAlignment="Center" AutomationProperties.Name="Busca global">
+            <TextBox.KeyboardAccelerators>
+                <KeyboardAccelerator Invoked="OnFocusSearch" Key="K" Modifiers="Control" />
+            </TextBox.KeyboardAccelerators>
+        </TextBox>
+        <FontIcon Glyph="&#xE721;" FontSize="14" HorizontalAlignment="Left" Margin="12,0,0,0" Foreground="{StaticResource Brush.TextSecondary}" IsHitTestVisible="False" />
+        <Border HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Padding="6,2" CornerRadius="4" Background="{StaticResource Brush.SurfaceRaised}" IsHitTestVisible="False">
+            <TextBlock Text="Ctrl+K" FontSize="10" Foreground="{StaticResource Brush.TextSecondary}" />
+        </Border>
+    </Grid>
+    <Button Click="OnSidebarClick" Grid.Column="2" Tag="devices" Style="{StaticResource Button.Icon}" Width="32" Height="32" CornerRadius="16" AutomationProperties.Name="Dispositivos">
+        <FontIcon Glyph="&#xEC15;" FontSize="16" />
+    </Button>
+</Grid>
+                                        <StackPanel Grid.Row="1">
+                                            <StackPanel.Children>
+                                                <InfoBar Closed="OnStatusClosed" Message="{x:Bind Shell.StatusMessage, Mode=OneWay}" IsOpen="{x:Bind Shell.HasStatusMessage, Mode=OneWay}" Margin="12,0" Title="Reprodução" Severity="Informational" />
+                                            </StackPanel.Children>
+                                        </StackPanel>
+                                        <Frame x:Name="ContentFrame" Grid.Row="2" />
+                                    </Grid.Children>
+                                </Grid>
+                            </Grid.Children>
+                        </Grid>
+                        <controls:PlayerBar Grid.Row="1" />
+                    </Grid.Children>
+                </Grid>
+                <tb:TaskbarIcon LeftClickCommand="{x:Bind ShowWindowCommand}" x:Name="Tray" ToolTipText="Audial" NoLeftClickDelay="True">
+                    <tb:TaskbarIcon.IconSource>
+                        <tb:GeneratedIconSource Text="♪" Foreground="#FFFFFFFF" Background="#FFFF4659" />
+                    </tb:TaskbarIcon.IconSource>
+                    <tb:TaskbarIcon.ContextFlyout>
+                        <MenuFlyout>
+                            <MenuFlyout.Items>
+                                <MenuFlyoutItem Command="{x:Bind ShowWindowCommand}" Text="Abrir Audial" />
+                                <MenuFlyoutItem Command="{x:Bind Shell.Player.PlayPauseCommand}" Text="Reproduzir / Pausar" />
+                                <MenuFlyoutItem Command="{x:Bind Shell.Player.NextCommand}" Text="Próxima" />
+                                <MenuFlyoutSeparator />
+                                <MenuFlyoutItem Command="{x:Bind ExitCommand}" Text="Sair" />
+                            </MenuFlyout.Items>
+                        </MenuFlyout>
+                    </tb:TaskbarIcon.ContextFlyout>
+                </tb:TaskbarIcon>
+                <Grid x:Name="StartupLoading" Grid.RowSpan="2" Background="#FF111319" IsHitTestVisible="True">
+                    <Grid.Children>
+                        <Grid>
+                            <Grid.Children>
+                                <Ellipse Width="520" Height="520" Fill="#18FF5357" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="18">
+                                    <StackPanel.Children>
+                                        <Border Width="64" Height="64" CornerRadius="20" Background="#FF24212A" BorderBrush="#40FF5357" BorderThickness="1" HorizontalAlignment="Center">
+                                            <Border.Child>
+                                                <FontIcon Glyph="" FontSize="28" Foreground="{StaticResource Brush.Accent}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border.Child>
+                                        </Border>
+                                        <StackPanel Spacing="5" HorizontalAlignment="Center">
+                                            <StackPanel.Children>
+                                                <TextBlock Text="AUDIAL" FontSize="20" FontWeight="SemiBold" CharacterSpacing="180" HorizontalAlignment="Center" />
+                                                <TextBlock Text="Seu espaço para a música" FontSize="13" Foreground="{StaticResource Brush.TextSecondary}" HorizontalAlignment="Center" />
+                                            </StackPanel.Children>
+                                        </StackPanel>
+                                        <ProgressRing Width="28" Height="28" IsActive="True" Foreground="{StaticResource Brush.Accent}" HorizontalAlignment="Center" />
+                                        <TextBlock Text="Preparando seu espaço…" FontSize="12" Foreground="{StaticResource Brush.TextSecondary}" HorizontalAlignment="Center" />
+                                    </StackPanel.Children>
+                                </StackPanel>
+                            </Grid.Children>
+                        </Grid>
+                    </Grid.Children>
+                </Grid>
+            </Grid.Children>
+        </Grid>
+    </Window.Content>
+</Window>

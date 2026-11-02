@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="YtMusic.App.Views.DevicesPage">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Padding="{StaticResource Padding.Page}" Spacing="20" MaxWidth="1080" HorizontalAlignment="Stretch">
+            <StackPanel Spacing="6">
+                <TextBlock Text="TRANSMISSÃO E SAÍDA DE ÁUDIO" Style="{StaticResource Text.Label}" Foreground="{StaticResource Brush.Rose}" />
+                <TextBlock Text="Conectar e Dispositivos" Style="{StaticResource Text.Display}" />
+            </StackPanel>
+            <Border Style="{StaticResource Card.Border}">
+                <StackPanel Spacing="16">
+                    <Grid ColumnSpacing="14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <FontIcon Glyph="&#xE8EA;" FontSize="26" Foreground="{StaticResource Brush.Rose}" />
+                        <StackPanel Grid.Column="1" Spacing="2">
+                            <TextBlock Text="Controlar pelo celular" Style="{StaticResource Text.Heading}" />
+                            <TextBlock Text="Vincule um controle do YouTube. O áudio continua neste computador." Style="{StaticResource Text.Secondary}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                            <Button Click="OnStart" x:Name="StartButton" Content="Ativar receptor" Style="{StaticResource Button.Accent}" />
+                            <Button Click="OnStop" x:Name="StopButton" Content="Desativar" Style="{StaticResource Button.Glass}" IsEnabled="False" />
+                        </StackPanel>
+                    </Grid>
+                    <TextBox x:Name="ReceiverName" Header="Nome deste computador na rede" Text="Audial Windows" MaxLength="60" />
+                    <Border x:Name="CodePanel" Visibility="Collapsed" Background="{StaticResource Brush.Subtle}" CornerRadius="12" Padding="16">
+                        <Grid ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="CÓDIGO DE PAREAMENTO" Style="{StaticResource Text.Label}" />
+                                <TextBlock x:Name="PairingCode" FontSize="32" FontWeight="SemiBold" CharacterSpacing="180" Foreground="{StaticResource Brush.Rose}" IsTextSelectionEnabled="True" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Click="OnCopyCode" Style="{StaticResource Button.Glass}" VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE8C8;" FontSize="14" />
+                                    <TextBlock Text="Copiar código" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <TextBlock x:Name="StatusText" Text="Desativado" Style="{StaticResource Text.Secondary}" TextWrapping="Wrap" TextTrimming="None" />
+                </StackPanel>
+            </Border>
+            <StackPanel Spacing="10">
+                <TextBlock Text="Como conectar em 3 passos" Style="{StaticResource Text.Heading}" />
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Style="{StaticResource Card.Border}">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="01" Style="{StaticResource Text.Label}" Foreground="{StaticResource Brush.Rose}" />
+                            <TextBlock Text="Abra o aplicativo" Style="{StaticResource Text.Body}" FontWeight="SemiBold" />
+                            <TextBlock Text="Abra o YouTube ou o YouTube Music no celular." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource Card.Border}">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="02" Style="{StaticResource Text.Label}" Foreground="{StaticResource Brush.Rose}" />
+                            <TextBlock Text="Vincule com código" Style="{StaticResource Text.Body}" FontWeight="SemiBold" />
+                            <TextBlock Text="Toque em Transmitir e escolha Vincular com código da TV. A opção pode variar conforme o app." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource Card.Border}">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="03" Style="{StaticResource Text.Label}" Foreground="{StaticResource Brush.Rose}" />
+                            <TextBlock Text="Digite o código" Style="{StaticResource Text.Body}" FontWeight="SemiBold" />
+                            <TextBlock Text="Ative o receptor acima e digite no celular o código que aparecer." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+            <Border Style="{StaticResource Card.Border}">
+                <Grid ColumnSpacing="14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Glyph="&#xE7F5;" FontSize="26" Foreground="{StaticResource Brush.Rose}" VerticalAlignment="Top" />
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Saída de áudio" Style="{StaticResource Text.Heading}" />
+                        <TextBlock x:Name="OutputName" Text="Dispositivo padrão do Windows" Style="{StaticResource Text.Body}" />
+                        <TextBlock Text="O Audial usa o dispositivo padrão. Para trocar, use as configurações de som do Windows." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource Card.Border}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Continuar ouvindo em outros dispositivos" Style="{StaticResource Text.Heading}" />
+                    <TextBlock Text="O receptor é uma conexão de controle separada. A fila do Audial ainda não sincroniza automaticamente com a fila do YouTube Music." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+                    <HyperlinkButton Content="Ver o recurso na ajuda do Google" Padding="0" NavigateUri="https://support.google.com/youtubemusic/answer/9231765?co=GENIE.Platform%3DAndroid&amp;hl=pt-BR" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

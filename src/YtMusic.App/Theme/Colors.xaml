@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Audial · Tema "Audial Fluent" (baseado no design do Google Stitch)
+  Substitui Theme/Colors.xaml. Mantém todas as chaves e tipos da versão 8.6.
+  Chaves novas (opcionais) estão no final, marcadas como NOVO.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Base: fundo obsidiana, levemente translúcido para o Mica aparecer -->
+    <Color x:Key="Color.Background">#F20D0E12</Color>
+    <Color x:Key="Color.Surface">#D914161D</Color>
+    <Color x:Key="Color.SurfaceRaised">#E61E2029</Color>
+    <Color x:Key="Color.Border">#14FFFFFF</Color>
+
+    <!-- Texto -->
+    <Color x:Key="Color.TextPrimary">#FFF3F4F6</Color>
+    <Color x:Key="Color.TextSecondary">#FF9CA3AF</Color>
+
+    <!-- Destaque rosa/magenta -->
+    <Color x:Key="Color.Accent">#FFF43F5E</Color>
+    <Color x:Key="Color.AccentText">#FFFFFFFF</Color>
+
+    <!-- Estados -->
+    <Color x:Key="Color.Warning">#FFF5A524</Color>
+    <Color x:Key="Color.WarningText">#FF1A1200</Color>
+    <Color x:Key="Color.Danger">#FFFF6B81</Color>
+
+    <!-- Slider (barra de progresso e volume): preenchimento rosa, bolinha branca -->
+    <SolidColorBrush x:Key="SliderTrackValueFill" Color="#FFF43F5E" />
+    <SolidColorBrush x:Key="SliderTrackValueFillPointerOver" Color="#FFFB7185" />
+    <SolidColorBrush x:Key="SliderTrackValueFillPressed" Color="#FFE11D48" />
+    <SolidColorBrush x:Key="SliderThumbBackground" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="SliderThumbBackgroundPressed" Color="#FFF3F4F6" />
+    <SolidColorBrush x:Key="SliderThumbBackgroundDisabled" Color="#FF6B7280" />
+    <SolidColorBrush x:Key="SliderThumbBorderBrush" Color="#33F43F5E" />
+    <SolidColorBrush x:Key="SliderThumbBorderBrushPointerOver" Color="#66F43F5E" />
+    <SolidColorBrush x:Key="SliderThumbBorderBrushPressed" Color="#99F43F5E" />
+    <SolidColorBrush x:Key="SliderThumbBorderBrushDisabled" Color="#00000000" />
+
+    <!-- Pincéis usados pelas telas (mesmas chaves da v8.6) -->
+    <SolidColorBrush x:Key="Brush.Background" Color="{StaticResource Color.Background}" />
+    <SolidColorBrush x:Key="Brush.Surface" Color="{StaticResource Color.Surface}" />
+    <SolidColorBrush x:Key="Brush.SurfaceRaised" Color="{StaticResource Color.SurfaceRaised}" />
+    <SolidColorBrush x:Key="Brush.Border" Color="{StaticResource Color.Border}" />
+    <SolidColorBrush x:Key="Brush.TextPrimary" Color="{StaticResource Color.TextPrimary}" />
+    <SolidColorBrush x:Key="Brush.TextSecondary" Color="{StaticResource Color.TextSecondary}" />
+    <SolidColorBrush x:Key="Brush.Accent" Color="{StaticResource Color.Accent}" />
+    <SolidColorBrush x:Key="Brush.AccentText" Color="{StaticResource Color.AccentText}" />
+    <SolidColorBrush x:Key="Brush.Warning" Color="{StaticResource Color.Warning}" />
+    <SolidColorBrush x:Key="Brush.WarningText" Color="{StaticResource Color.WarningText}" />
+    <SolidColorBrush x:Key="Brush.Danger" Color="{StaticResource Color.Danger}" />
+    <!-- Rosa claro para rótulos e textos de destaque (melhor leitura que o rosa forte) -->
+    <SolidColorBrush x:Key="Brush.Rose" Color="#FFFB7185" />
+    <!-- Fundo de botões "vidro" e áreas sutis -->
+    <SolidColorBrush x:Key="Brush.Subtle" Color="#0FFFFFFF" />
+    <!-- Barra de título -->
+    <SolidColorBrush x:Key="Brush.Glass" Color="#CC14161D" />
+
+    <!-- NOVO: tokens extras do design, prontos para as próximas telas -->
+    <Color x:Key="Color.AccentSecondary">#FF8B5CF6</Color>
+    <Color x:Key="Color.TextMuted">#FF6B7280</Color>
+    <Color x:Key="Color.Selected">#FF2A2D3A</Color>
+    <SolidColorBrush x:Key="Brush.AccentSecondary" Color="{StaticResource Color.AccentSecondary}" />
+    <SolidColorBrush x:Key="Brush.TextMuted" Color="{StaticResource Color.TextMuted}" />
+    <SolidColorBrush x:Key="Brush.Selected" Color="{StaticResource Color.Selected}" />
+    <SolidColorBrush x:Key="Brush.Hover" Color="#0AFFFFFF" />
+    <LinearGradientBrush x:Key="Brush.PlayGradient" StartPoint="0,1" EndPoint="1,0">
+        <GradientStop Color="#FFF43F5E" Offset="0" />
+        <GradientStop Color="#FFF751A1" Offset="1" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="Brush.AccentGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#FFF43F5E" Offset="0" />
+        <GradientStop Color="#FF8B5CF6" Offset="1" />
+    </LinearGradientBrush>
+</ResourceDictionary>

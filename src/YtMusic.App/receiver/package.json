@@ -1,0 +1,7 @@
+{
+  "name": "audial-google-receiver",
+  "version": "0.6.0",
+  "private": true,
+  "type": "module",
+  "description": "Pacote de distribuição: main.mjs é gerado por esbuild a partir de main.src.mjs + yt-cast-receiver 2.1.0. Licenças em ../THIRD-PARTY/receiver."
+}

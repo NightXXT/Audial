@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{22C37E08-29FE-4672-945A-D7CA420DA0CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YtMusic.Core", "src\YtMusic.Core\YtMusic.Core.csproj", "{0F35C38C-C308-4200-AFB4-6B0EC069E1B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YtMusic.Services", "src\YtMusic.Services\YtMusic.Services.csproj", "{157AB490-D4F9-4309-836E-9899AA5B5228}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YtMusic.Presentation", "src\YtMusic.Presentation\YtMusic.Presentation.csproj", "{96019910-B96F-4260-AFB2-79F23DA65629}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YtMusic.App", "src\YtMusic.App\YtMusic.App.csproj", "{39AC46E4-122B-4952-929B-D23AF36EE658}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F35C38C-C308-4200-AFB4-6B0EC069E1B1}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{0F35C38C-C308-4200-AFB4-6B0EC069E1B1}.Debug|Any CPU.Build.0 = Debug|x64
+		{0F35C38C-C308-4200-AFB4-6B0EC069E1B1}.Release|Any CPU.ActiveCfg = Release|x64
+		{0F35C38C-C308-4200-AFB4-6B0EC069E1B1}.Release|Any CPU.Build.0 = Release|x64
+		{157AB490-D4F9-4309-836E-9899AA5B5228}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{157AB490-D4F9-4309-836E-9899AA5B5228}.Debug|Any CPU.Build.0 = Debug|x64
+		{157AB490-D4F9-4309-836E-9899AA5B5228}.Release|Any CPU.ActiveCfg = Release|x64
+		{157AB490-D4F9-4309-836E-9899AA5B5228}.Release|Any CPU.Build.0 = Release|x64
+		{96019910-B96F-4260-AFB2-79F23DA65629}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{96019910-B96F-4260-AFB2-79F23DA65629}.Debug|Any CPU.Build.0 = Debug|x64
+		{96019910-B96F-4260-AFB2-79F23DA65629}.Release|Any CPU.ActiveCfg = Release|x64
+		{96019910-B96F-4260-AFB2-79F23DA65629}.Release|Any CPU.Build.0 = Release|x64
+		{39AC46E4-122B-4952-929B-D23AF36EE658}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{39AC46E4-122B-4952-929B-D23AF36EE658}.Debug|Any CPU.Build.0 = Debug|x64
+		{39AC46E4-122B-4952-929B-D23AF36EE658}.Release|Any CPU.ActiveCfg = Release|x64
+		{39AC46E4-122B-4952-929B-D23AF36EE658}.Release|Any CPU.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0F35C38C-C308-4200-AFB4-6B0EC069E1B1} = {22C37E08-29FE-4672-945A-D7CA420DA0CA}
+		{157AB490-D4F9-4309-836E-9899AA5B5228} = {22C37E08-29FE-4672-945A-D7CA420DA0CA}
+		{96019910-B96F-4260-AFB2-79F23DA65629} = {22C37E08-29FE-4672-945A-D7CA420DA0CA}
+		{39AC46E4-122B-4952-929B-D23AF36EE658} = {22C37E08-29FE-4672-945A-D7CA420DA0CA}
+	EndGlobalSection
+EndGlobal

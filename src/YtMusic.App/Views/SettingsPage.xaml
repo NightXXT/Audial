@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="YtMusic.App.Views.SettingsPage">
+    <Page.Resources>
+        <Style x:Key="Key.Chip" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource Brush.Subtle}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Brush.Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="8,3,8,3" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+    </Page.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Padding="{StaticResource Padding.Page}" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+            <StackPanel Spacing="4">
+                <TextBlock Text="Configurações" Style="{StaticResource Text.Display}" />
+                <TextBlock Text="Preferências salvas neste computador" Style="{StaticResource Text.Secondary}" />
+            </StackPanel>
+            <Border Style="{StaticResource Card.Border}">
+                <Grid ColumnSpacing="14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Glyph="&#xE77B;" FontSize="26" Foreground="{StaticResource Brush.Rose}" />
+                    <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                        <TextBlock Text="Conta" Style="{StaticResource Text.Heading}" />
+                        <TextBlock Text="{x:Bind Shell.AccountText, Mode=OneWay}" Style="{StaticResource Text.Secondary}" />
+                    </StackPanel>
+                    <Button Grid.Column="2" Command="{x:Bind ViewModel.ForgetSessionCommand}" Content="Apagar sessão" Style="{StaticResource Button.Glass}" VerticalAlignment="Center" ToolTipService.ToolTip="Remove os tokens guardados e revoga o acesso do aplicativo à sua conta Google." />
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource Card.Border}">
+                <StackPanel Spacing="12">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE790;" FontSize="18" Foreground="{StaticResource Brush.Rose}" />
+                        <TextBlock Text="Aparência" Style="{StaticResource Text.Heading}" />
+                    </StackPanel>
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.UseTransparency, Mode=TwoWay}" Header="Transparência (efeito Mica do Windows 11)" />
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.ReduceMotion, Mode=TwoWay}" Header="Reduzir animações" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card.Border}">
+                <StackPanel Spacing="12">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE768;" FontSize="18" Foreground="{StaticResource Brush.Rose}" />
+                        <TextBlock Text="Reprodução e sistema" Style="{StaticResource Text.Heading}" />
+                    </StackPanel>
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.MinimizeToTray, Mode=TwoWay}" Header="Minimizar para a bandeja ao fechar a janela" />
+                    <TextBlock Text="Use o ícone na bandeja para reabrir o aplicativo ou sair. A reprodução é pausada ao fechar para a bandeja." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.PreferDataSaver, Mode=TwoWay}" Header="Preferir economia de dados" />
+                    <TextBlock Text="A preferência fica salva, mas a integração atual não controla a qualidade do áudio, então ainda não reduz o consumo." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card.Border}">
+                <StackPanel Spacing="12">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE71B;" FontSize="18" Foreground="{StaticResource Brush.Rose}" />
+                        <TextBlock Text="Integrações" Style="{StaticResource Text.Heading}" />
+                    </StackPanel>
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.DiscordPresenceEnabled, Mode=TwoWay}" Header="Mostrar no Discord o que estou ouvindo" />
+                    <TextBox Text="{x:Bind ViewModel.DiscordApplicationId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="ID da aplicação do Discord" PlaceholderText="Ex.: 123456789012345678" />
+                    <TextBlock Text="Mostra só o título e o artista enquanto a música toca. Crie uma aplicação no Discord Developer Portal e copie o Application ID. O Discord para computador precisa estar aberto." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card.Border}">
+                <StackPanel Spacing="12">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE765;" FontSize="18" Foreground="{StaticResource Brush.Rose}" />
+                        <TextBlock Text="Atalhos do teclado" Style="{StaticResource Text.Heading}" />
+                    </StackPanel>
+                    <Grid RowSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Reproduzir / pausar" Style="{StaticResource Text.Body}" />
+                        <Border Grid.Column="1" Style="{StaticResource Key.Chip}"><TextBlock Text="Espaço" Style="{StaticResource Text.Time}" /></Border>
+                        <TextBlock Grid.Row="1" Text="Próxima faixa" Style="{StaticResource Text.Body}" />
+                        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Key.Chip}"><TextBlock Text="Ctrl + →" Style="{StaticResource Text.Time}" /></Border>
+                        <TextBlock Grid.Row="2" Text="Faixa anterior" Style="{StaticResource Text.Body}" />
+                        <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource Key.Chip}"><TextBlock Text="Ctrl + ←" Style="{StaticResource Text.Time}" /></Border>
+                        <TextBlock Grid.Row="3" Text="Abrir fila" Style="{StaticResource Text.Body}" />
+                        <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource Key.Chip}"><TextBlock Text="Ctrl + Q" Style="{StaticResource Text.Time}" /></Border>
+                        <TextBlock Grid.Row="4" Text="Abrir Tocando agora" Style="{StaticResource Text.Body}" />
+                        <Border Grid.Row="4" Grid.Column="1" Style="{StaticResource Key.Chip}"><TextBlock Text="Ctrl + L" Style="{StaticResource Text.Time}" /></Border>
+                        <TextBlock Grid.Row="5" Text="Abrir Mini Player" Style="{StaticResource Text.Body}" />
+                        <Border Grid.Row="5" Grid.Column="1" Style="{StaticResource Key.Chip}"><TextBlock Text="Ctrl + M" Style="{StaticResource Text.Time}" /></Border>
+                        <TextBlock Grid.Row="6" Text="Buscar" Style="{StaticResource Text.Body}" />
+                        <Border Grid.Row="6" Grid.Column="1" Style="{StaticResource Key.Chip}"><TextBlock Text="Ctrl + K" Style="{StaticResource Text.Time}" /></Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card.Border}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Desenvolvimento" Style="{StaticResource Text.Heading}" />
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.DemoMode, Mode=TwoWay}" Header="Modo demonstração (dados e player simulados)" />
+                    <TextBlock Text="{x:Bind ViewModel.PlayerName}" Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+                    <TextBlock Text="{x:Bind ViewModel.Message, Mode=OneWay}" Foreground="{StaticResource Brush.Warning}" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+            <TextBlock Text="Audial · Cliente não oficial do YouTube Music" Style="{StaticResource Text.Time}" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

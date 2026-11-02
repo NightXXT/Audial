@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:YtMusic.App.Controls" xmlns:platform="using:YtMusic.App.Platform" xmlns:dt0="using:YtMusic.Core.Models" x:Class="YtMusic.App.Views.SearchPage">
+    <Grid Style="{StaticResource Page.Root}" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox KeyDown="OnQueryKeyDown" Text="{x:Bind ViewModel.Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="QueryBox" PlaceholderText="O que você quer ouvir agora?" Height="52" MinHeight="52" Padding="48,14,16,12" FontSize="16" CornerRadius="12" Background="{StaticResource Brush.SurfaceRaised}" BorderBrush="{StaticResource Brush.Border}" AutomationProperties.Name="Buscar" />
+            <FontIcon Glyph="&#xE721;" FontSize="18" HorizontalAlignment="Left" Margin="16,0,0,0" Foreground="{StaticResource Brush.Rose}" IsHitTestVisible="False" />
+            <Button Command="{x:Bind ViewModel.SearchCommand}" Grid.Column="1" Content="Buscar" Style="{StaticResource Button.Accent}" Height="44" />
+            <Button Visibility="{x:Bind ViewModel.IsLoading, Mode=OneWay}" Command="{x:Bind ViewModel.CancelCommand}" Grid.Column="2" Content="Cancelar" Style="{StaticResource Button.Glass}" Height="44" />
+        </Grid>
+        <StackPanel x:Name="Pills" Grid.Row="1" Orientation="Horizontal" Spacing="6">
+            <Button Click="OnPillClick" Tag="All" Content="Tudo" Style="{StaticResource Button.Chip}" />
+            <Button Click="OnPillClick" Tag="Tracks" Content="Músicas" Style="{StaticResource Button.Chip}" />
+            <Button Click="OnPillClick" Tag="Playlists" Content="Playlists" Style="{StaticResource Button.Chip}" />
+            <Button Click="OnPillClick" Tag="Artists" Content="Artistas" Style="{StaticResource Button.Chip}" />
+            <Button Click="OnPillClick" Tag="Albums" Visibility="{x:Bind ViewModel.CanSearchAlbums}" Content="Álbuns" Style="{StaticResource Button.Chip}" />
+        </StackPanel>
+        <controls:StatePanel SignInCommand="{x:Bind ViewModel.SignInCommand}" RetryCommand="{x:Bind ViewModel.ReloadCommand}" Message="{x:Bind ViewModel.StateMessage, Mode=OneWay}" State="{x:Bind ViewModel.State, Mode=OneWay}" Grid.Row="2" />
+        <Grid Visibility="{x:Bind ViewModel.IsContent, Mode=OneWay}" Grid.Row="2">
+            <ScrollViewer Visibility="{x:Bind ViewModel.ShowAll, Mode=OneWay}" VerticalScrollBarVisibility="Hidden">
+                <StackPanel Spacing="28" Padding="0,8,0,16">
+                    <Grid ColumnSpacing="24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*" />
+                            <ColumnDefinition Width="7*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Spacing="10" Visibility="{x:Bind ViewModel.HasBest, Mode=OneWay}">
+                            <TextBlock Text="Melhor resultado" Style="{StaticResource Text.Heading}" />
+                            <Button Click="OnBestClick" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="20" CornerRadius="12" BorderThickness="0" Background="{StaticResource Brush.Surface}" AutomationProperties.Name="Abrir melhor resultado">
+                                <StackPanel Spacing="14">
+                                    <Border Height="200" CornerRadius="8" Background="{StaticResource Brush.SurfaceRaised}">
+                                        <Image Source="{x:Bind platform:UiHelpers.Image(ViewModel.Best.ArtworkUrl), Mode=OneWay}" Stretch="UniformToFill" />
+                                    </Border>
+                                    <TextBlock Text="{x:Bind ViewModel.Best.Title, Mode=OneWay}" FontSize="20" FontWeight="Bold" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" />
+                                    <Border HorizontalAlignment="Left" Background="{StaticResource Brush.Accent}" CornerRadius="20" Padding="22,10">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon Glyph="&#xE768;" FontSize="14" Foreground="{StaticResource Brush.AccentText}" />
+                                            <TextBlock Text="Abrir" FontWeight="SemiBold" Foreground="{StaticResource Brush.AccentText}" />
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="10" Visibility="{x:Bind ViewModel.HasTopTracks, Mode=OneWay}">
+                            <TextBlock Text="Músicas" Style="{StaticResource Text.Heading}" />
+                            <Border Background="{StaticResource Brush.Surface}" CornerRadius="12" Padding="8">
+                                <ItemsRepeater ItemsSource="{x:Bind ViewModel.TopTracks}">
+                                    <ItemsRepeater.Layout>
+                                        <StackLayout Spacing="2" />
+                                    </ItemsRepeater.Layout>
+                                    <ItemsRepeater.ItemTemplate>
+                                        <DataTemplate x:DataType="dt0:Track">
+                                            <Button Click="OnTopTrackClick" AutomationProperties.Name="{x:Bind Title}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Height="56" Padding="8,0" CornerRadius="8" BorderThickness="0" Background="Transparent">
+                                                <Grid ColumnSpacing="12">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="40" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Width="40" Height="40" CornerRadius="6" Background="{StaticResource Brush.SurfaceRaised}">
+                                                        <Image Source="{x:Bind platform:UiHelpers.Image(ArtworkUrl)}" Stretch="UniformToFill" />
+                                                    </Border>
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                        <TextBlock Text="{x:Bind Title}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Text="{x:Bind Artist}" Style="{StaticResource Text.Time}" TextTrimming="CharacterEllipsis" />
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="2" Text="{x:Bind platform:UiHelpers.Duration(Duration)}" Style="{StaticResource Text.Time}" VerticalAlignment="Center" />
+                                                </Grid>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsRepeater.ItemTemplate>
+                                </ItemsRepeater>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                    <StackPanel Spacing="10" Visibility="{x:Bind ViewModel.HasPlaylists, Mode=OneWay}">
+                        <TextBlock Text="Playlists" Style="{StaticResource Text.Heading}" />
+                        <ItemsRepeater ItemsSource="{x:Bind ViewModel.Playlists}">
+                            <ItemsRepeater.Layout>
+                                <UniformGridLayout MinItemWidth="190" MinColumnSpacing="16" MinRowSpacing="16" ItemsStretch="Fill" />
+                            </ItemsRepeater.Layout>
+                            <ItemsRepeater.ItemTemplate>
+                                <DataTemplate x:DataType="dt0:PlaylistSummary">
+                                    <Button Click="OnPlaylistCardClick" AutomationProperties.Name="{x:Bind Title}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="12" CornerRadius="12" BorderThickness="0" Background="{StaticResource Brush.Surface}">
+                                        <StackPanel Spacing="10">
+                                            <Border Height="166" CornerRadius="8" Background="{StaticResource Brush.SurfaceRaised}">
+                                                <Image Source="{x:Bind platform:UiHelpers.Image(ArtworkUrl)}" Stretch="UniformToFill" />
+                                            </Border>
+                                            <TextBlock Text="{x:Bind Title}" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsRepeater.ItemTemplate>
+                        </ItemsRepeater>
+                    </StackPanel>
+                    <StackPanel Spacing="10" Visibility="{x:Bind ViewModel.HasChannels, Mode=OneWay}">
+                        <TextBlock Text="Artistas" Style="{StaticResource Text.Heading}" />
+                        <ItemsRepeater ItemsSource="{x:Bind ViewModel.Channels}">
+                            <ItemsRepeater.Layout>
+                                <UniformGridLayout MinItemWidth="190" MinColumnSpacing="16" MinRowSpacing="16" ItemsStretch="Fill" />
+                            </ItemsRepeater.Layout>
+                            <ItemsRepeater.ItemTemplate>
+                                <DataTemplate x:DataType="dt0:ChannelSummary">
+                                    <Button Click="OnChannelCardClick" Padding="16" CornerRadius="12" BorderThickness="0" Background="{StaticResource Brush.Surface}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" AutomationProperties.Name="{x:Bind Title}">
+                                        <StackPanel Spacing="10">
+                                            <Border Width="112" Height="112" CornerRadius="56" Background="{StaticResource Brush.SurfaceRaised}" HorizontalAlignment="Center">
+                                                <Image Source="{x:Bind platform:UiHelpers.Image(ArtworkUrl)}" Stretch="UniformToFill" />
+                                            </Border>
+                                            <TextBlock Text="{x:Bind Title}" FontWeight="SemiBold" TextAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="ARTISTA" Style="{StaticResource Text.Label}" HorizontalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsRepeater.ItemTemplate>
+                        </ItemsRepeater>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+            <ListView ItemClick="OnTrackClick" Visibility="{x:Bind ViewModel.ShowTracks, Mode=OneWay}" ItemsSource="{x:Bind ViewModel.Tracks}" SelectionMode="None" IsItemClickEnabled="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="dt0:Track">
+                        <Grid ColumnSpacing="12" Height="56">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border Width="{StaticResource Size.Artwork.Row}" Height="{StaticResource Size.Artwork.Row}" CornerRadius="6" Background="{StaticResource Brush.SurfaceRaised}">
+                                <Image Source="{x:Bind platform:UiHelpers.Image(ArtworkUrl)}" Stretch="UniformToFill" />
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{x:Bind Title}" Style="{StaticResource Text.Body}" FontSize="13" FontWeight="SemiBold" />
+                                <TextBlock Text="{x:Bind Artist}" Style="{StaticResource Text.Time}" TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                            <TextBlock Text="{x:Bind platform:UiHelpers.Duration(Duration)}" Grid.Column="2" Style="{StaticResource Text.Time}" VerticalAlignment="Center" />
+                            <Button Click="OnEnqueueClick" Grid.Column="3" Style="{StaticResource Button.Icon}" ToolTipService.ToolTip="Adicionar à fila" AutomationProperties.Name="Adicionar à fila">
+                                <FontIcon Glyph="&#xE710;" FontSize="14" />
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <GridView ItemClick="OnPlaylistClick" Visibility="{x:Bind ViewModel.ShowPlaylists, Mode=OneWay}" ItemsSource="{x:Bind ViewModel.Playlists}" SelectionMode="None" IsItemClickEnabled="True">
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="dt0:PlaylistSummary">
+                        <StackPanel Width="{StaticResource Size.Artwork.Card}" Spacing="8" Margin="4">
+                            <Border Width="{StaticResource Size.Artwork.Card}" Height="{StaticResource Size.Artwork.Card}" CornerRadius="8" Background="{StaticResource Brush.SurfaceRaised}">
+                                <Image Source="{x:Bind platform:UiHelpers.Image(ArtworkUrl)}" Stretch="UniformToFill" />
+                            </Border>
+                            <TextBlock Text="{x:Bind Title}" Style="{StaticResource Text.Body}" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+            <GridView ItemClick="OnChannelClick" Visibility="{x:Bind ViewModel.ShowChannels, Mode=OneWay}" ItemsSource="{x:Bind ViewModel.Channels}" SelectionMode="None" IsItemClickEnabled="True">
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="dt0:ChannelSummary">
+                        <StackPanel Width="160" Spacing="8" Margin="4">
+                            <Border Width="120" Height="120" CornerRadius="60" Background="{StaticResource Brush.SurfaceRaised}" HorizontalAlignment="Center">
+                                <Image Source="{x:Bind platform:UiHelpers.Image(ArtworkUrl)}" Stretch="UniformToFill" />
+                            </Border>
+                            <TextBlock Text="{x:Bind Title}" Style="{StaticResource Text.Body}" FontWeight="SemiBold" TextAlignment="Center" />
+                        </StackPanel>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+        </Grid>
+    </Grid>
+</Page>
