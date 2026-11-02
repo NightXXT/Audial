@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -79,6 +80,11 @@ public partial class App : Application
 		(_window as MainWindow)?.ShowMiniPlayer();
 	}
 
+	public Task<string> CheckForUpdatesAsync()
+	{
+		return (_window as MainWindow)?.CheckForUpdatesAsync() ?? Task.FromResult("");
+	}
+
 	public void ShowMainWindow()
 	{
 		(_window as MainWindow)?.ActivateMainWindow();
@@ -130,6 +136,7 @@ public partial class App : Application
 		ServiceCollection services = new ServiceCollection();
 		services.AddSingleton(settingsStore);
 		services.AddSingleton(settings);
+		services.AddSingleton<UpdateService>();
 		((IServiceCollection)services).AddSingleton((IUiDispatcher)new DispatcherQueueDispatcher(DispatcherQueue.GetForCurrentThread()));
 		if (demo)
 		{

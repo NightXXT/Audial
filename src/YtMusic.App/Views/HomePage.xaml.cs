@@ -96,7 +96,7 @@ public sealed partial class HomePage : Page, IReloadablePage
 				}
 				return "Sugestões públicas do YouTube Music";
 			}
-			return "Exemplo visual do design enviado";
+			return "Demonstração com dados fictícios";
 		}
 	}
 

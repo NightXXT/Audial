@@ -65,6 +65,21 @@
                 </StackPanel>
             </Border>
             <Border Style="{StaticResource Card.Border}">
+                <Grid ColumnSpacing="14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Glyph="&#xE895;" FontSize="18" Foreground="{StaticResource Brush.Rose}" VerticalAlignment="Top" Margin="0,4,0,0" />
+                    <StackPanel Grid.Column="1" Spacing="2">
+                        <TextBlock Text="Atualizações" Style="{StaticResource Text.Heading}" />
+                        <TextBlock x:Name="VersionText" Style="{StaticResource Text.Secondary}" TextWrapping="Wrap" TextTrimming="None" />
+                    </StackPanel>
+                    <Button x:Name="UpdateButton" Grid.Column="2" Click="OnCheckUpdates" Content="Procurar agora" Style="{StaticResource Button.Glass}" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource Card.Border}">
                 <StackPanel Spacing="12">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <FontIcon Glyph="&#xE765;" FontSize="18" Foreground="{StaticResource Brush.Rose}" />

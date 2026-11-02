@@ -2,7 +2,7 @@
 ; .tools\innosetup\ISCC.exe installer\Audial.iss
 
 #define AppName "Audial"
-#define AppVersion "8.6"
+#define AppVersion "8.7.0"
 #define AppExe "YtMusicDesktop.exe"
 #define BuildDir "..\src\YtMusic.App\bin\x64\Release\net8.0-windows10.0.19041.0\win-x64"
 
@@ -41,3 +41,16 @@ Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; WorkingDir: "{app
 
 [Run]
 Filename: "{app}\{#AppExe}"; Description: "{cm:LaunchProgram,{#AppName}}"; WorkingDir: "{app}"; Flags: nowait postinstall skipifsilent
+; A atualização automática instala em silêncio e pede para abrir o app no final.
+Filename: "{app}\{#AppExe}"; WorkingDir: "{app}"; Flags: nowait; Check: ShouldRestartApp
+
+[Code]
+function ShouldRestartApp: Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+  for I := 1 to ParamCount do
+    if CompareText(ParamStr(I), '/RESTARTAPP') = 0 then
+      Result := True;
+end;

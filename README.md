@@ -20,6 +20,12 @@
 
 > As imagens usam o modo demonstração, com dados fictícios. O Audial é um projeto independente e não é afiliado ao YouTube ou ao Google.
 
+<p align="center">
+  <a href="https://github.com/NightXXT/Audial/releases/latest"><img src="https://img.shields.io/badge/Baixar%20para%20Windows-F43F5E?style=for-the-badge&amp;logoColor=white" alt="Baixar para Windows" /></a>
+</p>
+
+Baixe o `AudialSetup.exe` e instale uma vez. Depois disso, o próprio app baixa as novas versões publicadas aqui e se atualiza. Como o instalador não tem assinatura digital, o Windows pode mostrar um aviso do SmartScreen.
+
 ## Por que o Audial é diferente
 
 - **Nativo de verdade.** Interface em WinUI 3 com efeito Mica, integrada aos controles de mídia do Windows.
@@ -51,6 +57,7 @@
 - Reprodução por LibVLC, com busca na faixa e volume
 - Atalhos de teclado, como `Ctrl+K`, `Ctrl+Q` e `Ctrl+M`
 - Status no Discord, ícone na bandeja e controles de mídia do Windows
+- Atualização automática pelos Releases do GitHub, com verificação SHA-256
 - Tokens cifrados pelo Windows (DPAPI)
 
 ## Como é feito

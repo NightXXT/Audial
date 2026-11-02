@@ -248,6 +248,46 @@ public sealed partial class MainWindow : Window
 			await minimumDisplay;
 			await HideStartupLoadingAsync();
 		}
+		await CheckForUpdatesAsync();
+	}
+
+	public async Task<string> CheckForUpdatesAsync()
+	{
+		UpdateService updates = App.GetService<UpdateService>();
+		if (!updates.IsInstalled)
+		{
+			return "A atualização automática só funciona na versão instalada.";
+		}
+		try
+		{
+			AppUpdate update = await updates.CheckAsync(CancellationToken.None);
+			if ((object)update == null)
+			{
+				return "Você já está na versão mais recente.";
+			}
+			string path = await updates.DownloadAsync(update, CancellationToken.None);
+			if (await new ContentDialog
+			{
+				XamlRoot = Root.XamlRoot,
+				RequestedTheme = ElementTheme.Dark,
+				Title = "Atualização pronta",
+				Content = $"O Audial {update.Version} já foi baixado. O app fecha, atualiza e abre de novo sozinho.",
+				PrimaryButtonText = "Atualizar agora",
+				CloseButtonText = "Depois",
+				DefaultButton = ContentDialogButton.Primary
+			}.ShowAsync() != ContentDialogResult.Primary)
+			{
+				return $"O Audial {update.Version} será oferecido de novo na próxima abertura.";
+			}
+			updates.StartInstaller(path);
+			ExitApp();
+			return "";
+		}
+		catch (Exception ex) when (!(ex is OutOfMemoryException))
+		{
+			App.Diagnose("Update check failed: " + ex.GetType().Name);
+			return "Não foi possível procurar atualizações agora.";
+		}
 	}
 
 	private async Task HideStartupLoadingAsync()
