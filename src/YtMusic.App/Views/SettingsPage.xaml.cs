@@ -27,6 +27,11 @@ public sealed partial class SettingsPage : Page
 		Clipboard.SetContent(dataPackage);
 	}
 
+	private async void OnSwitchAccount(object sender, RoutedEventArgs e)
+	{
+		await ((App)Application.Current).SwitchAccountAsync();
+	}
+
 	private async void OnCheckUpdates(object sender, RoutedEventArgs e)
 	{
 		UpdateButton.IsEnabled = false;

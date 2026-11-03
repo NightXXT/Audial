@@ -375,38 +375,48 @@ public sealed partial class MainWindow : Window
 		}
 		else
 		{
-			if (await new ContentDialog
+			await SignInFromWelcomeAsync();
+		}
+	}
+
+	private async Task SignInFromWelcomeAsync()
+	{
+		Button loginButton = LoginButton;
+		bool isEnabled = (DemoButton.IsEnabled = false);
+		loginButton.IsEnabled = isEnabled;
+		LoginProgress.Visibility = Visibility.Visible;
+		try
+		{
+			await Shell.SignInCommand.ExecuteAsync(null);
+			if (Shell.IsSignedIn)
 			{
-				XamlRoot = Root.XamlRoot,
-				RequestedTheme = ElementTheme.Dark,
-				Title = "Conectar ao YouTube Music",
-				Content = "A busca pública do YouTube Music funciona sem login. A API interna do Music rejeita o OAuth de aplicativo desktop com HTTP 400, então esta conexão Google não libera sua biblioteca pessoal nem é usada para autenticar o áudio. A reprodução nativa continua experimental e não confirma benefícios Premium.",
-				PrimaryButtonText = "Continuar no navegador",
-				CloseButtonText = "Agora não"
-			}.ShowAsync() != ContentDialogResult.Primary)
-			{
-				return;
-			}
-			Button loginButton = LoginButton;
-			bool isEnabled = (DemoButton.IsEnabled = false);
-			loginButton.IsEnabled = isEnabled;
-			LoginProgress.Visibility = Visibility.Visible;
-			try
-			{
-				await Shell.SignInCommand.ExecuteAsync(null);
-				if (Shell.IsSignedIn)
-				{
-					EnterWorkspace();
-				}
-			}
-			finally
-			{
-				LoginProgress.Visibility = Visibility.Collapsed;
-				Button loginButton2 = LoginButton;
-				isEnabled = (DemoButton.IsEnabled = true);
-				loginButton2.IsEnabled = isEnabled;
+				EnterWorkspace();
 			}
 		}
+		finally
+		{
+			LoginProgress.Visibility = Visibility.Collapsed;
+			Button loginButton2 = LoginButton;
+			isEnabled = (DemoButton.IsEnabled = true);
+			loginButton2.IsEnabled = isEnabled;
+		}
+	}
+
+	/// <summary>
+	/// Revokes the current account and opens Google's account chooser right away.
+	/// </summary>
+	public async Task SwitchAccountAsync()
+	{
+		if (Shell.IsDemo || (object)GoogleOAuthOptions.Load() == null)
+		{
+			return;
+		}
+		await Shell.Player.Playback.Player.PauseAsync();
+		await Shell.SignOutCommand.ExecuteAsync(null);
+		await Shell.Player.Playback.ClearAsync();
+		Workspace.Visibility = Visibility.Collapsed;
+		Welcome.Visibility = Visibility.Visible;
+		await SignInFromWelcomeAsync();
 	}
 
 	private async void OnConfigureGoogle(object sender, RoutedEventArgs e)
@@ -421,9 +431,10 @@ public sealed partial class MainWindow : Window
 			Spacing = 14.0,
 			MaxWidth = 500.0
 		};
+		bool builtIn = (object)GoogleOAuthOptions.BuiltIn != null;
 		stackPanel.Children.Add(new TextBlock
 		{
-			Text = "Este protótipo precisa de um cliente OAuth próprio para iniciar o acesso. Ele identifica o aplicativo perante o Google; não é sua senha nem uma chave da assinatura Premium.",
+			Text = builtIn ? "Opção avançada. O Audial já entra com Google sem configurar nada; use isto só se quiser usar o cliente OAuth do seu próprio projeto do Google Cloud. Ele identifica o aplicativo perante o Google; não é sua senha nem uma chave da assinatura Premium." : "Este protótipo precisa de um cliente OAuth próprio para iniciar o acesso. Ele identifica o aplicativo perante o Google; não é sua senha nem uma chave da assinatura Premium.",
 			TextWrapping = TextWrapping.Wrap
 		});
 		stackPanel.Children.Add(new TextBlock
@@ -443,16 +454,31 @@ public sealed partial class MainWindow : Window
 			TextWrapping = TextWrapping.Wrap,
 			FontSize = 12.0
 		});
-		if (await new ContentDialog
+		ContentDialogResult choice = await new ContentDialog
 		{
 			XamlRoot = Root.XamlRoot,
 			RequestedTheme = ElementTheme.Dark,
 			Title = "Configurar acesso ao Google",
 			Content = stackPanel,
 			PrimaryButtonText = "Importar arquivo JSON",
+			SecondaryButtonText = (builtIn && GoogleOAuthOptions.HasImportedFile) ? "Voltar ao padrão do Audial" : "",
 			CloseButtonText = "Agora não",
 			DefaultButton = ContentDialogButton.Primary
-		}.ShowAsync() != ContentDialogResult.Primary)
+		}.ShowAsync();
+		if (choice == ContentDialogResult.Secondary)
+		{
+			try
+			{
+				GoogleOAuthOptions.RemoveImportedFile();
+				Shell.StatusMessage = "Arquivo importado removido. O Audial volta a usar o acesso padrão.";
+			}
+			catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+			{
+				Shell.StatusMessage = "Não foi possível remover o arquivo importado.";
+			}
+			return false;
+		}
+		if (choice != ContentDialogResult.Primary)
 		{
 			return false;
 		}

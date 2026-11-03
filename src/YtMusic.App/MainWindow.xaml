@@ -119,7 +119,7 @@ Mais espaço para descobrir, ouvir e se encontrar." Foreground="{StaticResource 
                                                                 </StackPanel>
                                                             </Button.Content>
                                                         </Button>
-                                                        <Button Click="OnConfigureGoogle" Content="Configurar acesso ao Google" Background="#00FFFFFF" BorderThickness="0" HorizontalAlignment="Center" FontSize="12" Padding="8,2" />
+                                                        <Button Click="OnConfigureGoogle" Content="Avançado: usar meu próprio cliente OAuth" Background="#00FFFFFF" BorderThickness="0" HorizontalAlignment="Center" FontSize="12" Padding="8,2" />
                                                         <Button Click="OnPublicMusic" Content="Explorar catálogo do Music" Style="{StaticResource Button.Glass}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
                                                         <Button Click="OnExploreDemo" x:Name="DemoButton" Content="Ver demonstração visual (sem áudio)" Style="{StaticResource Button.Glass}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
                                                         <StackPanel x:Name="LoginProgress" Orientation="Horizontal" Spacing="10" Visibility="Collapsed">

@@ -68,6 +68,9 @@ public sealed record GoogleOAuthOptions(string ClientId, string? ClientSecret)
 		File.Move(temporary, destination, overwrite: true);
 	}
 
+	/// <summary>
+	/// Order: environment variables, then a JSON the user imported, then the client built into Audial.
+	/// </summary>
 	public static GoogleOAuthOptions? Load()
 	{
 		string environmentVariable = Environment.GetEnvironmentVariable("YTMUSIC_GOOGLE_CLIENT_ID");
@@ -78,15 +81,47 @@ public sealed record GoogleOAuthOptions(string ClientId, string? ClientSecret)
 		}
 		try
 		{
-			if (!File.Exists(DefaultFilePath))
+			if (File.Exists(DefaultFilePath))
 			{
-				return null;
+				return Parse(File.ReadAllText(DefaultFilePath));
 			}
-			return Parse(File.ReadAllText(DefaultFilePath));
 		}
 		catch (Exception ex) when (((ex is IOException || ex is JsonException || ex is UnauthorizedAccessException || ex is FormatException) ? 1 : 0) != 0)
 		{
+		}
+		return BuiltIn;
+	}
+
+	public static bool HasImportedFile => File.Exists(DefaultFilePath);
+
+	/// <summary>
+	/// Desktop clients are public: Google documents their secret as not confidential, so it can ship with the app.
+	/// </summary>
+	public static GoogleOAuthOptions? BuiltIn { get; } = ReadBuiltIn();
+
+	private static GoogleOAuthOptions? ReadBuiltIn()
+	{
+		using Stream stream = typeof(GoogleOAuthOptions).Assembly.GetManifestResourceStream("Audial.oauth.json");
+		if (stream == null)
+		{
 			return null;
+		}
+		try
+		{
+			using StreamReader reader = new StreamReader(stream);
+			return Parse(reader.ReadToEnd());
+		}
+		catch (Exception ex) when (ex is JsonException || ex is FormatException)
+		{
+			return null;
+		}
+	}
+
+	public static void RemoveImportedFile()
+	{
+		if (File.Exists(DefaultFilePath))
+		{
+			File.Delete(DefaultFilePath);
 		}
 	}
 

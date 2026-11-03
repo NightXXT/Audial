@@ -90,7 +90,7 @@ dotnet build src\YtMusic.App\YtMusic.App.csproj -c Release -p:Platform=x64
 
 Para abrir sem conta, use `YtMusicDesktop.exe --demo`. Para gerar o instalador, use o [Inno Setup](https://jrsoftware.org/isinfo.php) com `installer\Audial.iss`.
 
-Para a biblioteca pessoal, você precisa criar o próprio cliente OAuth no Google Cloud. O app explica o passo a passo na tela de login.
+O instalador oficial já vem com o cliente OAuth do Audial: é só clicar em **Continuar com Google**. Para embutir um cliente no seu build, salve o JSON de um cliente OAuth do tipo **App para computador** como `oauth.local.json` na raiz do repositório (fica fora do git) ou passe `-p:AudialOAuthFile=caminho\do\arquivo.json`. Sem ele, o app continua aceitando importar o JSON pela opção avançada da tela de login.
 
 ## A história
 

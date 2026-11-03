@@ -121,7 +121,7 @@ public sealed class GoogleOAuthProvider : IAuthProvider
 				["code_challenge_method"] = "S256",
 				["state"] = state,
 				["access_type"] = "offline",
-				["prompt"] = "consent"
+				["prompt"] = "select_account consent"
 			});
 			using HttpListener listener = new HttpListener();
 			listener.Prefixes.Add(redirectUri);
@@ -165,9 +165,14 @@ public sealed class GoogleOAuthProvider : IAuthProvider
 			{
 				throw new ProviderException("O Google não devolveu um token de renovação. Tente entrar novamente.");
 			}
+			string replaced = _session?.RefreshToken;
 			_session = new StoredSession(tokenResponse.AccessToken, tokenResponse.RefreshToken, DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn));
 			await _store.SaveAsync(JsonSerializer.Serialize(_session), ct);
 			SetState(AuthState.SignedIn);
+			if (!string.IsNullOrEmpty(replaced) && replaced != tokenResponse.RefreshToken)
+			{
+				await RevokeAsync(replaced);
+			}
 		}
 		catch
 		{
@@ -182,14 +187,18 @@ public sealed class GoogleOAuthProvider : IAuthProvider
 		_session = null;
 		await _store.ClearAsync(ct);
 		SetState(AuthState.SignedOut);
-		if (string.IsNullOrEmpty(refresh))
+		if (!string.IsNullOrEmpty(refresh))
 		{
-			return;
+			await RevokeAsync(refresh);
 		}
+	}
+
+	private async Task RevokeAsync(string token)
+	{
 		try
 		{
-			using FormUrlEncodedContent content = new FormUrlEncodedContent(new Dictionary<string, string> { ["token"] = refresh });
-			using (await _http.PostAsync("https://oauth2.googleapis.com/revoke", content, ct))
+			using FormUrlEncodedContent content = new FormUrlEncodedContent(new Dictionary<string, string> { ["token"] = token });
+			using (await _http.PostAsync(RevokeEndpoint, content))
 			{
 			}
 		}

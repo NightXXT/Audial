@@ -86,6 +86,11 @@ public partial class App : Application
 		return (_window as MainWindow)?.CheckForUpdatesAsync() ?? Task.FromResult("");
 	}
 
+	public Task SwitchAccountAsync()
+	{
+		return (_window as MainWindow)?.SwitchAccountAsync() ?? Task.CompletedTask;
+	}
+
 	public void ShowMainWindow()
 	{
 		(_window as MainWindow)?.ActivateMainWindow();
@@ -159,7 +164,7 @@ public partial class App : Application
 			}
 			else
 			{
-				((IServiceCollection)services).AddSingleton((Func<IServiceProvider, IAuthProvider>)((IServiceProvider sp) => new GoogleOAuthProvider(sp.GetRequiredService<HttpClient>(), sp.GetRequiredService<ISecureTokenStore>(), sp.GetRequiredService<IBrowserLauncher>(), null, "https://www.googleapis.com/auth/youtube")));
+				((IServiceCollection)services).AddSingleton((Func<IServiceProvider, IAuthProvider>)((IServiceProvider sp) => new GoogleOAuthProvider(sp.GetRequiredService<HttpClient>(), sp.GetRequiredService<ISecureTokenStore>(), sp.GetRequiredService<IBrowserLauncher>(), null, GoogleOAuthProvider.ReadOnlyScope)));
 			}
 			((IServiceCollection)services).AddSingleton((Func<IServiceProvider, ILibraryProvider>)delegate(IServiceProvider sp)
 			{

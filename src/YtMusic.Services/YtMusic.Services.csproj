@@ -15,4 +15,11 @@
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
     <ProjectReference Include="..\YtMusic.Core\YtMusic.Core.csproj" />
   </ItemGroup>
+  <!-- Desktop OAuth client shipped with the app. The file stays out of git; builds without it fall back to importing a JSON. -->
+  <PropertyGroup>
+    <AudialOAuthFile Condition="'$(AudialOAuthFile)' == ''">$(MSBuildThisFileDirectory)..\..\oauth.local.json</AudialOAuthFile>
+  </PropertyGroup>
+  <ItemGroup Condition="Exists('$(AudialOAuthFile)')">
+    <EmbeddedResource Include="$(AudialOAuthFile)" LogicalName="Audial.oauth.json" Link="oauth.local.json" />
+  </ItemGroup>
 </Project>
