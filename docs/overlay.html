@@ -31,25 +31,40 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 </div>
 <script>
 const $ = id => document.getElementById(id);
+const id = location.hash.slice(1);
 let cover = null;
-async function refresh() {
-	try {
-		const now = await (await fetch("http://127.0.0.1:47823/now", { cache: "no-store" })).json();
-		$("card").classList.toggle("on", now.playing);
-		if (!now.playing) return;
+let now = null;
+function elapsed() {
+	return now.position + (Date.now() - now.sentAt) / 1000;
+}
+function tick() {
+	const ended = now && now.duration > 0 && elapsed() > now.duration + 5;
+	const on = !!now && now.playing && !ended;
+	$("card").classList.toggle("on", on);
+	if (on && now.duration > 0) $("fill").style.width = Math.min(100, elapsed() / now.duration * 100) + "%";
+}
+function show(next) {
+	now = next;
+	if (now.playing) {
 		$("title").textContent = now.title;
 		$("artist").textContent = now.artist;
 		if (now.artwork !== cover) {
 			cover = now.artwork;
 			if (cover) $("art").src = cover; else $("art").removeAttribute("src");
 		}
-		$("fill").style.width = (now.duration > 0 ? Math.min(100, now.position / now.duration * 100) : 0) + "%";
-	} catch {
-		$("card").classList.remove("on");
+		if (!(now.duration > 0)) $("fill").style.width = "0";
 	}
+	tick();
 }
-refresh();
-setInterval(refresh, 1000);
+if (/^[0-9a-f]{32}$/.test(id)) {
+	const relay = new EventSource("https://ntfy.sh/audial-live-" + id + "/sse?since=latest");
+	relay.onmessage = event => {
+		try {
+			show(JSON.parse(JSON.parse(event.data).message));
+		} catch {}
+	};
+	setInterval(tick, 1000);
+}
 </script>
 </body>
 </html>
