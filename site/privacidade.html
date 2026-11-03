@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de privacidade · Audial</title>
+<meta name="description" content="Como o Audial trata seus dados: o que acessa, onde guarda e com quem conversa.">
+<meta name="theme-color" content="#0D0E12">
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span></div>
+<header class="nav scrolled">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/"><img src="/img/logo.png" alt="" width="36" height="36"><span>Audial</span></a>
+    <a class="btn btn-ghost btn-sm" href="/">Voltar ao site</a>
+  </div>
+</header>
+
+<main class="doc">
+  <h1>Política de privacidade</h1>
+  <p class="updated">Atualizada em 3 de novembro de 2026</p>
+
+  <p>O Audial é um aplicativo gratuito para Windows, com código-fonte público no GitHub, que toca músicas do YouTube Music. Ele não tem servidores próprios, não exige conta no Audial e não exibe anúncios. Esta página explica o que o aplicativo acessa, onde guarda e com quais serviços ele conversa.</p>
+
+  <h2>Login com Google</h2>
+  <p>Se você escolher entrar com sua conta Google, o Audial pede somente a permissão <strong>youtube.readonly</strong>, que permite ler, sem alterar nada:</p>
+  <ul>
+    <li>suas playlists e os itens delas;</li>
+    <li>seus vídeos e músicas curtidos;</li>
+    <li>o identificador do seu canal, usado para achar a lista de curtidos;</li>
+    <li>detalhes públicos dos vídeos, como título e duração.</li>
+  </ul>
+  <p>Esses dados são usados apenas para mostrar sua biblioteca dentro do aplicativo. O Audial não cria, edita nem apaga nada na sua conta, não envia esses dados a terceiros e não os usa para publicidade.</p>
+  <p>Os tokens de acesso ficam <strong>somente no seu computador</strong>, na pasta <code>%LOCALAPPDATA%\YtMusicDesktop</code>, cifrados pelo próprio Windows (DPAPI), de modo que só a sua conta de usuário do Windows consegue lê-los.</p>
+  <p>Você pode sair a qualquer momento em Configurações. Ao apagar a sessão, o Audial revoga o acesso junto ao Google. Também é possível revogar em <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">myaccount.google.com/permissions</a>.</p>
+  <p>O uso de informações recebidas das APIs do Google segue a <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Política de Dados do Usuário dos Serviços de API do Google</a>, incluindo os requisitos de Uso Limitado.</p>
+
+  <h2>Dados guardados no seu computador</h2>
+  <ul>
+    <li>Preferências do aplicativo (volume, aparência, integrações ligadas).</li>
+    <li>Histórico recente do que você ouviu, usado na tela Início.</li>
+    <li>Os tokens de login, cifrados como descrito acima.</li>
+  </ul>
+  <p>Nada disso é enviado ao Audial. Desinstalar o aplicativo e apagar a pasta <code>%LOCALAPPDATA%\YtMusicDesktop</code> remove tudo.</p>
+
+  <h2>Serviços com que o aplicativo conversa</h2>
+  <ul>
+    <li><strong>YouTube e YouTube Music:</strong> busca, recomendações, capas e o próprio áudio vêm direto deles para o seu PC, sujeitos à <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">política de privacidade do Google</a>.</li>
+    <li><strong>Discord</strong> (opcional, desligável em Configurações): o aplicativo do Discord aberto no seu PC recebe a música, o artista e a capa que você está ouvindo, e o Discord mostra isso no seu perfil.</li>
+    <li><strong>Ouvir junto</strong> (só quando você cria ou entra numa sala): o convite e o início da conexão passam pelo <a href="https://ntfy.sh" target="_blank" rel="noopener">ntfy.sh</a>, criptografados. Servidores STUN da Cloudflare e do Google ajudam a descobrir o endereço para a conexão direta. Depois disso, os computadores conversam direto e trocam o nome escolhido, a música e a posição. As pessoas da sala podem ver o seu endereço IP.</li>
+    <li><strong>Overlay para lives</strong> (opcional, desligado por padrão): enquanto estiver ligado, a música atual (título, artista e capa) é publicada num canal aleatório do ntfy.sh, que qualquer pessoa com o link do overlay pode ver.</li>
+    <li><strong>Controle pelo celular</strong> (só quando você vincula): usa o serviço de pareamento por código de TV do YouTube.</li>
+    <li><strong>GitHub:</strong> o aplicativo consulta os Releases do GitHub para saber se há versão nova e baixa o instalador de lá.</li>
+  </ul>
+
+  <h2>Este site</h2>
+  <p>O site é hospedado pela Vercel, que registra dados técnicos de acesso como endereço IP e navegador. As fontes vêm do Google Fonts, e a versão mais recente é consultada na API do GitHub. O site não usa cookies de rastreamento nem ferramentas de análise.</p>
+
+  <h2>Crianças</h2>
+  <p>O Audial não é direcionado a crianças e não coleta dados de propósito de ninguém. O uso do YouTube segue os limites de idade do próprio YouTube.</p>
+
+  <h2>Mudanças e contato</h2>
+  <p>Se esta política mudar, a data no topo será atualizada e as mudanças ficam registradas no <a href="https://github.com/NightXXT/Audial" target="_blank" rel="noopener">repositório do projeto</a>. Dúvidas ou pedidos podem ser enviados abrindo uma <a href="https://github.com/NightXXT/Audial/issues" target="_blank" rel="noopener">issue no GitHub</a>.</p>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <a class="brand" href="/"><img src="/img/logo.png" alt="" width="28" height="28"><span>Audial</span></a>
+    <nav><a href="https://github.com/NightXXT/Audial" target="_blank" rel="noopener">GitHub</a><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a></nav>
+    <p>O Audial é um projeto independente e não é afiliado ao YouTube ou ao Google.</p>
+  </div>
+</footer>
+</body>
+</html>
