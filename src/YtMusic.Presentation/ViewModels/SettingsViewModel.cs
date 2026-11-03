@@ -86,6 +86,23 @@ public sealed class SettingsViewModel : ObservableObject
 		}
 	}
 
+	public bool LiveOverlayEnabled
+	{
+		get
+		{
+			return _settings.LiveOverlayEnabled;
+		}
+		set
+		{
+			if (_settings.LiveOverlayEnabled != value)
+			{
+				_settings.LiveOverlayEnabled = value;
+				Save();
+				OnPropertyChanged("LiveOverlayEnabled");
+			}
+		}
+	}
+
 	public string DiscordApplicationId
 	{
 		get

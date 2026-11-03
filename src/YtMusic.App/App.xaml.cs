@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CodeDom.Compiler;
 using System.Diagnostics;
 using System.IO;
@@ -176,6 +176,7 @@ public partial class App : Application
 		services.AddSingleton<GoogleMusicReceiver>();
 		services.AddSingleton<DiscordPresenceService>();
 		services.AddSingleton<ListenRoom>();
+		services.AddSingleton<LiveOverlayService>();
 		services.AddSingleton<PlayerViewModel>();
 		services.AddSingleton((IServiceProvider sp) => new ShellViewModel(sp.GetRequiredService<IAuthProvider>(), sp.GetRequiredService<PlayerViewModel>(), sp.GetRequiredService<IUiDispatcher>(), demo));
 		services.AddSingleton((IServiceProvider sp) => new SettingsViewModel(sp.GetRequiredService<AppSettings>(), sp.GetRequiredService<ISettingsStore>(), sp.GetRequiredService<IAuthProvider>(), sp.GetRequiredService<PlayerViewModel>(), demo));

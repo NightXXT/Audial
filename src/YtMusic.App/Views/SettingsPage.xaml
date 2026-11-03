@@ -61,6 +61,16 @@
                     </StackPanel>
                     <ToggleSwitch IsOn="{x:Bind ViewModel.DiscordPresenceEnabled, Mode=TwoWay}" Header="Mostrar no Discord o que estou ouvindo" />
                     <TextBlock Text="Mostra a música, o artista, a capa e o tempo enquanto toca, com botões para ouvir a faixa e baixar o Audial. O Discord para computador precisa estar aberto." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+                    <ToggleSwitch IsOn="{x:Bind ViewModel.LiveOverlayEnabled, Mode=TwoWay}" Header="Overlay do que estou ouvindo para lives" />
+                    <Grid ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="OverlayUrl" IsReadOnly="True" />
+                        <Button Grid.Column="1" Click="OnCopyOverlay" Content="Copiar link" Style="{StaticResource Button.Glass}" />
+                    </Grid>
+                    <TextBlock Text="Adicione esse link como fonte de navegador (Browser Source) no programa da live, com 440 de largura e 120 de altura. O fundo é transparente e o card some quando a música para." Style="{StaticResource Text.Secondary}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
                 </StackPanel>
             </Border>
             <Border Style="{StaticResource Card.Border}">

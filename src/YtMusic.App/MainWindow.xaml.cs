@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -123,6 +123,7 @@ public sealed partial class MainWindow : Window
 		ApplyAppearance();
 		_appearance.PropertyChanged += OnAppearanceChanged;
 		App.GetService<DiscordPresenceService>().ApplySettings();
+		App.GetService<LiveOverlayService>().ApplySettings();
 		Shell.PropertyChanged += OnShellChanged;
 		base.ExtendsContentIntoTitleBar = true;
 		SetTitleBar(TitleBar);
@@ -545,6 +546,10 @@ public sealed partial class MainWindow : Window
 		{
 			ApplyAppearance();
 		}
+		if (e.PropertyName == "LiveOverlayEnabled")
+		{
+			App.GetService<LiveOverlayService>().ApplySettings();
+		}
 		string propertyName = e.PropertyName;
 		if ((propertyName == "DiscordPresenceEnabled" || propertyName == "DiscordApplicationId") ? true : false)
 		{
@@ -843,6 +848,7 @@ public sealed partial class MainWindow : Window
 	private void PersistAndDispose()
 	{
 		App.GetService<ListenRoom>().Dispose();
+		App.GetService<LiveOverlayService>().Dispose();
 		App.GetService<DiscordPresenceService>().Dispose();
 		App.GetService<GoogleMusicReceiver>().Dispose();
 		(Shell.Player.Playback.Player as IDisposable)?.Dispose();

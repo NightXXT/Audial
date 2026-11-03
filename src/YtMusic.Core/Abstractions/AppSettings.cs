@@ -18,6 +18,8 @@ public sealed class AppSettings
 
 	public string DiscordApplicationId { get; set; } = "";
 
+	public bool LiveOverlayEnabled { get; set; }
+
 
 	public bool DemoMode { get; set; }
 }
