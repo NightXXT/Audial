@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Audial Overlay</title>
+<style>
+html, body { margin: 0; background: transparent; overflow: hidden; font-family: "Segoe UI", Arial, sans-serif; }
+#card { display: flex; align-items: center; gap: 14px; box-sizing: border-box; width: 420px; padding: 12px; margin: 8px;
+	border-radius: 16px; background: rgba(17, 19, 25, .86); border: 1px solid rgba(255, 255, 255, .1); color: #fff;
+	opacity: 0; transform: translateY(8px); transition: opacity .35s, transform .35s; }
+#card.on { opacity: 1; transform: none; }
+#art { flex: none; width: 72px; height: 72px; border-radius: 10px; object-fit: cover; background: linear-gradient(45deg, #F43F5E, #EC4899); }
+#info { flex: 1; min-width: 0; }
+#label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; color: #FB7185; }
+#title, #artist { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#title { font-size: 19px; font-weight: 600; margin-top: 2px; }
+#artist { font-size: 14px; color: #D4D4D8; }
+#bar { height: 4px; margin-top: 8px; border-radius: 2px; background: rgba(255, 255, 255, .16); overflow: hidden; }
+#fill { height: 100%; width: 0; border-radius: 2px; background: linear-gradient(90deg, #F43F5E, #EC4899); transition: width 1s linear; }
+</style>
+</head>
+<body>
+<div id="card">
+	<img id="art" alt="">
+	<div id="info">
+		<div id="label">OUVINDO NO AUDIAL</div>
+		<div id="title"></div>
+		<div id="artist"></div>
+		<div id="bar"><div id="fill"></div></div>
+	</div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+let cover = null;
+async function refresh() {
+	try {
+		const now = await (await fetch("http://127.0.0.1:47823/now", { cache: "no-store" })).json();
+		$("card").classList.toggle("on", now.playing);
+		if (!now.playing) return;
+		$("title").textContent = now.title;
+		$("artist").textContent = now.artist;
+		if (now.artwork !== cover) {
+			cover = now.artwork;
+			if (cover) $("art").src = cover; else $("art").removeAttribute("src");
+		}
+		$("fill").style.width = (now.duration > 0 ? Math.min(100, now.position / now.duration * 100) : 0) + "%";
+	} catch {
+		$("card").classList.remove("on");
+	}
+}
+refresh();
+setInterval(refresh, 1000);
+</script>
+</body>
+</html>
