@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.ApplicationModel.DataTransfer;
 using YtMusic.App.Platform;
@@ -17,13 +17,13 @@ public sealed partial class SettingsPage : Page
 		Shell = App.GetService<ShellViewModel>();
 		InitializeComponent();
 		VersionText.Text = $"Versão {App.GetService<UpdateService>().CurrentVersion}. O Audial procura novidades ao abrir.";
-		OverlayUrl.Text = LiveOverlayService.Url;
+		OverlayUrl.Text = App.GetService<LiveOverlayService>().Url;
 	}
 
 	private void OnCopyOverlay(object sender, RoutedEventArgs e)
 	{
 		DataPackage dataPackage = new DataPackage();
-		dataPackage.SetText(LiveOverlayService.Url);
+		dataPackage.SetText(OverlayUrl.Text);
 		Clipboard.SetContent(dataPackage);
 	}
 

@@ -1,4 +1,4 @@
-namespace YtMusic.Core.Abstractions;
+﻿namespace YtMusic.Core.Abstractions;
 
 public sealed class AppSettings
 {
@@ -19,6 +19,8 @@ public sealed class AppSettings
 	public string DiscordApplicationId { get; set; } = "";
 
 	public bool LiveOverlayEnabled { get; set; }
+
+	public string LiveOverlayId { get; set; } = "";
 
 
 	public bool DemoMode { get; set; }

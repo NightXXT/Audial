@@ -58,7 +58,7 @@ Baixe o `AudialSetup.exe` e instale uma vez. Depois disso, o próprio app baixa 
 - Atalhos de teclado, como `Ctrl+K`, `Ctrl+Q` e `Ctrl+M`
 - Status no Discord, ícone na bandeja e controles de mídia do Windows
 - Ouvir junto por P2P: cada pessoa toca o próprio áudio e a sala mantém todo mundo sincronizado
-- Overlay para lives com a música atual, pronto para usar como fonte de navegador
+- Overlay para lives com a música atual, por um link HTTPS que funciona no TikTok LIVE Studio e no OBS
 - Atualização automática pelos Releases do GitHub, com verificação SHA-256
 - Tokens cifrados pelo Windows (DPAPI)
 
