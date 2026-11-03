@@ -74,6 +74,8 @@ public sealed partial class ListenTogetherPage : Page
 		Stretch = Stretch.UniformToFill
 	};
 
+	private string? _artworkUrl;
+
 	private readonly TextBlock _title = ArtistPage.Label("Nada tocando", 23.0);
 
 	private readonly TextBlock _artist = ArtistPage.Label("Escolha uma música para começar", 13.0, "Brush.TextSecondary");
@@ -471,7 +473,12 @@ public sealed partial class ListenTogetherPage : Page
 	{
 		_title.Text = _player.Title;
 		_artist.Text = _player.Artist;
-		_artwork.Source = UiHelpers.Image(_player.ArtworkUrl);
+		// The player raises PropertyChanged on every position tick; reloading the image each time made it flicker.
+		if (_artwork.Source == null || _player.ArtworkUrl != _artworkUrl)
+		{
+			_artworkUrl = _player.ArtworkUrl;
+			_artwork.Source = UiHelpers.Image(_artworkUrl);
+		}
 	}
 
 	private void RefreshQueue()

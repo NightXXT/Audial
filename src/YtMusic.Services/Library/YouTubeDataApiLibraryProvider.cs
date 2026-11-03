@@ -320,7 +320,8 @@ public sealed class YouTubeDataApiLibraryProvider : ILibraryProvider
 		{
 			return null;
 		}
-		string[] array = new string[3] { "high", "medium", "default" };
+		// maxres and medium are 16:9 without black bars, so the square covers crop them cleanly.
+		string[] array = new string[5] { "maxres", "medium", "high", "standard", "default" };
 		foreach (string propertyName in array)
 		{
 			if (value.TryGetProperty(propertyName, out var value2))

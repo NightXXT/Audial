@@ -45,6 +45,15 @@ public sealed class PlaybackQueue
 		this.Changed?.Invoke(this, EventArgs.Empty);
 	}
 
+	public void Update(int index, Track track)
+	{
+		if (index >= 0 && index < _items.Count)
+		{
+			_items[index] = track;
+			this.Changed?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
 	public bool MoveTo(int index)
 	{
 		if (index < 0 || index >= _items.Count)

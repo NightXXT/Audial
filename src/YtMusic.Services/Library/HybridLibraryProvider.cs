@@ -29,9 +29,9 @@ public sealed class HybridLibraryProvider : IMusicLibraryProvider, ILibraryProvi
 		return _data.GetPlaylistsAsync(pageToken, ct);
 	}
 
-	public Task<Page<Track>> GetLikedTracksAsync(string? pageToken, CancellationToken ct)
+	public async Task<Page<Track>> GetLikedTracksAsync(string? pageToken, CancellationToken ct)
 	{
-		return _data.GetLikedTracksAsync(pageToken, ct);
+		return await WithSongArtworkAsync(await _data.GetLikedTracksAsync(pageToken, ct), ct);
 	}
 
 	public Task<Page<PlaylistSummary>> GetAlbumsAsync(string? pageToken, CancellationToken ct)
@@ -53,7 +53,7 @@ public sealed class HybridLibraryProvider : IMusicLibraryProvider, ILibraryProvi
 		}
 		try
 		{
-			return await _data.GetPlaylistTracksAsync(playlistId, pageToken, ct);
+			return await WithSongArtworkAsync(await _data.GetPlaylistTracksAsync(playlistId, pageToken, ct), ct);
 		}
 		catch (Exception ex) when (!(ex is OperationCanceledException))
 		{
@@ -66,6 +66,15 @@ public sealed class HybridLibraryProvider : IMusicLibraryProvider, ILibraryProvi
 				throw ex;
 			}
 		}
+	}
+
+	// The Data API only knows video thumbnails; the Music catalog has the album covers.
+	private async Task<Page<Track>> WithSongArtworkAsync(Page<Track> page, CancellationToken ct)
+	{
+		return page with
+		{
+			Items = await _music.WithSongArtworkAsync(page.Items, ct)
+		};
 	}
 
 	public Task<SearchResults> SearchAsync(string query, SearchKind kind, CancellationToken ct)

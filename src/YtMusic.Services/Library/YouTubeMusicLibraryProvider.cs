@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -23,6 +24,10 @@ public sealed class YouTubeMusicLibraryProvider : IMusicLibraryProvider, ILibrar
 	private readonly IAuthProvider _auth;
 
 	private readonly bool _authenticate;
+
+	private readonly ConcurrentDictionary<string, string?> _playerArtwork = new ConcurrentDictionary<string, string?>();
+
+	private readonly ConcurrentDictionary<string, string?> _songArtwork = new ConcurrentDictionary<string, string?>();
 
 	public LibraryCapabilities Capabilities => LibraryCapabilities.Playlists | LibraryCapabilities.LikedTracks | LibraryCapabilities.SearchTracks | LibraryCapabilities.SearchPlaylists | LibraryCapabilities.SearchArtists | LibraryCapabilities.SearchAlbums;
 
@@ -103,6 +108,127 @@ public sealed class YouTubeMusicLibraryProvider : IMusicLibraryProvider, ILibrar
 				Playlists = ParseCollections(jsonDocument.RootElement)
 			}, 
 		};
+	}
+
+	/// <summary>
+	/// Finds the square album cover YouTube Music shows for a track. Uses the public catalog, so it
+	/// costs no Data API quota. Returns null when there is nothing better than the current artwork.
+	/// </summary>
+	public async Task<string?> GetSongArtworkAsync(Track track, CancellationToken ct)
+	{
+		if (IsSquareArtwork(track.ArtworkUrl))
+		{
+			string large = LargeArtwork(track.ArtworkUrl!);
+			return (large == track.ArtworkUrl) ? null : large;
+		}
+		if (_songArtwork.TryGetValue(track.Id, out string? cached))
+		{
+			return cached;
+		}
+		string? artwork = await GetPlayerArtworkAsync(track.Id, ct);
+		if (artwork == null)
+		{
+			// Music videos only carry video frames, so look for the song version of the same title.
+			string title = CleanTitle(track.Title);
+			string channel = Regex.Replace(track.Artist, "(VEVO|Official)$", "", RegexOptions.IgnoreCase).Trim();
+			string artist = channel;
+			// Video titles usually read "Artist - Song".
+			int dash = title.IndexOf(" - ", StringComparison.Ordinal);
+			if (dash > 0)
+			{
+				artist = title.Substring(0, dash).Trim();
+				title = title.Substring(dash + 3).Trim();
+			}
+			SearchResults results = await SearchAsync(artist + " " + title, SearchKind.Tracks, ct);
+			// Both the title and the artist must match, so an ordinary video never borrows a stranger's cover.
+			string credits = Normalize(channel + " " + artist);
+			Track? song = results.Tracks.Take(5).FirstOrDefault((Track x) => IsSquareArtwork(x.ArtworkUrl) && Overlaps(Normalize(x.Title), Normalize(title)) && (Overlaps(Normalize(x.Artist), Normalize(artist)) || x.Artist.Split(',').Any((string name) => Normalize(name).Length >= 3 && credits.Contains(Normalize(name), StringComparison.Ordinal))));
+			artwork = (song == null) ? null : LargeArtwork(song.ArtworkUrl!);
+		}
+		_songArtwork[track.Id] = artwork;
+		return artwork;
+	}
+
+	/// <summary>Swaps video frames for album covers where the song has one; tracks that fail keep their artwork.</summary>
+	public async Task<IReadOnlyList<Track>> WithSongArtworkAsync(IReadOnlyList<Track> tracks, CancellationToken ct)
+	{
+		using CancellationTokenSource budget = CancellationTokenSource.CreateLinkedTokenSource(ct);
+		budget.CancelAfter(TimeSpan.FromSeconds(6.0));
+		using SemaphoreSlim gate = new SemaphoreSlim(8);
+		Task<Track>[] work = tracks.Select(async delegate(Track track)
+		{
+			if (IsSquareArtwork(track.ArtworkUrl))
+			{
+				return track;
+			}
+			try
+			{
+				await gate.WaitAsync(budget.Token);
+				try
+				{
+					string? artwork = await GetPlayerArtworkAsync(track.Id, budget.Token);
+					return (artwork == null) ? track : (track with { ArtworkUrl = artwork });
+				}
+				finally
+				{
+					gate.Release();
+				}
+			}
+			catch (Exception ex) when (!ct.IsCancellationRequested && !(ex is OutOfMemoryException))
+			{
+				return track;
+			}
+		}).ToArray();
+		return await Task.WhenAll(work);
+	}
+
+	private async Task<string?> GetPlayerArtworkAsync(string videoId, CancellationToken ct)
+	{
+		if (_playerArtwork.TryGetValue(videoId, out string? cached))
+		{
+			return cached;
+		}
+		using JsonDocument jsonDocument = await SendAsync("player", new Dictionary<string, object> { ["videoId"] = videoId }, null, ct, useGoogleAuthorization: false);
+		// Songs (ATV) carry the album cover here; music videos only have frames from i.ytimg.com.
+		string? artwork = (from x in Find(At(jsonDocument.RootElement, "videoDetails"), "thumbnails").SelectMany(Array)
+			select StringAt(x, "url")).LastOrDefault(IsSquareArtwork);
+		artwork = (artwork == null) ? null : LargeArtwork(artwork);
+		_playerArtwork[videoId] = artwork;
+		return artwork;
+	}
+
+	private static bool IsSquareArtwork(string? url)
+	{
+		if (url != null && url.StartsWith("https://", StringComparison.Ordinal))
+		{
+			return url.Contains(".googleusercontent.com/", StringComparison.Ordinal);
+		}
+		return false;
+	}
+
+	private static string LargeArtwork(string url)
+	{
+		return Regex.Replace(url, "=w\\d+-h\\d+", "=w544-h544");
+	}
+
+	private static string CleanTitle(string title)
+	{
+		string text = Regex.Replace(title, "[\\(\\[][^\\)\\]]*(official|oficial|video|vídeo|clipe|clip|lyric|letra|audio|áudio|visualizer|4k|hd|remaster)[^\\)\\]]*[\\)\\]]", "", RegexOptions.IgnoreCase);
+		return Regex.Replace(text, "\\s+", " ").Trim();
+	}
+
+	private static string Normalize(string text)
+	{
+		return new string(text.ToLowerInvariant().Where(char.IsLetterOrDigit).ToArray());
+	}
+
+	private static bool Overlaps(string a, string b)
+	{
+		if (a.Length >= 3 && b.Length >= 3)
+		{
+			return a.Contains(b, StringComparison.Ordinal) || b.Contains(a, StringComparison.Ordinal);
+		}
+		return false;
 	}
 
 	private void EnsurePersonalLibraryAvailable()

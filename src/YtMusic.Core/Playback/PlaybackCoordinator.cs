@@ -21,6 +21,9 @@ public sealed class PlaybackCoordinator
 
 	public Func<Task>? RemotePrevious { get; set; }
 
+	/// <summary>Finds a better cover for the track that just started, such as the album art instead of a video frame.</summary>
+	public Func<Track, CancellationToken, Task<string?>>? ArtworkResolver { get; set; }
+
 	public IPlayer Player => _player;
 
 	public PlaybackQueue Queue => _queue;
@@ -179,12 +182,34 @@ public sealed class PlaybackCoordinator
 		{
 			return;
 		}
+		_ = RefreshArtworkAsync(current, token);
 		try
 		{
 			await _player.LoadAndPlayAsync(current, token);
 			_consecutiveFailures = 0;
 		}
 		catch (OperationCanceledException)
+		{
+		}
+	}
+
+	private async Task RefreshArtworkAsync(Track track, CancellationToken ct)
+	{
+		if (ArtworkResolver == null || track.IsDemo)
+		{
+			return;
+		}
+		try
+		{
+			string? artwork = await ArtworkResolver(track, ct);
+			if (artwork == null || artwork == track.ArtworkUrl || ct.IsCancellationRequested || (object?)_queue.Current != track)
+			{
+				return;
+			}
+			_queue.Update(_queue.CurrentIndex, track with { ArtworkUrl = artwork });
+			this.CurrentTrackChanged?.Invoke(this, EventArgs.Empty);
+		}
+		catch (Exception ex) when (!(ex is OutOfMemoryException))
 		{
 		}
 	}

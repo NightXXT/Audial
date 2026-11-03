@@ -166,17 +166,19 @@ public partial class App : Application
 			{
 				((IServiceCollection)services).AddSingleton((Func<IServiceProvider, IAuthProvider>)((IServiceProvider sp) => new GoogleOAuthProvider(sp.GetRequiredService<HttpClient>(), sp.GetRequiredService<ISecureTokenStore>(), sp.GetRequiredService<IBrowserLauncher>(), null, GoogleOAuthProvider.ReadOnlyScope)));
 			}
+			services.AddSingleton((IServiceProvider sp) => new YouTubeMusicLibraryProvider(sp.GetRequiredService<HttpClient>(), sp.GetRequiredService<IAuthProvider>(), !publicMusic));
 			((IServiceCollection)services).AddSingleton((Func<IServiceProvider, ILibraryProvider>)delegate(IServiceProvider sp)
 			{
-				HttpClient http = sp.GetRequiredService<HttpClient>();
-				IAuthProvider auth = sp.GetRequiredService<IAuthProvider>();
-				YouTubeMusicLibraryProvider music = new YouTubeMusicLibraryProvider(http, auth, !publicMusic);
-				return publicMusic ? music : new HybridLibraryProvider(music, new YouTubeDataApiLibraryProvider(http, auth));
+				YouTubeMusicLibraryProvider music = sp.GetRequiredService<YouTubeMusicLibraryProvider>();
+				return publicMusic ? music : new HybridLibraryProvider(music, new YouTubeDataApiLibraryProvider(sp.GetRequiredService<HttpClient>(), sp.GetRequiredService<IAuthProvider>()));
 			});
 			services.AddSingleton<IPlayer, NativeAudioPlayer>();
 		}
 		services.AddSingleton<PlaybackQueue>();
-		services.AddSingleton<PlaybackCoordinator>();
+		services.AddSingleton((IServiceProvider sp) => new PlaybackCoordinator(sp.GetRequiredService<IPlayer>(), sp.GetRequiredService<PlaybackQueue>())
+		{
+			ArtworkResolver = demo ? null : sp.GetRequiredService<YouTubeMusicLibraryProvider>().GetSongArtworkAsync
+		});
 		services.AddSingleton<ListeningHistory>();
 		services.AddSingleton<GoogleMusicReceiver>();
 		services.AddSingleton<DiscordPresenceService>();
