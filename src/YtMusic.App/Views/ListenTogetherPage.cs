@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
@@ -12,6 +12,7 @@ using YtMusic.Core.Abstractions;
 using YtMusic.Core.Models;
 using YtMusic.Core.Playback;
 using YtMusic.Presentation.ViewModels;
+using YtMusic.Services.Together;
 
 namespace YtMusic.App.Views;
 
@@ -19,7 +20,7 @@ public sealed partial class ListenTogetherPage : Page
 {
 	private readonly PlayerViewModel _player = App.GetService<PlayerViewModel>();
 
-	private string? _code;
+	private readonly ListenRoom _room = App.GetService<ListenRoom>();
 
 	private readonly PlaybackCoordinator _playback = App.GetService<PlaybackCoordinator>();
 
@@ -29,9 +30,37 @@ public sealed partial class ListenTogetherPage : Page
 
 	private readonly TextBlock _codeText = ArtistPage.Label("Sem convite ativo", 13.0, "Brush.TextSecondary");
 
-	private readonly TextBlock _status = ArtistPage.Label("Crie uma sala para iniciar uma sessão local.", 13.0, "Brush.TextSecondary");
+	private readonly TextBlock _status = ArtistPage.Label("Crie uma sala ou entre com um código.", 13.0, "Brush.TextSecondary");
 
-	private readonly TextBlock _people = ArtistPage.Label("Você • host local", 13.0, "Brush.TextSecondary");
+	private readonly TextBlock _people = ArtistPage.Label("Ninguém conectado", 13.0, "Brush.TextSecondary");
+
+	private readonly StackPanel _members = new StackPanel
+	{
+		Orientation = Orientation.Horizontal,
+		Spacing = 10.0
+	};
+
+	private readonly TextBlock _flowState = ArtistPage.Label("Estado: sem sala", 12.0, "Brush.TextSecondary");
+
+	private readonly TextBox _name = new TextBox
+	{
+		Width = 170.0,
+		PlaceholderText = "Seu nome",
+		MaxLength = 24,
+		Text = Environment.UserName
+	};
+
+	private readonly TextBox _inviteCode = new TextBox
+	{
+		Width = 220.0,
+		PlaceholderText = "AUD-XXXXX-XXXXX"
+	};
+
+	private readonly StackPanel _joinRow = new StackPanel
+	{
+		Orientation = Orientation.Horizontal,
+		Spacing = 8.0
+	};
 
 	private readonly StackPanel _queueRows = new StackPanel
 	{
@@ -49,7 +78,7 @@ public sealed partial class ListenTogetherPage : Page
 
 	private readonly TextBlock _artist = ArtistPage.Label("Escolha uma música para começar", 13.0, "Brush.TextSecondary");
 
-	private readonly TextBlock _reactionStatus = ArtistPage.Label("Reações rápidas ficam nesta sessão local.", 12.0, "Brush.TextSecondary");
+	private readonly TextBlock _reactionStatus = ArtistPage.Label("Nenhuma reação ainda.", 12.0, "Brush.TextSecondary");
 
 	private readonly Button _create;
 
@@ -57,13 +86,20 @@ public sealed partial class ListenTogetherPage : Page
 
 	private readonly Button _leave;
 
+	private readonly Button _join;
+
+	private readonly List<Button> _hostOnly = new List<Button>();
+
+	private readonly List<Button> _reactions = new List<Button>();
+
 	public ListenTogetherPage()
 	{
 		InitializeComponent();
 		_create =ArtistPage.Button("Criar sala", "Button.Accent");
 		_copy = ArtistPage.Button("Copiar convite", "Button.Glass");
 		_leave = ArtistPage.Button("Sair da sala", "Button.Glass");
-		_copy.IsEnabled = (_leave.IsEnabled = false);
+		_join = ArtistPage.Button("Entrar na sala", "Button.Glass");
+		_join.Click += OnJoin;
 		_create.Click += OnCreate;
 		_copy.Click += OnCopy;
 		_leave.Click += OnLeave;
@@ -108,6 +144,10 @@ public sealed partial class ListenTogetherPage : Page
 		stackPanel3.Children.Add(_status);
 		stackPanel2.Children.Add(stackPanel3);
 		stackPanel2.Children.Add(_codeText);
+		_joinRow.Children.Add(_name);
+		_joinRow.Children.Add(_inviteCode);
+		_joinRow.Children.Add(_join);
+		stackPanel2.Children.Add(_joinRow);
 		grid.Children.Add(stackPanel2);
 		grid.Children.Add(_create);
 		Grid.SetColumn(_create, 1);
@@ -139,46 +179,13 @@ public sealed partial class ListenTogetherPage : Page
 			Spacing = 14.0
 		};
 		Border border2 = Card();
-		Grid grid3 = new Grid
-		{
-			ColumnSpacing = 10.0
-		};
-		grid3.ColumnDefinitions.Add(new ColumnDefinition
-		{
-			Width = new GridLength(1.0, GridUnitType.Star)
-		});
-		grid3.ColumnDefinitions.Add(new ColumnDefinition
-		{
-			Width = GridLength.Auto
-		});
-		grid3.ColumnDefinitions.Add(new ColumnDefinition
-		{
-			Width = new GridLength(1.0, GridUnitType.Star)
-		});
-		grid3.ColumnDefinitions.Add(new ColumnDefinition
-		{
-			Width = new GridLength(1.0, GridUnitType.Star)
-		});
-		Border item = Participant("Você", "Host local", active: true);
-		grid3.Children.Add(item);
-		TextBlock textBlock = ArtistPage.Label("↔\nLocal", 12.0, "Brush.Rose");
-		textBlock.TextAlignment = TextAlignment.Center;
-		textBlock.VerticalAlignment = VerticalAlignment.Center;
-		Grid.SetColumn(textBlock, 1);
-		grid3.Children.Add(textBlock);
-		Border border3 = Participant("Amigo", "Aguardando convite", active: false);
-		Grid.SetColumn(border3, 2);
-		grid3.Children.Add(border3);
-		Border border4 = Participant("Sincronização", "Disponível quando houver serviço online", active: false);
-		Grid.SetColumn(border4, 3);
-		grid3.Children.Add(border4);
 		border2.Child = new StackPanel
 		{
 			Spacing = 12.0,
 			Children = 
 			{
 				(UIElement)ArtistPage.Label("Pessoas na sala", 17.0),
-				(UIElement)grid3,
+				(UIElement)_members,
 				(UIElement)_people
 			}
 		};
@@ -230,7 +237,7 @@ public sealed partial class ListenTogetherPage : Page
 		stackPanel6.Children.Add(ArtistPage.Label("●  OUVINDO NESTE COMPUTADOR", 11.0, "Brush.Rose"));
 		stackPanel6.Children.Add(_title);
 		stackPanel6.Children.Add(_artist);
-		stackPanel6.Children.Add(ArtistPage.Label("O transporte controla a reprodução local.", 12.0, "Brush.TextSecondary"));
+		stackPanel6.Children.Add(ArtistPage.Label("Na sala, só quem criou controla a música.", 12.0, "Brush.TextSecondary"));
 		StackPanel stackPanel7 = new StackPanel
 		{
 			Orientation = Orientation.Horizontal,
@@ -242,18 +249,21 @@ public sealed partial class ListenTogetherPage : Page
 			await _player.PreviousCommand.ExecuteAsync(null);
 		};
 		stackPanel7.Children.Add(button);
+		_hostOnly.Add(button);
 		Button button2 = ArtistPage.Button("Reproduzir / pausar", "Button.Accent");
 		button2.Click += async delegate
 		{
 			await _player.PlayPauseCommand.ExecuteAsync(null);
 		};
 		stackPanel7.Children.Add(button2);
+		_hostOnly.Add(button2);
 		Button button3 = ArtistPage.Button("Próxima", "Button.Glass");
 		button3.Click += async delegate
 		{
 			await _player.NextCommand.ExecuteAsync(null);
 		};
 		stackPanel7.Children.Add(button3);
+		_hostOnly.Add(button3);
 		stackPanel6.Children.Add(stackPanel7);
 		Grid.SetColumn(stackPanel6, 1);
 		grid4.Children.Add(stackPanel6);
@@ -265,15 +275,15 @@ public sealed partial class ListenTogetherPage : Page
 			Orientation = Orientation.Horizontal,
 			Spacing = 8.0
 		};
-		string[] array = new string[4] { "\ud83d\udd25", "\ud83d\udc96", "\ud83c\udfa7", "⚡" };
-		foreach (string emoji in array)
+		foreach (string emoji in ListenRoom.Reactions)
 		{
 			Button button4 = ArtistPage.Button(emoji, "Button.Glass");
 			button4.Click += delegate
 			{
-				_reactionStatus.Text = "Você reagiu com " + emoji + ". Reações ainda não são transmitidas a outros participantes.";
+				_room.React(emoji);
 			};
 			stackPanel8.Children.Add(button4);
+			_reactions.Add(button4);
 		}
 		border6.Child = new StackPanel
 		{
@@ -281,7 +291,7 @@ public sealed partial class ListenTogetherPage : Page
 			Children = 
 			{
 				(UIElement)ArtistPage.Label("Reações rápidas na sala", 17.0),
-				(UIElement)ArtistPage.Label("Envie uma reação local", 12.0, "Brush.TextSecondary"),
+				(UIElement)ArtistPage.Label("Todo mundo na sala vê", 12.0, "Brush.TextSecondary"),
 				(UIElement)stackPanel8,
 				(UIElement)_reactionStatus
 			}
@@ -300,8 +310,8 @@ public sealed partial class ListenTogetherPage : Page
 			{
 				(UIElement)ArtistPage.Label("FLUXO DE ÁUDIO", 12.0, "Brush.Rose"),
 				(UIElement)ArtistPage.Label(_player.PlayerName, 18.0),
-				(UIElement)ArtistPage.Label("A reprodução acontece apenas neste computador. O Audial não transmite o áudio para terceiros.", 13.0, "Brush.TextSecondary"),
-				(UIElement)ArtistPage.Label("Estado: local", 12.0, "Brush.TextSecondary")
+				(UIElement)ArtistPage.Label("Cada pessoa toca o áudio no próprio computador. A sala só troca comandos de sincronia, nunca o áudio.", 13.0, "Brush.TextSecondary"),
+				(UIElement)_flowState
 			}
 		};
 		stackPanel9.Children.Add(border7);
@@ -317,6 +327,7 @@ public sealed partial class ListenTogetherPage : Page
 			((App)Application.Current).OpenSearch("");
 		};
 		grid5.Children.Add(button5);
+		_hostOnly.Add(button5);
 		_queueRows.Children.Clear();
 		StackPanel child = new StackPanel
 		{
@@ -324,7 +335,7 @@ public sealed partial class ListenTogetherPage : Page
 			Children = 
 			{
 				(UIElement)grid5,
-				(UIElement)ArtistPage.Label("Fila local do player; os demais participantes ainda não podem alterá-la.", 12.0, "Brush.TextSecondary"),
+				(UIElement)ArtistPage.Label("Só quem criou a sala escolhe as músicas.", 12.0, "Brush.TextSecondary"),
 				(UIElement)_queueRows
 			}
 		};
@@ -336,8 +347,8 @@ public sealed partial class ListenTogetherPage : Page
 			Spacing = 8.0,
 			Children = 
 			{
-				(UIElement)ArtistPage.Label("Sessão em desenvolvimento", 16.0),
-				(UIElement)ArtistPage.Label("A tela mantém o visual do conceito Stitch. Para convidar alguém e sincronizar músicas pela internet, falta integrar um serviço de salas online.", 12.0, "Brush.TextSecondary")
+				(UIElement)ArtistPage.Label("Como funciona", 16.0),
+				(UIElement)ArtistPage.Label("Os computadores se conectam direto (P2P). O convite é criptografado e passa pelo ntfy.sh só para abrir a conexão. Quem está na sala pode ver seu IP, então chame só quem você confia. Algumas redes bloqueiam a conexão direta.", 12.0, "Brush.TextSecondary")
 			}
 		};
 		stackPanel9.Children.Add(border9);
@@ -357,52 +368,103 @@ public sealed partial class ListenTogetherPage : Page
 		{
 			_ui.Post(RefreshQueue);
 		};
+		base.Loaded += delegate
+		{
+			_room.Changed += OnRoomChanged;
+			_room.ReactionReceived += OnReaction;
+			RefreshRoom();
+		};
+		base.Unloaded += delegate
+		{
+			_room.Changed -= OnRoomChanged;
+			_room.ReactionReceived -= OnReaction;
+		};
 		RefreshNowPlaying();
 		RefreshQueue();
+		RefreshRoom();
 	}
 
 	private void OnCreate(object? sender, RoutedEventArgs e)
 	{
-		_code = $"AUD-{Random.Shared.Next(1000, 9999)}";
-		_roomName.Text = "Sala de Escuta: sessão local";
-		_codeText.Text = "#" + _code + "  •  convite demonstrativo";
-		_status.Text = "Sessão aberta neste computador";
-		_people.Text = "Você é o host. Nenhum outro participante está conectado.";
-		_create.IsEnabled = false;
-		Button copy = _copy;
-		bool isEnabled = (_leave.IsEnabled = true);
-		copy.IsEnabled = isEnabled;
+		_room.Create(_name.Text);
 	}
 
-	private async void OnCopy(object? sender, RoutedEventArgs e)
+	private async void OnJoin(object? sender, RoutedEventArgs e)
 	{
-		if (_code != null)
+		string? code = RoomSignal.ParseCode(_inviteCode.Text);
+		if (code == null)
+		{
+			_status.Text = "Código inválido. Ele tem o formato AUD-XXXXX-XXXXX.";
+			return;
+		}
+		_join.IsEnabled = (_create.IsEnabled = false);
+		_status.Text = "Conectando à sala…";
+		await _room.JoinAsync(code, _name.Text);
+		_inviteCode.Text = "";
+		RefreshRoom();
+	}
+
+	private void OnCopy(object? sender, RoutedEventArgs e)
+	{
+		if (_room.Code != null)
 		{
 			DataPackage dataPackage = new DataPackage();
-			dataPackage.SetText("Audial · sessão local de demonstração: " + _code);
+			dataPackage.SetText("Entra na minha sala do Audial: " + _room.Code);
 			Clipboard.SetContent(dataPackage);
-			await new ContentDialog
-			{
-				XamlRoot = base.XamlRoot,
-				Title = "Convite copiado",
-				Content = "Este código representa uma sala local de demonstração. Ainda não permite conectar outro computador ou celular.",
-				CloseButtonText = "OK",
-				RequestedTheme = ElementTheme.Dark
-			}.ShowAsync();
+			_status.Text = "Convite copiado. Mande só para quem você confia.";
 		}
 	}
 
 	private void OnLeave(object? sender, RoutedEventArgs e)
 	{
-		_code = null;
-		_roomName.Text = "Sala de Escuta: ainda não iniciada";
-		_codeText.Text = "Sem convite ativo";
-		_status.Text = "Crie uma sala para iniciar uma sessão local.";
-		_people.Text = "Você • host local";
-		_create.IsEnabled = true;
-		Button copy = _copy;
-		bool isEnabled = (_leave.IsEnabled = false);
-		copy.IsEnabled = isEnabled;
+		_room.Leave();
+	}
+
+	private void OnRoomChanged(object? sender, EventArgs e)
+	{
+		RefreshRoom();
+	}
+
+	private void OnReaction(string name, string emoji)
+	{
+		_reactionStatus.Text = name + " reagiu com " + emoji;
+	}
+
+	private void RefreshRoom()
+	{
+		RoomRole role = _room.Role;
+		bool inRoom = role != RoomRole.None;
+		bool guest = role == RoomRole.Guest;
+		bool waiting = guest && _room.Members.Count < 2;
+		_roomName.Text = (role == RoomRole.Host) ? "Sala de Escuta: você é o host" : (guest ? "Sala de Escuta: você entrou" : "Sala de Escuta: ainda não iniciada");
+		_codeText.Text = inRoom ? ("#" + _room.Code) : "Sem convite ativo";
+		_status.Text = _room.Notice ?? (waiting ? "Conectando à sala…" : ((_room.Members.Count > 1) ? "Sincronizado com a sala" : ((role == RoomRole.Host) ? "Aguardando pessoas. Copie o convite e mande." : "Crie uma sala ou entre com um código.")));
+		_flowState.Text = inRoom ? "Estado: sincronizado por P2P" : "Estado: sem sala";
+		_people.Text = (_room.Members.Count > 1) ? $"{_room.Members.Count} pessoas ouvindo juntas" : "Ninguém conectado";
+		_joinRow.Visibility = inRoom ? Visibility.Collapsed : Visibility.Visible;
+		_create.Visibility = inRoom ? Visibility.Collapsed : Visibility.Visible;
+		_create.IsEnabled = !inRoom;
+		_join.IsEnabled = !inRoom;
+		_copy.IsEnabled = inRoom;
+		_leave.IsEnabled = inRoom;
+		foreach (Button item in _hostOnly)
+		{
+			item.IsEnabled = !guest;
+		}
+		foreach (Button reaction in _reactions)
+		{
+			reaction.IsEnabled = inRoom && !waiting;
+		}
+		_members.Children.Clear();
+		if (!inRoom)
+		{
+			_members.Children.Add(Participant("Você", "Sem sala", active: false));
+			return;
+		}
+		for (int i = 0; i < _room.Members.Count; i++)
+		{
+			_members.Children.Add(Participant(_room.Members[i], (i == 0) ? "Host" : "Ouvindo", i == 0));
+		}
 	}
 
 	private void RefreshNowPlaying()

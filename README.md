@@ -57,6 +57,7 @@ Baixe o `AudialSetup.exe` e instale uma vez. Depois disso, o próprio app baixa 
 - Reprodução por LibVLC, com busca na faixa e volume
 - Atalhos de teclado, como `Ctrl+K`, `Ctrl+Q` e `Ctrl+M`
 - Status no Discord, ícone na bandeja e controles de mídia do Windows
+- Ouvir junto por P2P: cada pessoa toca o próprio áudio e a sala mantém todo mundo sincronizado
 - Atualização automática pelos Releases do GitHub, com verificação SHA-256
 - Tokens cifrados pelo Windows (DPAPI)
 

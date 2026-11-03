@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,6 +36,7 @@ using YtMusic.App.Views;
 using YtMusic.Core.Abstractions;
 using YtMusic.Core.Models;
 using YtMusic.Core.Playback;
+using YtMusic.Services.Together;
 using YtMusic.Presentation.ViewModels;
 using YtMusic.Services.Auth;
 using YtMusic.Services.Library;
@@ -841,6 +842,7 @@ public sealed partial class MainWindow : Window
 
 	private void PersistAndDispose()
 	{
+		App.GetService<ListenRoom>().Dispose();
 		App.GetService<DiscordPresenceService>().Dispose();
 		App.GetService<GoogleMusicReceiver>().Dispose();
 		(Shell.Player.Playback.Player as IDisposable)?.Dispose();
