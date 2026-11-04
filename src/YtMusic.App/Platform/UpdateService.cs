@@ -49,6 +49,10 @@ public sealed class UpdateService
 	public async Task<AppUpdate?> CheckAsync(CancellationToken ct)
 	{
 		using HttpResponseMessage response = await Http.GetAsync(LatestRelease, ct);
+		if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+		{
+			return null; // no published release (closed beta): nothing to update to
+		}
 		response.EnsureSuccessStatusCode();
 		using JsonDocument document = JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
 		JsonElement root = document.RootElement;

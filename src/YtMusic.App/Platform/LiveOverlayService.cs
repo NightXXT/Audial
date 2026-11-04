@@ -18,7 +18,8 @@ namespace YtMusic.App.Platform;
 /// </summary>
 public sealed class LiveOverlayService : IDisposable
 {
-	private const string PageUrl = "https://nightxxt.github.io/Audial/overlay.html";
+	// served by the site (Vercel), so the overlay keeps working even when the repository has no releases
+	private const string PageUrl = "https://audial-site-nine.vercel.app/overlay";
 
 	private const string RelayUrl = "https://ntfy.sh/audial-live-";
 

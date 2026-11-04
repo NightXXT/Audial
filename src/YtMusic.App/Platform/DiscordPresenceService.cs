@@ -14,7 +14,7 @@ public sealed class DiscordPresenceService : IDisposable
 
 	private const string LogoUrl = "https://raw.githubusercontent.com/NightXXT/Audial/main/docs/logo.png";
 
-	private const string DownloadUrl = "https://github.com/NightXXT/Audial/releases/latest";
+	private const string SiteUrl = "https://audial-site-nine.vercel.app/";
 
 	private const int ImageKeyLimit = 256;
 
@@ -181,8 +181,8 @@ public sealed class DiscordPresenceService : IDisposable
 	{
 		DiscordRPC.Button download = new DiscordRPC.Button
 		{
-			Label = "Baixar o Audial",
-			Url = DownloadUrl
+			Label = "Conhecer o Audial",
+			Url = SiteUrl
 		};
 		string listen = "https://music.youtube.com/watch?v=" + Uri.EscapeDataString(track.Id);
 		if (listen.Length > ButtonUrlLimit)

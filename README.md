@@ -21,10 +21,10 @@
 > As imagens usam o modo demonstração, com dados fictícios. O Audial é um projeto independente e não é afiliado ao YouTube ou ao Google.
 
 <p align="center">
-  <a href="https://github.com/NightXXT/Audial/releases/latest"><img src="https://img.shields.io/badge/Baixar%20para%20Windows-F43F5E?style=for-the-badge&amp;logoColor=white" alt="Baixar para Windows" /></a>
+  <a href="https://audial-site-nine.vercel.app/"><img src="https://img.shields.io/badge/Beta%20fechado-chega%20em%202027-F43F5E?style=for-the-badge" alt="Beta fechado, chega em 2027" /></a>
 </p>
 
-Baixe o `AudialSetup.exe` e instale uma vez. Depois disso, o próprio app baixa as novas versões publicadas aqui e se atualiza. Como o instalador não tem assinatura digital, o Windows pode mostrar um aviso do SmartScreen.
+O Audial está em beta fechado e abre para todo mundo em 2027. Até lá, ele é testado por um grupo pequeno de pessoas. Acompanhe pelo [site](https://audial-site-nine.vercel.app/).
 
 ## Por que o Audial é diferente
 
@@ -73,24 +73,6 @@ flowchart LR
     App --> VLC["LibVLC<br/>áudio"]
     App --> Receiver["Receptor Node<br/>controle pelo celular"]
 ```
-
-## Compilar
-
-Você precisa do SDK do .NET 8 e do Windows 10 ou 11 em x64.
-
-Estes itens não ficam no repositório por causa do tamanho e precisam existir antes de compilar:
-
-- `src/YtMusic.App/libvlc/`: plugins nativos do VLC
-- `src/YtMusic.App/receiver/node.exe`: runtime do Node para o receptor
-- `src/YtMusic.App/receiver/node_modules/`: rode `npm ci` em `src/YtMusic.App/receiver`
-
-```powershell
-dotnet build src\YtMusic.App\YtMusic.App.csproj -c Release -p:Platform=x64
-```
-
-Para abrir sem conta, use `YtMusicDesktop.exe --demo`. Para gerar o instalador, use o [Inno Setup](https://jrsoftware.org/isinfo.php) com `installer\Audial.iss`.
-
-O instalador oficial já vem com o cliente OAuth do Audial: é só clicar em **Continuar com Google**. Para embutir um cliente no seu build, salve o JSON de um cliente OAuth do tipo **App para computador** como `oauth.local.json` na raiz do repositório (fica fora do git) ou passe `-p:AudialOAuthFile=caminho\do\arquivo.json`. Sem ele, o app continua aceitando importar o JSON pela opção avançada da tela de login.
 
 ## A história
 
