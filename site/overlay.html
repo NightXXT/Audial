@@ -20,6 +20,7 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 </style>
 </head>
 <body>
+<!-- The site's security policy (vercel.json) only runs this page's script by its SHA-256: after editing the script, update that hash. -->
 <div id="card">
 	<img id="art" alt="">
 	<div id="info">
@@ -43,8 +44,23 @@ function tick() {
 	$("card").classList.toggle("on", on);
 	if (on && now.duration > 0) $("fill").style.width = Math.min(100, elapsed() / now.duration * 100) + "%";
 }
+// The channel is public to whoever has the link, so only well-formed messages get on screen: short text, real numbers
+// and covers from YouTube's image servers only.
+const text = v => typeof v === "string" ? v.slice(0, 200) : "";
+const num = v => typeof v === "number" && isFinite(v) ? v : 0;
+function youtubeImage(url) {
+	try {
+		const u = new URL(url);
+		return u.protocol === "https:" && !u.port && !u.username && /\.(ytimg\.com|googleusercontent\.com|ggpht\.com)$/.test(u.hostname) ? u.href : null;
+	} catch { return null; }
+}
+function clean(m) {
+	if (!m || typeof m !== "object" || m.playing !== true) return { playing: false };
+	return { playing: true, title: text(m.title), artist: text(m.artist), artwork: typeof m.artwork === "string" ? youtubeImage(m.artwork) : null,
+		position: Math.max(0, num(m.position)), duration: Math.max(0, num(m.duration)), sentAt: num(m.sentAt) || Date.now() };
+}
 function show(next) {
-	now = next;
+	now = clean(next);
 	if (now.playing) {
 		$("title").textContent = now.title;
 		$("artist").textContent = now.artist;
