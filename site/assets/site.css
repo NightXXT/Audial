@@ -341,7 +341,10 @@ kbd { font: 600 11px/1 Inter, sans-serif; padding: 3px 6px; border-radius: 5px; 
 .final { padding: 140px 0 160px; overflow: hidden; }
 .final-inner { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 22px; }
 .ring { position: absolute; top: 50%; left: 50%; width: 640px; height: 640px; margin: -320px 0 0 -320px; border-radius: 50%; z-index: -1; background: conic-gradient(from var(--angle), transparent 0deg, rgba(244,63,94,.35) 60deg, transparent 120deg, rgba(139,92,246,.3) 220deg, transparent 300deg); filter: blur(60px); animation: spin 10s linear infinite; }
-.final-logo { border-radius: 26px; box-shadow: 0 20px 60px -10px rgba(244,63,94,.7); animation: bob 5s ease-in-out infinite; }
+/* the logo floats with a transform: animating its margin (like the absolutely placed .float cards do) would
+   push everything below it, so the whole page grew and shrank and the bottom of the page shook */
+.final-logo { border-radius: 26px; box-shadow: 0 20px 60px -10px rgba(244,63,94,.7); animation: float-y 5s ease-in-out infinite; }
+@keyframes float-y { 50% { transform: translateY(-14px); } }
 .huge { font-size: clamp(48px, 8vw, 104px); font-weight: 800; letter-spacing: -0.05em; }
 .final-inner > p { color: #C7CBD3; font-size: 19px; }
 .final-inner > p.fine { font-size: 13px; color: var(--text-3); }
