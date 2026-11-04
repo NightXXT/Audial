@@ -340,7 +340,9 @@ kbd { font: 600 11px/1 Inter, sans-serif; padding: 3px 6px; border-radius: 5px; 
 /* ---------- Final CTA ---------- */
 .final { padding: 140px 0 160px; overflow: hidden; }
 .final-inner { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 22px; }
-.ring { position: absolute; top: 50%; left: 50%; width: 640px; height: 640px; margin: -320px 0 0 -320px; border-radius: 50%; z-index: -1; background: conic-gradient(from var(--angle), transparent 0deg, rgba(244,63,94,.35) 60deg, transparent 120deg, rgba(139,92,246,.3) 220deg, transparent 300deg); filter: blur(60px); animation: spin 10s linear infinite; }
+.ring { position: absolute; top: 50%; left: 50%; width: 640px; height: 640px; margin: -320px 0 0 -320px; border-radius: 50%; z-index: -1; background: conic-gradient(from 0deg, transparent 0deg, rgba(244,63,94,.35) 60deg, transparent 120deg, rgba(139,92,246,.3) 220deg, transparent 300deg); filter: blur(60px); animation: turn 10s linear infinite; will-change: transform; }
+/* the ring turns as one layer (transform), so its blur is not redrawn on every frame */
+@keyframes turn { to { transform: rotate(360deg); } }
 /* the logo floats with a transform: animating its margin (like the absolutely placed .float cards do) would
    push everything below it, so the whole page grew and shrank and the bottom of the page shook */
 .final-logo { border-radius: 26px; box-shadow: 0 20px 60px -10px rgba(244,63,94,.7); animation: float-y 5s ease-in-out infinite; }
@@ -437,6 +439,15 @@ kbd { font: 600 11px/1 Inter, sans-serif; padding: 3px 6px; border-radius: 5px; 
   .footer-inner { flex-direction: column; text-align: center; }
   .footer p { text-align: center; }
   .btn-xl { padding: 18px 28px; font-size: 16px; }
+}
+
+.nowrap { white-space: nowrap; }
+
+/* phones, tablets and small windows: the same look, with the heaviest effects held still */
+@media (max-width: 760px), (hover: none) {
+  .grain, .blob, .stage-glow, .ring, .btn.glow::before { animation: none; }
+  .blob { filter: blur(60px); will-change: auto; }
+  .cursor-glow { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

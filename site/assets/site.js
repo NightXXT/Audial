@@ -3,16 +3,8 @@
   const finePointer = matchMedia("(pointer: fine)").matches;
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
-
-  // Latest version from the GitHub releases, so the badge never goes stale.
-  fetch("https://api.github.com/repos/NightXXT/Audial/releases/latest")
-    .then(r => (r.ok ? r.json() : null))
-    .then(r => {
-      const v = r && /^v?(\d+\.\d+)/.exec(r.tag_name || "");
-      const el = $("#version");
-      if (v && el) el.textContent = "Versão " + v[1];
-    })
-    .catch(() => {});
+  // phones, tablets and small windows get a lighter version of the effects
+  const lite = matchMedia("(max-width: 760px), (hover: none)").matches;
 
   // Nav gets solid once the page scrolls.
   const nav = $("#nav");
@@ -90,9 +82,9 @@
   // Fake audio visualizer behind the hero.
   const canvas = $("#visualizer");
   const ctx = canvas.getContext("2d");
-  let w = 0, h = 0, dpr = 1, visible = true;
+  let w = 0, h = 0, dpr = 1, visible = true, frame = 0;
   const resize = () => {
-    dpr = Math.min(devicePixelRatio || 1, 2);
+    dpr = lite ? 1 : Math.min(devicePixelRatio || 1, 2);
     w = canvas.clientWidth; h = canvas.clientHeight;
     canvas.width = w * dpr; canvas.height = h * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -103,6 +95,7 @@
   const draw = t => {
     requestAnimationFrame(draw);
     if (!visible) return;
+    if (lite && frame++ % 2) return; // half the frames on lighter devices
     ctx.clearRect(0, 0, w, h);
     const bars = Math.floor(w / 14);
     const grad = ctx.createLinearGradient(0, 0, w, 0);
