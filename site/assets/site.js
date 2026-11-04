@@ -9,7 +9,8 @@
     .then(r => (r.ok ? r.json() : null))
     .then(r => {
       const v = r && /^v?(\d+\.\d+)/.exec(r.tag_name || "");
-      if (v) $("#version").textContent = "Versão " + v[1];
+      const el = $("#version");
+      if (v && el) el.textContent = "Versão " + v[1];
     })
     .catch(() => {});
 
