@@ -21,10 +21,10 @@
 > As imagens usam o modo demonstração, com dados fictícios. O Audial é um projeto independente e não é afiliado ao YouTube ou ao Google.
 
 <p align="center">
-  <a href="https://audial-site-nine.vercel.app/"><img src="https://img.shields.io/badge/Beta%20fechado-chega%20em%202027-F43F5E?style=for-the-badge" alt="Beta fechado, chega em 2027" /></a>
+  <a href="https://beta-audial.vercel.app/"><img src="https://img.shields.io/badge/Beta%20fechado-chega%20em%202027-F43F5E?style=for-the-badge" alt="Beta fechado, chega em 2027" /></a>
 </p>
 
-O Audial está em beta fechado e abre para todo mundo em 2027. Até lá, ele é testado por um grupo pequeno de pessoas. Acompanhe pelo [site](https://audial-site-nine.vercel.app/).
+O Audial está em beta fechado e abre para todo mundo em 2027. Até lá, ele é testado por um grupo pequeno de pessoas. Acompanhe pelo [site](https://beta-audial.vercel.app/).
 
 ## Por que o Audial é diferente
 
