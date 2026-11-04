@@ -174,7 +174,7 @@
   btn.addEventListener("click", () => {
     const v = document.createElement("video");
     v.src = "/video/audial.mp4";
-    v.poster = "/img/video-poster.webp";
+    v.poster = "/img/video-poster.webp?v=2";
     v.controls = true;
     v.autoplay = true;
     v.playsInline = true;
