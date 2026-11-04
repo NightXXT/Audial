@@ -418,3 +418,23 @@ kbd { font: 600 11px/1 Inter, sans-serif; padding: 3px 6px; border-radius: 5px; 
   .reveal, .word, .intro, .stage { opacity: 1 !important; filter: none !important; transform: none !important; }
   .visualizer, .cursor-glow { display: none; }
 }
+
+/* ---------- Video ---------- */
+.video-section { padding-top: 140px; }
+.player { position: relative; max-width: 1080px; margin: 0 auto; aspect-ratio: 16 / 9; border-radius: 24px; }
+.player-glow { position: absolute; inset: -6%; border-radius: 40px; background: var(--grad-2); filter: blur(90px); opacity: .35; z-index: -1; animation: pulse 6s ease-in-out infinite alternate; }
+.player-cover, .player video { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 24px; border: 1px solid rgba(255,255,255,.14); overflow: hidden; background: #0D0E12; box-shadow: 0 50px 100px -30px rgba(0,0,0,.9); }
+.player-cover { padding: 0; cursor: pointer; display: block; }
+.player-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease), filter .6s; }
+.player-cover:hover img { transform: scale(1.04); filter: brightness(1.12); }
+.play-btn { position: absolute; left: 50%; bottom: 9%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 12px; padding: 16px 30px 16px 22px; border-radius: 999px; background: var(--grad); color: #fff; font-weight: 700; font-size: 18px; box-shadow: 0 18px 44px -8px rgba(244,63,94,.75); transition: transform .4s var(--ease); }
+.play-btn svg { width: 26px; height: 26px; fill: currentColor; }
+.player-cover:hover .play-btn { transform: translateX(-50%) scale(1.06); }
+.play-ring { position: absolute; inset: -4px; border-radius: inherit; border: 2px solid rgba(251,113,133,.8); animation: ring 2.2s ease-out infinite; }
+@keyframes ring { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(1.35, 1.7); } }
+@media (max-width: 640px) {
+  .video-section { padding-top: 90px; }
+  .player, .player-cover, .player video { border-radius: 16px; }
+  .play-btn { font-size: 15px; padding: 12px 22px 12px 16px; }
+  .play-btn svg { width: 20px; height: 20px; }
+}

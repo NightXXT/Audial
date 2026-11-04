@@ -165,3 +165,20 @@
   };
   requestAnimationFrame(cycle);
 })();
+
+// The promo video loads only when someone asks for it, so the page stays light.
+(() => {
+  const btn = document.getElementById("playVideo");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    const v = document.createElement("video");
+    v.src = "/video/audial.mp4";
+    v.poster = "/img/video-poster.webp";
+    v.controls = true;
+    v.autoplay = true;
+    v.playsInline = true;
+    v.preload = "auto";
+    btn.replaceWith(v);
+    v.play().catch(() => {});
+  });
+})();
