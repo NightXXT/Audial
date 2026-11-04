@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apoiar o Audial</title>
+<meta name="description" content="O Audial é grátis e vai continuar grátis. Se ele faz diferença pra você, dá pra apoiar o projeto com um Pix de qualquer valor.">
+<meta name="theme-color" content="#0D0E12">
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span></div>
+<header class="nav scrolled">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/"><img src="/img/logo.png" alt="" width="36" height="36"><span>Audial</span></a>
+    <a class="btn btn-ghost btn-sm" href="/">Voltar ao site</a>
+  </div>
+</header>
+
+<main class="support">
+  <div class="support-head">
+    <span class="kicker">Apoiar o projeto</span>
+    <h1>Curtiu o <span class="grad">Audial?</span></h1>
+    <p>O Audial é grátis e vai continuar grátis. Ele é feito por uma pessoa só, no tempo livre. Se ele faz diferença pra você, dá pra ajudar a manter o projeto, só se você quiser.</p>
+  </div>
+
+  <div class="support-grid">
+    <article class="card support-card" id="pix">
+      <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="6" height="6" rx="1.2"/><rect x="14.5" y="3.5" width="6" height="6" rx="1.2"/><rect x="3.5" y="14.5" width="6" height="6" rx="1.2"/><path d="M14.5 14.5h2.5v2.5h-2.5zM18 18h2.5v2.5H18zM14.5 18.5v2M18.5 14.5h2"/></svg></div>
+      <h3>Pix</h3>
+      <p>Uma ajuda única, de qualquer valor. Aponte a câmera do app do banco para o QR Code ou copie a chave.</p>
+      <!-- QR Code Pix estático, sem valor fixo, gerado a partir da chave aleatória abaixo -->
+      <div class="pix-qr"><img src="/img/pix-qr.svg" alt="QR Code do Pix para apoiar o Audial" width="166" height="166"></div>
+      <div class="pix-key">
+        <code id="pixKey">f86c0e26-3585-49c5-94a4-d1cf19177fcb</code>
+        <button class="btn btn-ghost btn-sm" type="button" id="copyPix">Copiar chave</button>
+      </div>
+    </article>
+  </div>
+
+  <p class="support-note">Apoiar não libera nada a mais: todo mundo recebe o mesmo Audial, com tudo liberado. O pagamento acontece direto no app do seu banco; este site não recebe nem guarda dados de pagamento.</p>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <a class="brand" href="/"><img src="/img/logo.png" alt="" width="28" height="28"><span>Audial</span></a>
+    <nav><a href="https://github.com/NightXXT/Audial" target="_blank" rel="noopener">GitHub</a><a href="/apoiar">Apoiar</a><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a></nav>
+    <p>O Audial é um projeto independente e não é afiliado ao YouTube ou ao Google.</p>
+  </div>
+</footer>
+
+<script>
+  // "Copiar chave": copies the Pix key and confirms on the button for a moment.
+  (function () {
+    var button = document.getElementById('copyPix');
+    var key = document.getElementById('pixKey');
+    if (!button || !key) return;
+    function copied() {
+      button.textContent = 'Chave copiada';
+      setTimeout(function () { button.textContent = 'Copiar chave'; }, 2200);
+    }
+    function selectAndCopy() {
+      var range = document.createRange();
+      range.selectNodeContents(key);
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      try { if (document.execCommand('copy')) copied(); } catch (e) { /* the key stays selected to copy by hand */ }
+    }
+    button.addEventListener('click', function () {
+      var text = key.textContent.trim();
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(copied, selectAndCopy);
+      else selectAndCopy();
+    });
+  })();
+</script>
+</body>
+</html>
