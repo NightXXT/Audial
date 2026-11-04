@@ -54,7 +54,7 @@
     <g class="disc">
       <rect x="950" y="120" width="180" height="180" rx="41" fill="url(#accent)"/>
       <path d="M988 263 L1040 156 L1092 263" fill="none" stroke="#FFFFFF" stroke-width="23.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M1023.7 227.4 L1023.7 263 L1053.2 245.3 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="6.6" stroke-linejoin="round"/>
+      <path d="M1030.2 227.4 L1030.2 263 L1059.7 245.3 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="6.6" stroke-linejoin="round"/>
     </g>
     <text class="rise" x="72" y="196" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="104" font-weight="700" fill="#FFFFFF" letter-spacing="-3">Audial</text>
     <text class="rise d2" x="76" y="252" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="30" fill="#D4D4D8">Sua música em um app nativo de verdade.</text>
