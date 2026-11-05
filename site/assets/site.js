@@ -176,3 +176,38 @@
     v.play().catch(() => {});
   });
 })();
+
+// Project timeline ("Progresso"): the line fills with the gradient as the page scrolls, down to "now", and each
+// milestone it passes lights up. With reduced motion it is simply filled down to "now".
+(() => {
+  const tl = document.getElementById("timeline");
+  if (!tl) return;
+  const rail = tl.querySelector(".tl-rail");
+  const items = [...tl.querySelectorAll(".tl-item")];
+  const dots = items.map(it => it.querySelector(".tl-dot"));
+  const nowIndex = Math.max(0, items.findIndex(it => it.classList.contains("now")));
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let centers = [];
+  // the line runs exactly from the first dot to the last one, whatever the layout (two sides or phone)
+  const measure = () => {
+    const box = tl.getBoundingClientRect();
+    centers = dots.map(d => { const r = d.getBoundingClientRect(); return r.top + r.height / 2 - box.top; });
+    rail.style.top = centers[0] + "px";
+    rail.style.bottom = "auto";
+    rail.style.height = centers[centers.length - 1] - centers[0] + "px";
+  };
+  const update = () => {
+    const top = tl.getBoundingClientRect().top + centers[0];
+    const limit = centers[nowIndex] - centers[0];
+    const reach = reduced ? limit : Math.min(limit, Math.max(0, innerHeight * 0.62 - top));
+    rail.style.setProperty("--fill", reach.toFixed(1) + "px");
+    items.forEach((it, i) => it.classList.toggle("lit", reach > 0 && centers[i] - centers[0] <= reach + 0.5));
+  };
+  const refresh = () => { measure(); update(); };
+  addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
+  addEventListener("resize", refresh);
+  addEventListener("load", refresh);
+  if (document.fonts) document.fonts.ready.then(refresh);
+  new ResizeObserver(refresh).observe(tl);
+  refresh();
+})();
