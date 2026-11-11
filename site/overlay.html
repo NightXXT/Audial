@@ -5,18 +5,27 @@
 <title>Audial Overlay</title>
 <style>
 html, body { margin: 0; background: transparent; overflow: hidden; font-family: "Segoe UI", Arial, sans-serif; }
-#card { position: relative; overflow: hidden; display: flex; align-items: center; gap: 14px; box-sizing: border-box; width: 420px; padding: 12px; margin: 8px;
+/* 440 x 120 in the live app: a 20 px strip on top for the white tag, then the card */
+#stage { position: relative; width: 420px; margin: 20px 8px 0; }
+#card { position: relative; z-index: 1; overflow: hidden; display: flex; align-items: center; gap: 14px; box-sizing: border-box; width: 420px; padding: 12px;
 	border-radius: 16px; background: rgba(17, 19, 25, .86); border: 1px solid rgba(255, 255, 255, .1); color: #fff;
 	opacity: 0; transform: translateY(8px); transition: opacity .35s, transform .35s; }
 #card.on { opacity: 1; transform: none; }
 #art { flex: none; width: 72px; height: 72px; border-radius: 10px; object-fit: cover; background: linear-gradient(45deg, #F43F5E, #EC4899); }
 #info { flex: 1; min-width: 0; }
-/* the top line is a two-line ticker: "OUVINDO NO AUDIAL", and on every new song it rolls up to "SPONSORED BY AUDIAL" */
-#label { height: 14px; overflow: hidden; font-size: 11px; line-height: 14px; font-weight: 600; letter-spacing: 1.5px; color: #FB7185; }
-#roll { transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
-#roll div { height: 14px; white-space: nowrap; }
-#card.sponsor #roll { transform: translateY(-14px); }
-#roll b { font-weight: 800; background: linear-gradient(90deg, #FF8FA3, #F751A1 50%, #B794F6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+#label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; color: #FB7185; }
+/* on every new song a white tag rises from behind the card: "Sponsored by Audial", then slides back after a few seconds */
+/* the slot sits right on top of the card and hides the tag while it is down (the card is see-through, so it can't hide it) */
+#slot { position: absolute; left: 18px; bottom: 100%; height: 20px; overflow: hidden; }
+#tag { display: flex; align-items: center; gap: 5px; height: 20px; box-sizing: border-box;
+	padding: 3px 11px 0; border-radius: 9px 9px 0 0; background: #fff; color: #4B5060; font-size: 11.5px; line-height: 14px;
+	font-weight: 600; letter-spacing: .3px; white-space: nowrap;
+	transform: translateY(100%); transition: transform .45s cubic-bezier(.4, 0, .6, 1); }
+#tag b { font-size: 12.5px; font-weight: 800; letter-spacing: .2px; background: linear-gradient(90deg, #F43F5E, #F751A1 55%, #8B5CF6);
+	-webkit-background-clip: text; background-clip: text; color: transparent; }
+#tag i { width: 7px; height: 7px; border-radius: 50%; background: linear-gradient(135deg, #F43F5E, #8B5CF6); }
+#stage.sponsor #tag { transform: none; transition: transform .6s .2s cubic-bezier(.34, 1.56, .64, 1); }
+@media (prefers-reduced-motion: reduce) { #tag, #stage.sponsor #tag { transition: none; } }
 #title, #artist { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* a new song: title and artist rise into place, the cover pops and a light sweeps across the card */
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
@@ -37,14 +46,17 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 </head>
 <body>
 <!-- The site's security policy (vercel.json) only runs this page's script by its SHA-256: after editing the script, update that hash. -->
-<div id="card">
-	<div id="shine"></div>
-	<img id="art" alt="">
-	<div id="info">
-		<div id="label"><div id="roll"><div>OUVINDO NO AUDIAL</div><div>SPONSORED BY <b>AUDIAL</b></div></div></div>
-		<div id="title"></div>
-		<div id="artist"></div>
-		<div id="bar"><div id="fill"></div></div>
+<div id="stage">
+	<div id="slot"><div id="tag"><i></i>Sponsored by <b>Audial</b></div></div>
+	<div id="card">
+		<div id="shine"></div>
+		<img id="art" alt="">
+		<div id="info">
+			<div id="label">OUVINDO NO AUDIAL</div>
+			<div id="title"></div>
+			<div id="artist"></div>
+			<div id="bar"><div id="fill"></div></div>
+		</div>
 	</div>
 </div>
 <script>
@@ -59,6 +71,10 @@ function tick() {
 	const ended = now && now.duration > 0 && elapsed() > now.duration + 5;
 	const on = !!now && now.playing && !ended;
 	$("card").classList.toggle("on", on);
+	if (!on) {
+		$("stage").classList.remove("sponsor");
+		song = "";
+	}
 	if (on && now.duration > 0) $("fill").style.width = Math.min(100, elapsed() / now.duration * 100) + "%";
 }
 // The channel is public to whoever has the link, so only well-formed messages get on screen: short text, real numbers
@@ -76,16 +92,18 @@ function clean(m) {
 	return { playing: true, title: text(m.title), artist: text(m.artist), artwork: typeof m.artwork === "string" ? youtubeImage(m.artwork) : null,
 		position: Math.max(0, num(m.position)), duration: Math.max(0, num(m.duration)), sentAt: num(m.sentAt) || Date.now() };
 }
-// A new song (not a seek in the same one) replays the entrance and shows "SPONSORED BY AUDIAL" for a few seconds.
+// A new song (not a seek in the same one) replays the entrance and raises the white "Sponsored by Audial" tag for a few
+// seconds; it goes back behind the card on its own, or at once when the music stops.
 let song = "";
 let sponsorTimer = 0;
 function announce() {
 	const card = $("card");
 	card.classList.remove("swap");
 	void card.offsetWidth;
-	card.classList.add("swap", "sponsor");
+	card.classList.add("swap");
+	$("stage").classList.add("sponsor");
 	clearTimeout(sponsorTimer);
-	sponsorTimer = setTimeout(() => card.classList.remove("sponsor"), 4500);
+	sponsorTimer = setTimeout(() => $("stage").classList.remove("sponsor"), 4800);
 }
 function show(next) {
 	now = clean(next);
