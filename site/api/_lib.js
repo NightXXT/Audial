@@ -126,6 +126,28 @@ function issueLicense(invite, machine, t = now()) {
   return { license: bytes.toString("base64"), signature: signature.toString("base64"), info: payload };
 }
 
+/**
+ * Who is calling, from the license the app already has (no password, no new secret): the signature must be ours and
+ * still inside its 7 days, and the invite must still be valid with this PC in it. Returns { invite, info }.
+ */
+async function authenticate(license, signature) {
+  const unauthorized = () => new ServerError("license", "Licença do beta inválida. Abra o Audial com um convite válido.", 401);
+  if (typeof license !== "string" || typeof signature !== "string" || license.length > 4096 || signature.length > 256) throw unauthorized();
+  const bytes = Buffer.from(license, "base64");
+  let ok = false;
+  try {
+    ok = crypto.verify("sha256", bytes, { key: crypto.createPublicKey(signingKey()), dsaEncoding: "ieee-p1363" }, Buffer.from(signature, "base64"));
+  } catch (e) {
+    if (e instanceof ServerError) throw e;
+  }
+  if (!ok) throw unauthorized();
+  const info = safeJson(bytes.toString("utf8"));
+  if (info.v !== 1 || typeof info.code !== "string" || typeof info.mid !== "string" || !(info.until > now())) throw unauthorized();
+  const invite = await getInvite(info.code);
+  if (!invite || inviteStatus(invite) !== "ok" || !invite.pcs.some((p) => p.id === info.mid)) throw unauthorized();
+  return { invite, info };
+}
+
 // ---------- HTTP helpers ----------
 
 function send(res, status, body) {
@@ -201,6 +223,7 @@ module.exports = {
   saveInvite,
   inviteStatus,
   issueLicense,
+  authenticate,
   send,
   readBody,
   allow,

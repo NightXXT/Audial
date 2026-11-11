@@ -26,7 +26,7 @@
   <h1>Política de privacidade</h1>
   <p class="updated">Atualizada em 11 de novembro de 2026</p>
 
-  <p>O Audial é um aplicativo gratuito para Windows, com código-fonte público no GitHub, que toca músicas do YouTube Music. Ele não exige conta no Audial e não exibe anúncios. O único servidor próprio é o que confere os convites do beta fechado, descrito abaixo. Esta página explica o que o aplicativo acessa, onde guarda e com quais serviços ele conversa.</p>
+  <p>O Audial é um aplicativo gratuito para Windows, com código-fonte público no GitHub, que toca músicas do YouTube Music. Ele não exige conta no Audial e não exibe anúncios. O único servidor próprio é o do beta fechado (convites e Comunidade beta), descrito abaixo. Esta página explica o que o aplicativo acessa, onde guarda e com quais serviços ele conversa.</p>
 
   <h2>Convite do beta fechado</h2>
   <p>Durante o beta, o Audial pede um código de convite (no formato <code>AUD-XXXX-XXXX</code>). Para conferir o convite, o aplicativo envia ao servidor do Audial, hospedado na Vercel em <code>audial.com.br</code>:</p>
@@ -36,6 +36,15 @@
   </ul>
   <p>O servidor guarda apenas o código, esses identificadores e as datas de ativação e da última conferência. Não guarda nome, e-mail nem endereço IP. Para impedir tentativas em massa, ele conta os pedidos de cada IP por uma hora usando um resumo (hash) do endereço, que é apagado depois disso. A Vercel, como hospedagem, registra dados técnicos de acesso como descrito em “Este site”.</p>
   <p>O aplicativo confere o convite ao abrir e guarda no seu computador a última licença assinada pelo servidor, para funcionar até 7 dias sem internet. Quando o convite termina ou é cancelado, o Audial volta para a tela de convite sem apagar suas preferências. Para remover o identificador do servidor, peça pelo GitHub (veja “Mudanças e contato”).</p>
+
+  <h2>Comunidade beta</h2>
+  <p>Dentro do aplicativo, quem tem convite pode participar da Comunidade beta: postar ideias e problemas, comentar, votar e responder enquetes. Para isso, o servidor do Audial guarda, ligados ao código do seu convite:</p>
+  <ul>
+    <li>o apelido que você escolher (evite usar seu nome real ou e-mail);</li>
+    <li>o que você postar e comentar, com a data;</li>
+    <li>seus votos nas ideias e nas enquetes.</li>
+  </ul>
+  <p>O apelido, as postagens e os comentários ficam visíveis para as outras pessoas com convite. Os votos aparecem só como total. O criador do Audial pode apagar postagens e comentários e mudar o status das ideias. Você pode apagar o que escreveu a qualquer momento; para apagar também o apelido e os votos, peça pelo GitHub (veja “Mudanças e contato”). Quando um convite é apagado, o apelido ligado a ele também é.</p>
 
   <h2>Login com Google</h2>
   <p>Se você escolher entrar com sua conta Google, o Audial pede somente a permissão <strong>youtube.readonly</strong>, que permite ler, sem alterar nada:</p>

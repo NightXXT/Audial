@@ -130,6 +130,7 @@ const actions = {
     if (body.maxPcs !== undefined) invite.maxPcs = cleanPcs(body.maxPcs);
     if (body.badge !== undefined) invite.badge = cleanBadge(body.badge);
     if (body.note !== undefined) invite.note = cleanNote(body.note);
+    if (body.creator !== undefined) invite.creator = body.creator === true;
     await lib.saveInvite(invite);
     return { invite: view(invite, lib.now()) };
   },
@@ -159,6 +160,12 @@ const actions = {
     const invite = await load(body.code);
     await lib.redis("DEL", "inv:" + invite.code);
     await lib.redis("SREM", "invites", invite.code);
+    // the community nickname goes too (posts stay, shown as "Alguém do beta")
+    const nick = await lib.redis("HGET", "community:nicks", invite.code);
+    if (nick) {
+      await lib.redis("HDEL", "community:nicknames", nick.toLowerCase());
+      await lib.redis("HDEL", "community:nicks", invite.code);
+    }
     return { deleted: invite.code };
   },
 };
