@@ -92,8 +92,17 @@ function inviteStatus(invite, t = now()) {
 function signingKey() {
   const pem = process.env.AUDIAL_LICENSE_KEY;
   if (!pem) throw new ServerError("key", "A chave das licenças ainda não foi configurada.");
-  // Vercel keeps line breaks, but a key pasted as one line with "\n" also works
-  return crypto.createPrivateKey(pem.includes("\\n") ? pem.replace(/\\n/g, "\n") : pem);
+  // Only the base64 between BEGIN and END matters: a paste that lost its line breaks (or turned them into spaces or
+  // "\n") still works, and so does the base64 alone.
+  const body = pem
+    .replace(/-----(BEGIN|END)[^-]*-----/g, "")
+    .replace(/\\n/g, "")
+    .replace(/[^A-Za-z0-9+/=]/g, "");
+  try {
+    return crypto.createPrivateKey({ key: Buffer.from(body, "base64"), format: "der", type: "pkcs8" });
+  } catch {
+    throw new ServerError("key", "A chave das licenças na Vercel (AUDIAL_LICENSE_KEY) está em formato inválido. Cole de novo o conteúdo do arquivo .pem.");
+  }
 }
 
 /**
