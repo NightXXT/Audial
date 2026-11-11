@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Convites · Audial</title>
+<meta name="theme-color" content="#0D0E12">
+<link rel="icon" href="/favicon.png?v=2" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css?v=3">
+<style>
+  .adm { max-width: 1120px; margin: 0 auto; padding: 48px 20px 120px; }
+  .adm h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 6px; }
+  .adm .sub { color: var(--text-2); font-size: 15px; margin-bottom: 28px; }
+  .box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+  .box h2 { font-size: 18px; margin-bottom: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+  label { display: grid; gap: 4px; font-size: 13px; color: var(--text-2); }
+  label.inline { display: flex; align-items: center; gap: 6px; color: var(--text); font-size: 14px; padding-bottom: 9px; }
+  input, select { font: inherit; font-size: 14px; color: var(--text); background: #0B0C10; border: 1px solid rgba(255,255,255,.14); border-radius: 9px; padding: 8px 10px; min-width: 0; }
+  input[type=number] { width: 90px; }
+  input.note { width: 260px; }
+  input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--rose); }
+  button.b { cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 9px; padding: 8px 12px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.05); }
+  button.b:hover { background: rgba(255,255,255,.1); }
+  button.p { background: var(--grad); border-color: transparent; color: #fff; }
+  button.d { color: #FDA4AF; }
+  button.s { padding: 5px 9px; font-size: 12px; }
+  .msg { min-height: 22px; font-size: 14px; margin-top: 10px; color: var(--text-2); }
+  .msg.err { color: #FDA4AF; }
+  .msg.ok { color: #86EFAC; }
+  .stats { display: flex; gap: 18px; flex-wrap: wrap; color: var(--text-2); font-size: 14px; margin-bottom: 12px; }
+  .stats b { color: var(--text); }
+  .inv { border-top: 1px solid var(--border); padding: 14px 0; display: grid; gap: 8px; }
+  .inv:first-of-type { border-top: 0; }
+  .inv .top { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .code { font-family: ui-monospace, Consolas, monospace; font-size: 16px; font-weight: 700; letter-spacing: .04em; }
+  .pill { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 3px 8px; border-radius: 99px; background: rgba(255,255,255,.08); color: var(--text-2); }
+  .pill.ok { background: rgba(34,197,94,.15); color: #86EFAC; }
+  .pill.expired { background: rgba(250,204,21,.14); color: #FDE68A; }
+  .pill.cancelled { background: rgba(244,63,94,.16); color: #FDA4AF; }
+  .pill.apoiador { background: rgba(139,92,246,.2); color: #C4B5FD; }
+  .meta { color: var(--text-2); font-size: 13px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pcs { font-size: 12px; color: var(--text-3); display: grid; gap: 4px; }
+  .pcs span { font-family: ui-monospace, Consolas, monospace; }
+  .hidden { display: none !important; }
+  .new-code { font-family: ui-monospace, Consolas, monospace; font-size: 22px; font-weight: 800; color: #fff; }
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span></div>
+<main class="adm">
+  <h1>Convites do beta</h1>
+  <p class="sub">Painel privado do Audial. Só o código do convite e um identificador anônimo de cada PC ficam guardados.</p>
+
+  <section id="login" class="box">
+    <h2>Entrar</h2>
+    <form id="login-form" class="row" autocomplete="off">
+      <label>Senha do painel<input id="password" type="password" autocomplete="current-password" required></label>
+      <button class="b p" type="submit">Entrar</button>
+    </form>
+    <p id="login-msg" class="msg"></p>
+  </section>
+
+  <div id="app" class="hidden">
+    <section class="box">
+      <h2>Novo convite</h2>
+      <form id="create-form" class="row" autocomplete="off">
+        <label>Prazo (dias)<input id="c-days" type="number" min="1" max="3650" value="30"></label>
+        <label class="inline"><input id="c-nolimit" type="checkbox"> Sem limite</label>
+        <label>PCs<input id="c-pcs" type="number" min="1" max="20" value="1"></label>
+        <label>Selo<select id="c-badge"><option value="beta">Beta</option><option value="apoiador">Apoiador</option></select></label>
+        <label>Nota (só você vê)<input id="c-note" class="note" maxlength="120" placeholder="ex.: Fulano, amigo da faculdade"></label>
+        <button class="b p" type="submit">Criar convite</button>
+      </form>
+      <p id="create-msg" class="msg"></p>
+    </section>
+
+    <section class="box">
+      <div class="row" style="justify-content: space-between; margin-bottom: 8px;">
+        <h2 style="margin: 0;">Convites</h2>
+        <div class="actions">
+          <button id="refresh" class="b s" type="button">Atualizar</button>
+          <button id="logout" class="b s" type="button">Sair</button>
+        </div>
+      </div>
+      <div id="stats" class="stats"></div>
+      <p id="list-msg" class="msg"></p>
+      <div id="list"></div>
+    </section>
+  </div>
+</main>
+<script src="/assets/painel.js" defer></script>
+</body>
+</html>
