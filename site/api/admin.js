@@ -1,5 +1,5 @@
 // POST /api/admin { action, ... } with "Authorization: Bearer <AUDIAL_ADMIN_PASSWORD>". Used by the hidden admin page.
-// Actions: list, create, setDays, extend, update, cancel, restore, removePc, delete.
+// Actions: list, create, setDays, extend, update, cancel, restore, removePc, delete, discordRegister.
 "use strict";
 
 const crypto = require("crypto");
@@ -168,7 +168,30 @@ const actions = {
     }
     return { deleted: invite.code };
   },
+
+  // Sends the bot's slash commands (/sorteio, /beta, /audial) to Discord. Run once after setting up the bot,
+  // and again whenever the commands change.
+  async discordRegister() {
+    return { commands: await require("./discord").registerCommands() };
+  },
+
+  // Signed link to the invite flyer (PNG) of this invite, to send by hand.
+  async ticketUrl(body) {
+    const invite = await load(body.code);
+    return { url: require("./convite").ticketUrl(invite.code, invite.days) };
+  },
 };
+
+/** Used by the Discord bot to create the invite of whoever wins a giveaway. */
+async function createInvite(fields) {
+  const { invite } = await actions.create(fields);
+  if (fields.discord) {
+    const stored = await lib.getInvite(invite.code);
+    stored.discord = String(fields.discord);
+    await lib.saveInvite(stored);
+  }
+  return invite;
+}
 
 module.exports = lib.handler(["POST"], async (req, res) => {
   await authorized(req);
@@ -177,3 +200,5 @@ module.exports = lib.handler(["POST"], async (req, res) => {
   if (!action || !Object.prototype.hasOwnProperty.call(actions, body.action)) return lib.send(res, 400, { status: "input", message: "Ação desconhecida." });
   lib.send(res, 200, { status: "ok", ...(await action(body)) });
 });
+
+module.exports.createInvite = createInvite;

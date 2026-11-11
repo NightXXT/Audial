@@ -1,0 +1,12 @@
+{
+  "name": "audial-site",
+  "private": true,
+  "description": "Site e funções do Audial (audial.com.br). Só as funções em api/ usam dependências.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@vercel/og": "0.11.1"
+  }
+}

@@ -88,10 +88,11 @@
             inv.creator ? el("span", { class: "pill creator" }, "Criador") : null,
             el("span", { class: "meta" }, inv.note || "(sem nota)"),
           ),
-          el("div", { class: "meta" }, "Prazo: " + term + " · " + left + " · PCs: " + inv.pcs.length + "/" + inv.maxPcs + " · criado " + fmtDate(inv.createdAt)),
+          el("div", { class: "meta" }, "Prazo: " + term + " · " + left + " · PCs: " + inv.pcs.length + "/" + inv.maxPcs + " · criado " + fmtDate(inv.createdAt) + (inv.discord ? " · ligado ao Discord" : "")),
           inv.pcs.length ? pcsBox : null,
           el("div", { class: "actions" },
             button("Copiar código", "copy", inv.code),
+            button("Imagem do convite", "ticket", inv.code),
             inv.days != null ? button("+7 dias", "plus7", inv.code) : null,
             inv.days != null ? button("+30 dias", "plus30", inv.code) : null,
             inv.days != null ? button("−7 dias", "minus7", inv.code) : null,
@@ -159,6 +160,17 @@
     }
   });
 
+  $("discord-register").addEventListener("click", async () => {
+    const msg = $("discord-msg");
+    setMsg(msg, "Mandando os comandos para o Discord…");
+    try {
+      const { commands } = await call("discordRegister");
+      setMsg(msg, "Pronto: " + commands.join(", ") + " registrados. No Discord, eles aparecem ao digitar / (pode levar alguns minutos).", "ok");
+    } catch (e) {
+      setMsg(msg, e.message, "err");
+    }
+  });
+
   $("refresh").addEventListener("click", load);
   $("logout").addEventListener("click", () => logout());
 
@@ -170,6 +182,12 @@
     const msg = $("list-msg");
     try {
       switch (b.getAttribute("data-act")) {
+        case "ticket": {
+          const { url } = await call("ticketUrl", { code });
+          msg.replaceChildren("Imagem do convite " + code + ": ", el("a", { href: url, target: "_blank", rel: "noopener", style: "color:#FB7185;text-decoration:underline" }, "abrir PNG"), " (clique com o botão direito para salvar).");
+          msg.className = "msg ok";
+          return;
+        }
         case "copy":
           await navigator.clipboard.writeText(code);
           setMsg(msg, code + " copiado.", "ok");

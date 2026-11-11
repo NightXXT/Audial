@@ -1,6 +1,10 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/discord.js": { "includeFiles": "{index.html,api/_assets/**}" },
+    "api/convite.js": { "includeFiles": "api/_assets/**" }
+  },
   "headers": [
     {
       "source": "/(img|assets)/(.*)",

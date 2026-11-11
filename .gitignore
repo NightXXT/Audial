@@ -21,3 +21,6 @@ credentials*.json
 *oauth*.json
 .vs/
 *.user
+
+# Dependências das funções do site (a Vercel instala no deploy)
+site/node_modules/
