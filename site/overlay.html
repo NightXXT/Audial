@@ -11,8 +11,28 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 	border-radius: 16px; background: rgba(17, 19, 25, .86); border: 1px solid rgba(255, 255, 255, .1); color: #fff;
 	opacity: 0; transform: translateY(8px); transition: opacity .35s, transform .35s; }
 #card.on { opacity: 1; transform: none; }
-#art { flex: none; width: 72px; height: 72px; border-radius: 10px; object-fit: cover; background: linear-gradient(45deg, #F43F5E, #EC4899); }
+#artbox { position: relative; flex: none; width: 72px; height: 72px; perspective: 320px; }
+#art { display: block; width: 72px; height: 72px; border-radius: 10px; object-fit: cover; background: linear-gradient(45deg, #F43F5E, #EC4899); }
+#ring { position: absolute; inset: 0; border-radius: 10px; pointer-events: none; }
 #info { flex: 1; min-width: 0; }
+#row { display: flex; align-items: center; gap: 10px; }
+/* long titles fade out at the edge instead of "..." (the title is made of one span per letter for the entrance) */
+#title { flex: 1; min-width: 0; font-size: 19px; font-weight: 600; white-space: nowrap; overflow: hidden;
+	-webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); }
+#title .ch { display: inline-block; white-space: pre; }
+#artist { font-size: 14px; color: #D4D4D8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#bar { height: 4px; margin-top: 8px; border-radius: 2px; background: rgba(255, 255, 255, .16); overflow: hidden; }
+#fill { height: 100%; width: 0; border-radius: 2px; background: linear-gradient(90deg, #F43F5E, #EC4899 60%, #8B5CF6); transition: width 1s linear; }
+/* a small equalizer that dances while the music plays */
+#eq { flex: none; display: flex; align-items: flex-end; gap: 2px; height: 14px; }
+#eq i { width: 3px; height: 14px; border-radius: 2px; background: linear-gradient(180deg, #F751A1, #8B5CF6); transform-origin: bottom;
+	transform: scaleY(.3); animation: eq .9s ease-in-out infinite; animation-play-state: paused; }
+#eq i:nth-child(2) { animation-duration: .7s; animation-delay: -.2s; }
+#eq i:nth-child(3) { animation-duration: 1.1s; animation-delay: -.5s; }
+#eq i:nth-child(4) { animation-duration: .8s; animation-delay: -.35s; }
+#card.on #eq i { animation-play-state: running; }
+@keyframes eq { 0%, 100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
+
 /* on every new song a white tag rises from behind the card: "Sponsored by Audial", then slides back after a few seconds */
 /* the slot sits right on top of the card and hides the tag while it is down (the card is see-through, so it can't hide it) */
 #slot { position: absolute; left: 18px; bottom: 100%; height: 20px; overflow: hidden; }
@@ -23,24 +43,38 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 #tag b { font-size: 12.5px; font-weight: 800; letter-spacing: .2px; background: linear-gradient(90deg, #F43F5E, #F751A1 55%, #8B5CF6);
 	-webkit-background-clip: text; background-clip: text; color: transparent; }
 #tag i { width: 7px; height: 7px; border-radius: 50%; background: linear-gradient(135deg, #F43F5E, #8B5CF6); }
-#stage.sponsor #tag { transform: none; transition: transform .6s .2s cubic-bezier(.34, 1.56, .64, 1); }
-@media (prefers-reduced-motion: reduce) { #tag, #stage.sponsor #tag { transition: none; } }
-#title, #artist { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* a new song: title and artist rise into place, the cover pops and a light sweeps across the card */
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-@keyframes pop { 0% { transform: scale(.86); } 60% { transform: scale(1.04); } 100% { transform: none; } }
-@keyframes sweep { from { transform: translateX(-120%) skewX(-18deg); } to { transform: translateX(260%) skewX(-18deg); } }
-#card.swap #title { animation: rise .5s cubic-bezier(.2, .8, .2, 1) both; }
-#card.swap #artist { animation: rise .5s .08s cubic-bezier(.2, .8, .2, 1) both; }
-#card.swap #art { animation: pop .55s cubic-bezier(.2, .8, .2, 1); }
-#shine { position: absolute; top: 0; bottom: 0; left: 0; width: 40%; pointer-events: none; opacity: 0;
-	background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(247, 81, 161, .22), rgba(255, 255, 255, 0)); }
-#card.swap #shine { opacity: 1; animation: sweep 1.1s .1s ease-out both; }
-@media (prefers-reduced-motion: reduce) { #card.swap #title, #card.swap #artist, #card.swap #art, #card.swap #shine { animation: none; } }
-#title { font-size: 19px; font-weight: 600; margin-top: 2px; }
-#artist { font-size: 14px; color: #D4D4D8; }
-#bar { height: 4px; margin-top: 8px; border-radius: 2px; background: rgba(255, 255, 255, .16); overflow: hidden; }
-#fill { height: 100%; width: 0; border-radius: 2px; background: linear-gradient(90deg, #F43F5E, #EC4899); transition: width 1s linear; }
+#stage.sponsor #tag { transform: none; transition: transform .6s .9s cubic-bezier(.34, 1.56, .64, 1); }
+
+/* the song change, about 1.5 s:
+   out: the old title and artist slide left and blur away, the cover turns its back;
+   in:  a rose-to-violet light wipes across the card and lights its border, the new cover flips in with a bounce and a
+        pulse of light, the title comes in letter by letter out of a blur, then the artist, then the white tag */
+#card.out #title, #card.out #artist { opacity: 0; transform: translateX(-18px); filter: blur(6px); transition: opacity .26s ease-in, transform .26s ease-in, filter .26s ease-in; }
+#card.out #art { transform: rotateY(-90deg) scale(.92); transition: transform .26s ease-in; }
+#wipe { position: absolute; inset: 0; pointer-events: none; transform: translateX(-100%);
+	background: linear-gradient(100deg, rgba(0, 0, 0, 0) 25%, rgba(244, 63, 94, .38) 44%, rgba(139, 92, 246, .38) 56%, rgba(0, 0, 0, 0) 75%); }
+#card.in { animation: glow 1.5s ease-out; }
+#card.in #wipe { animation: wipe .9s cubic-bezier(.45, 0, .2, 1) both; }
+#card.in #art { animation: flip .8s .12s cubic-bezier(.2, .9, .25, 1.15) both; }
+#card.in #ring { animation: ring 1s .5s ease-out both; }
+#card.in .ch { animation: letter .55s cubic-bezier(.2, .8, .2, 1) both; }
+#card.in #artist { animation: rise .55s .55s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes wipe { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes glow {
+	0% { border-color: rgba(255, 255, 255, .1); box-shadow: 0 0 0 0 rgba(247, 81, 161, 0); }
+	30% { border-color: rgba(247, 81, 161, .85); box-shadow: 0 0 18px 0 rgba(247, 81, 161, .5); }
+	100% { border-color: rgba(255, 255, 255, .1); box-shadow: 0 0 0 0 rgba(247, 81, 161, 0); } }
+@keyframes flip {
+	0% { transform: rotateY(90deg) scale(.9); opacity: .3; }
+	60% { transform: rotateY(-10deg) scale(1.05); opacity: 1; }
+	100% { transform: none; } }
+@keyframes ring { from { box-shadow: 0 0 0 0 rgba(247, 81, 161, .8); } to { box-shadow: 0 0 0 12px rgba(247, 81, 161, 0); } }
+@keyframes letter { from { opacity: 0; transform: translateY(14px) scale(.9); filter: blur(5px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+@media (prefers-reduced-motion: reduce) {
+	#card.in, #card.in *, #eq i { animation: none !important; }
+	#card.out * { transition: none !important; }
+	#tag, #stage.sponsor #tag { transition: none; } }
 </style>
 </head>
 <body>
@@ -48,10 +82,10 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 <div id="stage">
 	<div id="slot"><div id="tag"><i></i>Sponsored by <b>Audial</b></div></div>
 	<div id="card">
-		<div id="shine"></div>
-		<img id="art" alt="">
+		<div id="wipe"></div>
+		<div id="artbox"><img id="art" alt=""><div id="ring"></div></div>
 		<div id="info">
-			<div id="title"></div>
+			<div id="row"><div id="title"></div><div id="eq"><i></i><i></i><i></i><i></i></div></div>
 			<div id="artist"></div>
 			<div id="bar"><div id="fill"></div></div>
 		</div>
@@ -60,8 +94,12 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 <script>
 const $ = id => document.getElementById(id);
 const id = location.hash.slice(1);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 let cover = null;
 let now = null;
+let song = "";
+let sponsorTimer = 0;
+let swapTimer = 0;
 function elapsed() {
 	return now.position + (Date.now() - now.sentAt) / 1000;
 }
@@ -90,32 +128,58 @@ function clean(m) {
 	return { playing: true, title: text(m.title), artist: text(m.artist), artwork: typeof m.artwork === "string" ? youtubeImage(m.artwork) : null,
 		position: Math.max(0, num(m.position)), duration: Math.max(0, num(m.duration)), sentAt: num(m.sentAt) || Date.now() };
 }
-// A new song (not a seek in the same one) replays the entrance and raises the white "Sponsored by Audial" tag for a few
-// seconds; it goes back behind the card on its own, or at once when the music stops.
-let song = "";
-let sponsorTimer = 0;
-function announce() {
+// One span per letter, each a little later than the one before (the whole title takes about half a second).
+function setTitle(title) {
+	const box = $("title");
+	box.textContent = "";
+	const letters = Array.from(title);
+	const step = Math.min(24, 520 / Math.max(1, letters.length));
+	letters.forEach((letter, i) => {
+		const span = document.createElement("span");
+		span.className = "ch";
+		span.textContent = letter;
+		span.style.animationDelay = Math.round(260 + i * step) + "ms";
+		box.appendChild(span);
+	});
+}
+function setSong(n) {
+	setTitle(n.title);
+	$("artist").textContent = n.artist;
+	if (n.artwork !== cover) {
+		cover = n.artwork;
+		if (cover) $("art").src = cover; else $("art").removeAttribute("src");
+	}
+}
+// A new song (not a seek in the same one): the old one leaves, the new one comes in and the white tag rises; the tag
+// goes back behind the card on its own, or at once when the music stops.
+function enter(n) {
 	const card = $("card");
-	card.classList.remove("swap");
+	setSong(n);
+	card.classList.remove("out", "in");
 	void card.offsetWidth;
-	card.classList.add("swap");
+	card.classList.add("in");
 	$("stage").classList.add("sponsor");
 	clearTimeout(sponsorTimer);
-	sponsorTimer = setTimeout(() => $("stage").classList.remove("sponsor"), 4800);
+	sponsorTimer = setTimeout(() => $("stage").classList.remove("sponsor"), 5600);
+}
+function announce(n, wasOn) {
+	clearTimeout(swapTimer);
+	if (wasOn && !reduced) {
+		$("card").classList.remove("in");
+		$("card").classList.add("out");
+		swapTimer = setTimeout(() => enter(n), 280);
+	} else {
+		enter(n);
+	}
 }
 function show(next) {
+	const wasOn = $("card").classList.contains("on");
 	now = clean(next);
 	if (now.playing) {
 		const key = now.title + "\n" + now.artist;
 		if (key !== song) {
 			song = key;
-			announce();
-		}
-		$("title").textContent = now.title;
-		$("artist").textContent = now.artist;
-		if (now.artwork !== cover) {
-			cover = now.artwork;
-			if (cover) $("art").src = cover; else $("art").removeAttribute("src");
+			announce(now, wasOn);
 		}
 		if (!(now.duration > 0)) $("fill").style.width = "0";
 	}
