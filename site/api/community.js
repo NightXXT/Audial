@@ -1,6 +1,6 @@
 // POST /api/community { license, signature, action, ... } — the closed beta community inside the app.
 // Whoever has a valid license gets in (see lib.authenticate); people show up by a nickname tied to their invite.
-// The creator is the invite marked "creator" in the admin page: posts news, creates polls, sets the status of ideas
+// The creator is the invite marked "creator" in the admin page: posts news (and pins them on top), creates polls, sets the status of ideas
 // and can delete anything. Everyone can post ideas or bugs, vote, comment, answer polls and delete their own posts.
 //
 // Storage (one Redis hash each, so a whole screen costs a handful of commands on the free plan):
@@ -98,11 +98,11 @@ const actions = {
     const creators = new Set([...ideas, ...news].filter((p) => p.creator).map((p) => p.code));
     const order = (s) => (s === "feita" || s === "nao" ? 1 : 0);
     ideas.sort((a, b) => order(a.status) - order(b.status) || b.votes.length - a.votes.length || b.createdAt - a.createdAt);
-    news.sort((a, b) => b.createdAt - a.createdAt);
+    news.sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || b.createdAt - a.createdAt);
     polls.sort((a, b) => Number(a.closed) - Number(b.closed) || b.createdAt - a.createdAt);
     return {
       me: ctx.me,
-      news: news.slice(0, 20).map((n) => ({ id: n.id, title: n.title, body: n.body, createdAt: n.createdAt, author: author(n, nicks, creators) })),
+      news: news.slice(0, 20).map((n) => ({ id: n.id, title: n.title, body: n.body, pinned: Boolean(n.pinned), createdAt: n.createdAt, author: author(n, nicks, creators) })),
       polls: polls.slice(0, 10).map((p) => {
         const counts = p.options.map(() => 0);
         for (const v of Object.values(p.votes)) if (counts[v] !== undefined) counts[v]++;
@@ -214,9 +214,19 @@ const actions = {
 
   async postNews(ctx, body) {
     creatorOnly(ctx);
-    const item = { id: newId(), code: ctx.code, badge: ctx.me.badge, creator: true, title: text(body.title, 3, 100, "o título"), body: text(body.body, 1, 3000, "o aviso"), createdAt: lib.now() };
+    const item = { id: newId(), code: ctx.code, badge: ctx.me.badge, creator: true, title: text(body.title, 3, 100, "o título"), body: text(body.body, 1, 3000, "o aviso"), pinned: body.pinned === true, createdAt: lib.now() };
     await hset(H.news, item.id, item);
     return { id: item.id };
+  },
+
+  // A pinned news item stays above the newer ones (e.g. the welcome message).
+  async pinNews(ctx, body) {
+    creatorOnly(ctx);
+    const item = await hgetJson(H.news, String(body.id || ""));
+    if (!item) throw fail("Esse aviso não existe mais.", 404, "unknown");
+    item.pinned = body.pinned !== false;
+    await hset(H.news, item.id, item);
+    return {};
   },
 
   async deleteNews(ctx, body) {
