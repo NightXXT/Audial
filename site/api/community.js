@@ -32,7 +32,8 @@ function newId() {
 }
 
 function text(value, min, max, what) {
-  const s = String(value ?? "").replace(/\r\n/g, "\n").replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, "").trim();
+  // the app's text boxes end lines with "\r" alone: turn every line ending into "\n" before dropping control characters
+  const s = String(value ?? "").replace(/\r\n?/g, "\n").replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, "").replace(/\n{3,}/g, "\n\n").trim();
   if (s.length < min) throw fail(min <= 1 ? `Escreva ${what}.` : `${what[0].toUpperCase() + what.slice(1)} precisa de pelo menos ${min} caracteres.`);
   if (s.length > max) throw fail(`${what[0].toUpperCase() + what.slice(1)} pode ter até ${max} caracteres.`);
   return s;
