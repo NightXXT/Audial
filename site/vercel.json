@@ -35,7 +35,7 @@
     {
       "source": "/overlay",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'sha256-ztzB6WCfIQuDN7xvLIlQl5ylYWRz2KGM9o/YuV79ZBg='; style-src 'unsafe-inline'; connect-src https://ntfy.sh; img-src https://*.ytimg.com https://*.googleusercontent.com https://*.ggpht.com; base-uri 'none'; form-action 'none'" },
+        { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'sha256-58/cKhzM1yJ9OT0qj3goX2vGavwSf9qu7AqtFMHZVos='; style-src 'unsafe-inline'; connect-src https://ntfy.sh; img-src https://*.ytimg.com https://*.googleusercontent.com https://*.ggpht.com; base-uri 'none'; form-action 'none'" },
         { "key": "Referrer-Policy", "value": "no-referrer" }
       ]
     }
