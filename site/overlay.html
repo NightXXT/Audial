@@ -76,17 +76,21 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 @keyframes ring { from { box-shadow: 0 0 0 0 rgba(247, 81, 161, .8); } to { box-shadow: 0 0 0 12px rgba(247, 81, 161, 0); } }
 @keyframes letter { from { opacity: 0; transform: translateY(14px) scale(.9); filter: blur(5px); } to { opacity: 1; transform: none; filter: none; } }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
-/* Christmas (Nov 12 to Jan 6, Dia de Reis): a string of blinking lights along the top of the card and a Santa hat on the cover */
-#stage.xmas #card::before { content: ""; position: absolute; left: 14px; right: 14px; top: 1px; height: 8px; z-index: 2; pointer-events: none;
-	background: radial-gradient(circle at 50% 3px, #F43F5E 2.8px, transparent 3.8px) 0 0 / 24px 8px repeat-x,
-		radial-gradient(circle at 50% 3px, #F751A1 2.8px, transparent 3.8px) 8px 0 / 24px 8px repeat-x,
-		radial-gradient(circle at 50% 3px, #8B5CF6 2.8px, transparent 3.8px) 16px 0 / 24px 8px repeat-x;
-	filter: drop-shadow(0 0 3px rgba(247, 81, 161, .9)); animation: twinkle 2.4s ease-in-out infinite; }
-@keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+/* Christmas (Nov 12 to Jan 6, Dia de Reis): a garland of lights hung in arcs from little nails along the top of the card and a Santa hat on the cover */
+#garland { display: none; position: absolute; left: 98px; right: 12px; top: 0; height: 18px; z-index: 2; pointer-events: none; overflow: visible; }
+#stage.xmas #garland { display: block; }
+#garland .wire { fill: none; stroke: rgba(255, 255, 255, .38); stroke-width: 1; }
+#garland .nail { fill: #9CA3AF; stroke: #111318; stroke-width: .6; }
+#garland .cap { fill: #6B7280; }
+#garland .bulb { animation: twinkle 2.4s ease-in-out infinite; }
+#garland .c1 { fill: #F43F5E; filter: drop-shadow(0 0 2.5px #F43F5E); }
+#garland .c2 { fill: #F751A1; filter: drop-shadow(0 0 2.5px #F751A1); animation-delay: -.8s; }
+#garland .c3 { fill: #8B5CF6; filter: drop-shadow(0 0 2.5px #8B5CF6); animation-delay: -1.6s; }
+@keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
 #stage.xmas #artbox::after { content: ""; position: absolute; left: -10px; top: -9px; width: 32px; height: 26px; z-index: 2; pointer-events: none;
 	background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32'><path d='M5 25 C9 12 18 3 28 4 C33 5 35 10 36 16 C31 12 27 13 25 17 L33 25 Z' fill='%23E11D48'/><rect x='2' y='22' width='34' height='8' rx='4' fill='%23fff'/><circle cx='36' cy='17' r='4' fill='%23fff'/></svg>") center / contain no-repeat; transform: rotate(-14deg); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .5)); }
 @media (prefers-reduced-motion: reduce) {
-	#stage.xmas #card::before { animation: none; }
+	#garland .bulb { animation: none !important; }
 	#card.in, #card.in *, #eq i { animation: none !important; }
 	#card.out * { transition: none !important; }
 	#tag, #stage.sponsor #tag, #stage.alert #tag { transition: none; } }
@@ -98,6 +102,7 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 	<div id="slot"><div id="tag"><i></i>Sponsored by <b>Audial</b></div></div>
 	<div id="card">
 		<div id="wipe"></div>
+		<svg id="garland" viewBox="-2 0 314 18" preserveAspectRatio="none" aria-hidden="true"><path class="wire" d="M0 2 Q25.8 13 51.7 2 Q77.5 13 103.3 2 Q129.2 13 155.0 2 Q180.8 13 206.7 2 Q232.5 13 258.3 2 Q284.2 13 310.0 2"/><rect class="cap" x="11.8" y="5.7" width="2.2" height="2"/><ellipse class="bulb c1" cx="12.9" cy="10.1" rx="2.3" ry="3.3"/><rect class="cap" x="24.7" y="7.1" width="2.2" height="2"/><ellipse class="bulb c2" cx="25.8" cy="11.5" rx="2.3" ry="3.3"/><rect class="cap" x="37.6" y="5.7" width="2.2" height="2"/><ellipse class="bulb c3" cx="38.8" cy="10.1" rx="2.3" ry="3.3"/><rect class="cap" x="63.5" y="5.7" width="2.2" height="2"/><ellipse class="bulb c1" cx="64.6" cy="10.1" rx="2.3" ry="3.3"/><rect class="cap" x="76.4" y="7.1" width="2.2" height="2"/><ellipse class="bulb c2" cx="77.5" cy="11.5" rx="2.3" ry="3.3"/><rect class="cap" x="89.3" y="5.7" width="2.2" height="2"/><ellipse class="bulb c3" cx="90.4" cy="10.1" rx="2.3" ry="3.3"/><rect class="cap" x="115.2" y="5.7" width="2.2" height="2"/><ellipse class="bulb c1" cx="116.2" cy="10.1" rx="2.3" ry="3.3"/><rect class="cap" x="128.1" y="7.1" width="2.2" height="2"/><ellipse class="bulb c2" cx="129.2" cy="11.5" rx="2.3" ry="3.3"/><rect class="cap" x="141.0" y="5.7" width="2.2" height="2"/><ellipse class="bulb c3" cx="142.1" cy="10.1" rx="2.3" ry="3.3"/><rect class="cap" x="166.8" y="5.7" width="2.2" height="2"/><ellipse class="bulb c1" cx="167.9" cy="10.1" rx="2.3" ry="3.3"/><rect class="cap" x="179.7" y="7.1" width="2.2" height="2"/><ellipse class="bulb c2" cx="180.8" cy="11.5" rx="2.3" ry="3.3"/><rect class="cap" x="192.7" y="5.7" width="2.2" height="2"/><ellipse class="bulb c3" cx="193.8" cy="10.1" rx="2.3" ry="3.3"/><rect class="cap" x="218.5" y="5.7" width="2.2" height="2"/><ellipse class="bulb c1" cx="219.6" cy="10.1" rx="2.3" ry="3.3"/><rect class="cap" x="231.4" y="7.1" width="2.2" height="2"/><ellipse class="bulb c2" cx="232.5" cy="11.5" rx="2.3" ry="3.3"/><rect class="cap" x="244.3" y="5.7" width="2.2" height="2"/><ellipse class="bulb c3" cx="245.4" cy="10.1" rx="2.3" ry="3.3"/><rect class="cap" x="270.1" y="5.7" width="2.2" height="2"/><ellipse class="bulb c1" cx="271.2" cy="10.1" rx="2.3" ry="3.3"/><rect class="cap" x="283.1" y="7.1" width="2.2" height="2"/><ellipse class="bulb c2" cx="284.2" cy="11.5" rx="2.3" ry="3.3"/><rect class="cap" x="296.0" y="5.7" width="2.2" height="2"/><ellipse class="bulb c3" cx="297.1" cy="10.1" rx="2.3" ry="3.3"/><circle class="nail" cx="0.0" cy="2" r="1.6"/><circle class="nail" cx="51.7" cy="2" r="1.6"/><circle class="nail" cx="103.3" cy="2" r="1.6"/><circle class="nail" cx="155.0" cy="2" r="1.6"/><circle class="nail" cx="206.7" cy="2" r="1.6"/><circle class="nail" cx="258.3" cy="2" r="1.6"/><circle class="nail" cx="310.0" cy="2" r="1.6"/></svg>
 		<div id="artbox"><img id="art" alt=""><div id="ring"></div></div>
 		<div id="info">
 			<div id="row"><div id="title"></div><div id="eq"><i></i><i></i><i></i><i></i></div></div>
@@ -152,7 +157,7 @@ let alertTimer = 0;
 let alertUp = false;
 const GIFTS = { "rose": "🌹", "heart me": "❤️", "finger heart": "🫰", "tiktok": "🎵", "gg": "🎮", "ice cream cone": "🍦",
 	"doughnut": "🍩", "perfume": "🧴", "galaxy": "🌌", "lion": "🦁", "universe": "🪐" };
-const KINDS = ["follow", "gift", "request", "sub", "superchat", "sticker", "member", "gifted"];
+const KINDS = ["follow", "gift", "request", "sub", "superchat", "sticker", "member", "gifted", "resub", "giftsub", "bits", "raid"];
 function alertText(a) {
 	switch (a.kind) {
 		case "follow": return "começou a seguir";
@@ -161,6 +166,10 @@ function alertText(a) {
 		case "superchat": return "mandou Super Chat " + a.gift.slice(0, 20);
 		case "sticker": return "mandou Super Sticker " + a.gift.slice(0, 20);
 		case "member": return "virou membro";
+		case "resub": return a.count > 1 ? "renovou a inscrição · " + a.count + " meses" : "renovou a inscrição";
+		case "giftsub": return "deu " + a.count + (a.count === 1 ? " inscrição de presente" : " inscrições de presente");
+		case "bits": return "mandou " + a.count + " bits";
+		case "raid": return "chegou com raid de " + a.count;
 		case "gifted": return "deu " + a.count + (a.count === 1 ? " assinatura de membro" : " assinaturas de membro");
 		default: return "mandou " + (GIFTS[a.gift.toLowerCase()] || a.gift || "um presente") + " x" + a.count;
 	}
@@ -171,7 +180,7 @@ function takeAlerts(list, sentAt) {
 		if (!a || typeof a !== "object" || !KINDS.includes(a.kind)) continue;
 		const user = typeof a.user === "string" ? a.user.trim().slice(0, 40) : "";
 		if (!user) continue;
-		const count = Math.min(9999, Math.max(1, Math.floor(num(a.count)) || 1));
+		const count = Math.min(999999, Math.max(1, Math.floor(num(a.count)) || 1));
 		// for a song request, "gift" carries the song's title
 		const gift = typeof a.gift === "string" ? a.gift.trim().slice(0, 60) : "";
 		alerts.push({ kind: a.kind, user, gift, count });
@@ -306,6 +315,10 @@ function connect() {
 		try {
 			const m = JSON.parse(JSON.parse(event.data).message);
 			show(m);
+			if (m && typeof m === "object" && typeof m.xmas === "boolean") {
+				xmasOn = m.xmas;
+				$("stage").classList.toggle("xmas", season && xmasOn);
+			}
 			if (m && typeof m === "object" && m.alerts) takeAlerts(m.alerts, num(m.sentAt));
 		} catch {}
 	};
@@ -316,11 +329,10 @@ function connect() {
 		}
 	};
 }
-// Christmas theme, on by itself from November 12 to January 6 (Dia de Reis)
-{
-	const d = new Date(), m = d.getMonth(), day = d.getDate();
-	if ((m === 10 && day >= 12) || m === 11 || (m === 0 && day <= 6)) $("stage").classList.add("xmas");
-}
+// Christmas theme: in season (November 12 to January 6, Dia de Reis) unless the app says it is turned off ("xmas": false)
+const season = (() => { const d = new Date(), m = d.getMonth(), day = d.getDate(); return (m === 10 && day >= 12) || m === 11 || (m === 0 && day <= 6); })();
+let xmasOn = true;
+$("stage").classList.toggle("xmas", season);
 if (/^[0-9a-f]{32}$/.test(id)) {
 	connect();
 	setInterval(() => {
