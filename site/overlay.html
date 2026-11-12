@@ -142,10 +142,23 @@ let alertTimer = 0;
 let alertUp = false;
 const GIFTS = { "rose": "🌹", "heart me": "❤️", "finger heart": "🫰", "tiktok": "🎵", "gg": "🎮", "ice cream cone": "🍦",
 	"doughnut": "🍩", "perfume": "🧴", "galaxy": "🌌", "lion": "🦁", "universe": "🪐" };
+const KINDS = ["follow", "gift", "request", "sub", "superchat", "sticker", "member", "gifted"];
+function alertText(a) {
+	switch (a.kind) {
+		case "follow": return "começou a seguir";
+		case "request": return "pediu " + a.gift;
+		case "sub": return "se inscreveu";
+		case "superchat": return "mandou Super Chat " + a.gift.slice(0, 20);
+		case "sticker": return "mandou Super Sticker " + a.gift.slice(0, 20);
+		case "member": return "virou membro";
+		case "gifted": return "deu " + a.count + (a.count === 1 ? " assinatura de membro" : " assinaturas de membro");
+		default: return "mandou " + (GIFTS[a.gift.toLowerCase()] || a.gift || "um presente") + " x" + a.count;
+	}
+}
 function takeAlerts(list, sentAt) {
 	if (!Array.isArray(list) || Math.abs(Date.now() - sentAt) > 30000) return;
 	for (const a of list.slice(0, 6)) {
-		if (!a || typeof a !== "object" || (a.kind !== "follow" && a.kind !== "gift" && a.kind !== "request")) continue;
+		if (!a || typeof a !== "object" || !KINDS.includes(a.kind)) continue;
 		const user = typeof a.user === "string" ? a.user.trim().slice(0, 40) : "";
 		if (!user) continue;
 		const count = Math.min(9999, Math.max(1, Math.floor(num(a.count)) || 1));
@@ -172,7 +185,7 @@ function alertTag(a) {
 	who.textContent = a.user;
 	const what = document.createElement("span");
 	what.className = "what";
-	what.textContent = a.kind === "follow" ? "começou a seguir" : a.kind === "request" ? "pediu " + a.gift : "mandou " + (GIFTS[a.gift.toLowerCase()] || a.gift || "um presente") + " x" + a.count;
+	what.textContent = alertText(a);
 	tag.append(document.createElement("i"), who, what);
 }
 function pump() {
