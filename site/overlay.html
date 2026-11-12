@@ -44,6 +44,11 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 	-webkit-background-clip: text; background-clip: text; color: transparent; }
 #tag i { width: 7px; height: 7px; border-radius: 50%; background: linear-gradient(135deg, #F43F5E, #8B5CF6); }
 #stage.sponsor #tag { transform: none; transition: transform .6s .9s cubic-bezier(.34, 1.56, .64, 1); }
+/* live alerts (a follow, a gift) use the same tag: it rises with the same bounce, holds a few seconds and goes back */
+#slot { max-width: 384px; }
+#tag .who { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: #111318; font-weight: 800; }
+#tag .what { flex: none; max-width: 250px; overflow: hidden; text-overflow: ellipsis; }
+#stage.alert #tag { transform: none; transition: transform .6s .1s cubic-bezier(.34, 1.56, .64, 1); }
 
 /* the song change, about 1.5 s:
    out: the old title and artist slide left and blur away, the cover turns its back;
@@ -74,7 +79,7 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 @media (prefers-reduced-motion: reduce) {
 	#card.in, #card.in *, #eq i { animation: none !important; }
 	#card.out * { transition: none !important; }
-	#tag, #stage.sponsor #tag { transition: none; } }
+	#tag, #stage.sponsor #tag, #stage.alert #tag { transition: none; } }
 </style>
 </head>
 <body>
@@ -108,8 +113,10 @@ function tick() {
 	const on = !!now && now.playing && !ended;
 	$("card").classList.toggle("on", on);
 	if (!on) {
-		$("stage").classList.remove("sponsor");
+		$("stage").classList.remove("sponsor", "alert");
 		song = "";
+	} else {
+		pump();
 	}
 	if (on && now.duration > 0) $("fill").style.width = Math.min(100, elapsed() / now.duration * 100) + "%";
 }
@@ -127,6 +134,65 @@ function clean(m) {
 	if (!m || typeof m !== "object" || m.playing !== true) return { playing: false };
 	return { playing: true, title: text(m.title), artist: text(m.artist), artwork: typeof m.artwork === "string" ? youtubeImage(m.artwork) : null,
 		position: Math.max(0, num(m.position)), duration: Math.max(0, num(m.duration)), sentAt: num(m.sentAt) || Date.now() };
+}
+// Live alerts: a queue shown one at a time on the white tag, only while the card is on screen and never over the
+// "Sponsored by" of a song that just came in. Old ones replayed by a reconnect are ignored.
+const alerts = [];
+let alertTimer = 0;
+let alertUp = false;
+const GIFTS = { "rose": "🌹", "heart me": "❤️", "finger heart": "🫰", "tiktok": "🎵", "gg": "🎮", "ice cream cone": "🍦",
+	"doughnut": "🍩", "perfume": "🧴", "galaxy": "🌌", "lion": "🦁", "universe": "🪐" };
+function takeAlerts(list, sentAt) {
+	if (!Array.isArray(list) || Math.abs(Date.now() - sentAt) > 30000) return;
+	for (const a of list.slice(0, 6)) {
+		if (!a || typeof a !== "object" || (a.kind !== "follow" && a.kind !== "gift" && a.kind !== "request")) continue;
+		const user = typeof a.user === "string" ? a.user.trim().slice(0, 40) : "";
+		if (!user) continue;
+		const count = Math.min(9999, Math.max(1, Math.floor(num(a.count)) || 1));
+		// for a song request, "gift" carries the song's title
+		const gift = typeof a.gift === "string" ? a.gift.trim().slice(0, 60) : "";
+		alerts.push({ kind: a.kind, user, gift, count });
+	}
+	alerts.splice(0, Math.max(0, alerts.length - 20));
+	pump();
+}
+function sponsorTag() {
+	const tag = $("tag");
+	tag.textContent = "";
+	tag.append(document.createElement("i"), "Sponsored by ");
+	const b = document.createElement("b");
+	b.textContent = "Audial";
+	tag.appendChild(b);
+}
+function alertTag(a) {
+	const tag = $("tag");
+	tag.textContent = "";
+	const who = document.createElement("span");
+	who.className = "who";
+	who.textContent = a.user;
+	const what = document.createElement("span");
+	what.className = "what";
+	what.textContent = a.kind === "follow" ? "começou a seguir" : a.kind === "request" ? "pediu " + a.gift : "mandou " + (GIFTS[a.gift.toLowerCase()] || a.gift || "um presente") + " x" + a.count;
+	tag.append(document.createElement("i"), who, what);
+}
+function pump() {
+	if (alertUp || alertTimer || !alerts.length || !$("card").classList.contains("on") || $("stage").classList.contains("sponsor")) return;
+	alertTag(alerts.shift());
+	alertUp = true;
+	void $("tag").offsetWidth;
+	$("stage").classList.add("alert");
+	alertTimer = setTimeout(lowerAlert, 4200);
+}
+// The tag goes down, gets its usual text back once it is out of sight, and the next alert may come.
+function lowerAlert() {
+	clearTimeout(alertTimer);
+	$("stage").classList.remove("alert");
+	alertTimer = setTimeout(() => {
+		alertUp = false;
+		alertTimer = 0;
+		if (!$("stage").classList.contains("sponsor")) sponsorTag();
+		pump();
+	}, 500);
 }
 // One span per letter, each a little later than the one before (the whole title takes about half a second).
 function setTitle(title) {
@@ -158,9 +224,19 @@ function enter(n) {
 	card.classList.remove("out", "in");
 	void card.offsetWidth;
 	card.classList.add("in");
+	// an alert on the tag gives way to the new song: the tag goes down and rises again as "Sponsored by"
+	if (alertUp) {
+		clearTimeout(alertTimer);
+		$("stage").classList.remove("alert");
+		alertUp = false;
+		alertTimer = setTimeout(() => { alertTimer = 0; sponsorTag(); }, 450);
+	}
 	$("stage").classList.add("sponsor");
 	clearTimeout(sponsorTimer);
-	sponsorTimer = setTimeout(() => $("stage").classList.remove("sponsor"), 5600);
+	sponsorTimer = setTimeout(() => {
+		$("stage").classList.remove("sponsor");
+		setTimeout(pump, 1100);
+	}, 5600);
 }
 function announce(n, wasOn) {
 	clearTimeout(swapTimer);
@@ -205,7 +281,9 @@ function connect() {
 	relay.onmessage = event => {
 		alive();
 		try {
-			show(JSON.parse(JSON.parse(event.data).message));
+			const m = JSON.parse(JSON.parse(event.data).message);
+			show(m);
+			if (m && typeof m === "object" && m.alerts) takeAlerts(m.alerts, num(m.sentAt));
 		} catch {}
 	};
 	relay.onerror = () => {
