@@ -211,3 +211,32 @@
   new ResizeObserver(refresh).observe(tl);
   refresh();
 })();
+
+// Christmas theme: on by itself from November 12 to January 6 (Dia de Reis), off the rest of the year.
+// Light snow, a Santa hat on the logo and a string of lights under the nav, in the Audial colors.
+(() => {
+  const d = new Date(), m = d.getMonth(), day = d.getDate();
+  if (!((m === 10 && day >= 12) || m === 11 || (m === 0 && day <= 6))) return;
+  document.documentElement.classList.add("xmas");
+  const nav = document.getElementById("nav");
+  if (nav) {
+    const lights = document.createElement("div");
+    lights.className = "xmas-lights";
+    lights.setAttribute("aria-hidden", "true");
+    for (let i = 0; i < 40; i++) lights.appendChild(document.createElement("i"));
+    nav.appendChild(lights);
+  }
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const snow = document.createElement("div");
+  snow.className = "xmas-snow";
+  snow.setAttribute("aria-hidden", "true");
+  const count = matchMedia("(max-width: 760px)").matches ? 22 : 45;
+  for (let i = 0; i < count; i++) {
+    const f = document.createElement("i");
+    const size = 2 + Math.random() * 4;
+    f.style.cssText = `left:${Math.random() * 100}%;width:${size}px;height:${size}px;opacity:${0.35 + Math.random() * 0.5};` +
+      `animation-duration:${9 + Math.random() * 12}s,${3 + Math.random() * 3}s;animation-delay:-${Math.random() * 20}s,-${Math.random() * 3}s`;
+    snow.appendChild(f);
+  }
+  document.body.appendChild(snow);
+})();

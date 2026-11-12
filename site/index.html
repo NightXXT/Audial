@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=5">
+<link rel="stylesheet" href="/assets/site.css?v=10">
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
@@ -86,8 +86,25 @@
         <figure class="window main-shot">
           <img src="/img/tocando.webp" alt="Tela Tocando agora do Audial" width="1424" height="952">
         </figure>
-        <figure class="float float-mini" data-depth="40">
-          <img src="/img/mini-player.webp" alt="Mini Player do Audial" width="400" height="240">
+        <figure class="float float-mini" data-depth="40" role="img" aria-label="Mini Player do Audial">
+          <div class="mp">
+            <div class="mp-glow"></div>
+            <div class="mp-top"><span class="mp-brand"><img src="/img/logo.png?v=2" alt="" width="14" height="14">Audial Mini</span><span class="mp-pin"><svg viewBox="0 0 24 24"><path d="M12 17v5M9 3h6l-1 6 3 3H7l3-3-1-6Z"/></svg></span></div>
+            <div class="mp-body">
+              <div class="mp-art"></div>
+              <div class="mp-info">
+                <div class="mp-title">Spectral Horizons</div>
+                <div class="mp-artist">Aether Collective</div>
+                <div class="mp-controls">
+                  <svg viewBox="0 0 24 24" class="mp-btn"><path d="M6 5v14M19 5 9 12l10 7V5Z"/></svg>
+                  <span class="mp-play"><svg viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg></span>
+                  <svg viewBox="0 0 24 24" class="mp-btn"><path d="M18 5v14M5 5l10 7-10 7V5Z"/></svg>
+                  <span class="mp-vol"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Zm13 0a4 4 0 0 1 0 6"/></svg><i><b></b></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="mp-time"><span>0:37</span><div class="mp-bar"><b></b></div><span>2:37</span></div>
+          </div>
         </figure>
         <div class="float float-discord glass" data-depth="70">
           <div class="dc-head">Ouvindo <b>Audial</b></div>
@@ -167,7 +184,27 @@
           <div class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="11" y="11" width="8" height="6" rx="1"/></svg></div>
           <h3>Mini Player</h3>
           <p>Sempre visível sobre as outras janelas, com volume na rodinha do mouse.</p>
-          <div class="mini-shot"><img src="/img/mini-player.webp" alt="" loading="lazy" width="400" height="240"></div>
+          <!-- drawn in HTML instead of a screenshot, so it has no Windows title bar and stays sharp -->
+          <div class="mini-shot" aria-hidden="true">
+            <div class="mp">
+              <div class="mp-glow"></div>
+              <div class="mp-top"><span class="mp-brand"><img src="/img/logo.png?v=2" alt="" width="14" height="14">Audial Mini</span><span class="mp-pin"><svg viewBox="0 0 24 24"><path d="M12 17v5M9 3h6l-1 6 3 3H7l3-3-1-6Z"/></svg></span></div>
+              <div class="mp-body">
+                <div class="mp-art"></div>
+                <div class="mp-info">
+                  <div class="mp-title">Spectral Horizons</div>
+                  <div class="mp-artist">Aether Collective</div>
+                  <div class="mp-controls">
+                    <svg viewBox="0 0 24 24" class="mp-btn"><path d="M6 5v14M19 5 9 12l10 7V5Z"/></svg>
+                    <span class="mp-play"><svg viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg></span>
+                    <svg viewBox="0 0 24 24" class="mp-btn"><path d="M18 5v14M5 5l10 7-10 7V5Z"/></svg>
+                    <span class="mp-vol"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Zm13 0a4 4 0 0 1 0 6"/></svg><i><b></b></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="mp-time"><span>0:37</span><div class="mp-bar"><b></b></div><span>2:37</span></div>
+            </div>
+          </div>
           <div class="card-foot"><span>Abrir com <kbd>Ctrl</kbd> + <kbd>M</kbd></span></div>
         </article>
 
@@ -399,6 +436,13 @@
               <p>Letras sincronizadas que acendem no ritmo da música, estilo karaokê, e playlists salvas no próprio PC. Quando o que toca é um clipe, o Audial troca sozinho pela versão em áudio. No Ouvir junto, o dono da sala pode dar controle total aos amigos. E ainda: aleatório e repetir, luzes RGB nos aparelhos Razer, SteelSeries e OpenRGB, menos uso de CPU com a música parada e o overlay de live que se reconecta sozinho.</p>
               <div class="chips"><span>Letras sincronizadas</span><span>Playlists no PC</span><span>Controle total</span><span>Aleatório e repetir</span></div>
             </article>
+            <!-- a side branch off the trunk: an extra of the same day, not a new version -->
+            <aside class="tl-twig glass reveal">
+              <span class="tl-twig-tag">12 de novembro · extra</span>
+              <h4>Alertas e pedidos na live</h4>
+              <p>O overlay de live ganhou alertas na etiqueta do card: quem começou a seguir e os presentes no TikTok, inscritos, Super Chats e membros no YouTube. E quem assiste pode pedir música no chat com !musica, com um filtro anti-zoeira que barra funk pesado, memes e versões aceleradas.</p>
+              <div class="chips"><span>TikFinity</span><span>Streamer.bot</span><span>!musica</span></div>
+            </aside>
           </li>
           <li class="tl-item next">
             <div class="tl-when reveal"><span class="tl-date">2027</span><span class="tl-ver">v1.0</span></div>
@@ -450,6 +494,6 @@
 </footer>
 
 <script src="/assets/guard.js" defer></script>
-<script src="/assets/site.js?v=4" defer></script>
+<script src="/assets/site.js?v=5" defer></script>
 </body>
 </html>
