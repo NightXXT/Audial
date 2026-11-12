@@ -185,14 +185,45 @@ function show(next) {
 	}
 	tick();
 }
-if (/^[0-9a-f]{32}$/.test(id)) {
-	const relay = new EventSource("https://ntfy.sh/audial-live-" + id + "/sse?since=latest");
+// The relay connection is kept alive by hand: OBS keeps the page open for hours, and a stream that drops (sleep, Wi-Fi,
+// the relay restarting, a refused reconnect) either closes for good or goes quiet without an error. The relay sends a
+// keepalive every 45 s, so silence for longer than that means the stream is dead: open a new one, which starts with
+// the latest message (the current song).
+let relay = null;
+let lastSeen = 0;
+let retry = 0;
+let retryTimer = 0;
+function connect() {
+	clearTimeout(retryTimer);
+	retryTimer = 0;
+	if (relay) relay.close();
+	lastSeen = Date.now();
+	relay = new EventSource("https://ntfy.sh/audial-live-" + id + "/sse?since=latest");
+	const alive = () => { lastSeen = Date.now(); retry = 0; };
+	relay.addEventListener("open", alive);
+	relay.addEventListener("keepalive", alive);
 	relay.onmessage = event => {
+		alive();
 		try {
 			show(JSON.parse(JSON.parse(event.data).message));
 		} catch {}
 	};
-	setInterval(tick, 1000);
+	relay.onerror = () => {
+		if (relay.readyState === EventSource.CLOSED) {
+			retry = Math.min(retry + 1, 6);
+			retryTimer = setTimeout(connect, 2000 * retry * retry);
+		}
+	};
+}
+if (/^[0-9a-f]{32}$/.test(id)) {
+	connect();
+	setInterval(() => {
+		tick();
+		if (Date.now() - lastSeen > 100000 && !retryTimer) connect();
+	}, 1000);
+	document.addEventListener("visibilitychange", () => {
+		if (!document.hidden && Date.now() - lastSeen > 50000) connect();
+	});
 }
 </script>
 </body>
