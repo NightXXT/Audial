@@ -1,9 +1,10 @@
 // POST /api/admin { action, ... } with "Authorization: Bearer <AUDIAL_ADMIN_PASSWORD>". Used by the hidden admin page.
-// Actions: list, create, setDays, extend, update, cancel, restore, removePc, delete, discordRegister.
+// Actions: list, create, setDays, extend, update, cancel, restore, removePc, deleteProfile, delete, discordRegister, ticketUrl.
 "use strict";
 
 const crypto = require("crypto");
 const lib = require("./_lib");
+const P = require("./_profile");
 
 function sameSecret(a, b) {
   const ha = crypto.createHash("sha256").update(String(a)).digest();
@@ -70,8 +71,9 @@ const actions = {
       if (invite) invites.push(invite);
     }
     const t = lib.now();
+    const profiles = await P.allProfiles();
     invites.sort((a, b) => b.createdAt - a.createdAt);
-    return { now: t, invites: invites.map((i) => view(i, t)) };
+    return { now: t, invites: invites.map((i) => ({ ...view(i, t), profile: profiles[i.code] ? { name: profiles[i.code].name } : null })) };
   },
 
   async create(body) {
@@ -130,6 +132,7 @@ const actions = {
     if (body.maxPcs !== undefined) invite.maxPcs = cleanPcs(body.maxPcs);
     if (body.badge !== undefined) invite.badge = cleanBadge(body.badge);
     if (body.note !== undefined) invite.note = cleanNote(body.note);
+    // Creator is the badge that must not be faked: only this panel sets it (stored in the invite, in Redis)
     if (body.creator !== undefined) invite.creator = body.creator === true;
     await lib.saveInvite(invite);
     return { invite: view(invite, lib.now()) };
@@ -156,8 +159,16 @@ const actions = {
     return { invite: view(invite, lib.now()) };
   },
 
+  // Removes the profile of an invite (an offensive name, for example). The person can make a new one.
+  async deleteProfile(body) {
+    const invite = await load(body.code);
+    await P.deleteProfile(invite.code);
+    return { invite: view(invite, lib.now()) };
+  },
+
   async delete(body) {
     const invite = await load(body.code);
+    await P.deleteProfile(invite.code);
     await lib.redis("DEL", "inv:" + invite.code);
     await lib.redis("SREM", "invites", invite.code);
     // the community nickname goes too (posts stay, shown as "Alguém do beta")

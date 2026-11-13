@@ -12,6 +12,7 @@
 
 const crypto = require("crypto");
 const lib = require("./_lib");
+const P = require("./_profile");
 
 const STATUSES = ["nova", "analisando", "planejada", "feita", "nao"];
 const KINDS = ["ideia", "bug"];
@@ -67,11 +68,29 @@ async function limit(code, kind, max) {
   if (count > max) throw fail("Calma! Você fez isso muitas vezes nesta hora. Tente de novo mais tarde.", 429, "limit");
 }
 
-function author(post, nicks, creators) {
+function author(post, nicks, creators, cards) {
   return {
     nick: nicks[post.code] || "Alguém do beta",
     badge: post.badge === "apoiador" ? "apoiador" : "beta",
     creator: Boolean(post.creator || creators.has(post.code)),
+    // signed profile (name, avatar, badges): the app shows the profile and its badges only when the signature checks out
+    ...(cards && cards(post.code)),
+  };
+}
+
+/** card(code) -> { card, signature } of that invite's profile (signed once per call), or nothing. */
+async function cardMaker() {
+  const profiles = await P.allProfiles();
+  const done = new Map();
+  return async function prepare(codes) {
+    // every invite needed in ONE command (MGET), not one GET per author: the feed used to cost ~1 command per author
+    const wanted = [...new Set(codes)].filter((code) => !done.has(code) && profiles[code]);
+    const texts = wanted.length ? (await lib.redis("MGET", ...wanted.map((code) => "inv:" + code))) || [] : [];
+    wanted.forEach((code, i) => {
+      const invite = texts[i] ? JSON.parse(texts[i]) : null;
+      done.set(code, invite ? P.card(profiles[code], invite) : null);
+    });
+    return (code) => done.get(code) || undefined;
   };
 }
 
@@ -103,9 +122,11 @@ const actions = {
     ideas.sort((a, b) => order(a.status) - order(b.status) || b.votes.length - a.votes.length || b.createdAt - a.createdAt);
     news.sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || b.createdAt - a.createdAt);
     polls.sort((a, b) => Number(a.closed) - Number(b.closed) || b.createdAt - a.createdAt);
+    const shown = [...news.slice(0, 20), ...ideas.slice(0, 200)];
+    const cards = await (await cardMaker())(shown.map((p) => p.code));
     return {
       me: ctx.me,
-      news: news.slice(0, 20).map((n) => ({ id: n.id, title: n.title, body: n.body, pinned: Boolean(n.pinned), createdAt: n.createdAt, author: author(n, nicks, creators) })),
+      news: news.slice(0, 20).map((n) => ({ id: n.id, title: n.title, body: n.body, pinned: Boolean(n.pinned), createdAt: n.createdAt, author: author(n, nicks, creators, cards) })),
       polls: polls.slice(0, 10).map((p) => {
         const counts = p.options.map(() => 0);
         for (const v of Object.values(p.votes)) if (counts[v] !== undefined) counts[v]++;
@@ -122,7 +143,7 @@ const actions = {
         mine: i.code === ctx.code,
         comments: i.comments || 0,
         createdAt: i.createdAt,
-        author: author(i, nicks, creators),
+        author: author(i, nicks, creators, cards),
       })),
     };
   },
@@ -151,7 +172,8 @@ const actions = {
     const id = String(body.id || "");
     const [list, nicks] = [(await hgetJson(H.comments, id)) || [], await hgetAllMap(H.nicks)];
     const creators = new Set(list.filter((c) => c.creator).map((c) => c.code));
-    return { comments: list.map((c) => ({ id: c.id, text: c.text, createdAt: c.createdAt, mine: c.code === ctx.code, author: author(c, nicks, creators) })) };
+    const cards = await (await cardMaker())(list.map((c) => c.code));
+    return { comments: list.map((c) => ({ id: c.id, text: c.text, createdAt: c.createdAt, mine: c.code === ctx.code, author: author(c, nicks, creators, cards) })) };
   },
 
   async comment(ctx, body) {

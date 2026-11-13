@@ -252,6 +252,7 @@ module.exports = {
   getInvite,
   saveInvite,
   inviteStatus,
+  signingKey,
   issueLicense,
   authenticate,
   send,

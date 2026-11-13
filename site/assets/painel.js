@@ -88,6 +88,7 @@
             inv.creator ? el("span", { class: "pill creator" }, "Criador") : null,
             el("span", { class: "meta" }, inv.note || "(sem nota)"),
           ),
+          inv.profile ? el("div", { class: "meta" }, "Perfil: ", el("b", {}, inv.profile.name)) : null,
           el("div", { class: "meta" }, "Prazo: " + term + " · " + left + " · PCs: " + inv.pcs.length + "/" + inv.maxPcs + " · criado " + fmtDate(inv.createdAt) + (inv.discord ? " · ligado ao Discord" : "")),
           inv.pcs.length ? pcsBox : null,
           el("div", { class: "actions" },
@@ -99,6 +100,8 @@
             button("Mudar prazo", "setDays", inv.code),
             button("Editar", "edit", inv.code),
             button(inv.creator ? "Tirar Criador" : "Tornar Criador", inv.creator ? "uncreator" : "creator", inv.code),
+            button(inv.badge === "apoiador" ? "Tirar Apoiador" : "Marcar Apoiador", inv.badge === "apoiador" ? "unsupporter" : "supporter", inv.code),
+            inv.profile ? button("Apagar perfil", "deleteProfile", inv.code, "d") : null,
             inv.cancelled ? button("Reativar", "restore", inv.code) : button("Cancelar", "cancel", inv.code, "d"),
             button("Apagar", "delete", inv.code, "d"),
           ),
@@ -216,10 +219,16 @@
           break;
         case "restore": await call("restore", { code }); break;
         case "creator":
-          if (!confirm("Marcar " + code + " como Criador? Quem usa este convite pode postar avisos, criar enquetes, mudar o status das ideias e apagar posts na Comunidade beta.")) return;
+          if (!confirm("Marcar " + code + " como Criador? Quem usa este convite pode postar avisos, criar enquetes, mudar o status das ideias e apagar posts na Comunidade beta, e o perfil dele mostra o selo de Criador com o ícone do Audial para todos.")) return;
           await call("update", { code, creator: true });
           break;
         case "uncreator": await call("update", { code, creator: false }); break;
+        case "supporter": await call("update", { code, badge: "apoiador" }); break;
+        case "unsupporter": await call("update", { code, badge: "beta" }); break;
+        case "deleteProfile":
+          if (!confirm("Apagar o perfil (nome e avatar) de " + code + "? A pessoa pode criar outro.")) return;
+          await call("deleteProfile", { code });
+          break;
         case "removePc":
           if (!confirm("Desligar este PC do convite? Ele vai precisar digitar o código de novo.")) return;
           await call("removePc", { code, machine: b.getAttribute("data-machine") });
