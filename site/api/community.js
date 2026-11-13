@@ -95,6 +95,8 @@ const actions = {
   },
 
   async feed(ctx) {
+    // the app loads the feed when the page opens: 120 an hour is plenty, and caps what one invite can cost
+    await limit(ctx.code, "feed", 120);
     const [nicks, ideas, news, polls] = [await hgetAllMap(H.nicks), await hgetAllJson(H.ideas), await hgetAllJson(H.news), await hgetAllJson(H.polls)];
     const creators = new Set([...ideas, ...news].filter((p) => p.creator).map((p) => p.code));
     const order = (s) => (s === "feita" || s === "nao" ? 1 : 0);

@@ -185,13 +185,43 @@ function clientIp(req) {
   return forwarded || String(req.headers["x-real-ip"] || "") || (req.socket && req.socket.remoteAddress) || "?";
 }
 
+// Calls already refused in this hour, per function instance: a flood from one IP stops costing Redis commands (the
+// free plan counts every command, and an INCR per refused call would let anyone use up the month's quota).
+const refused = new Set();
+
 /** True when this IP made fewer than `limit` calls of this kind in the current hour. Only a hash of the IP is kept. */
 async function allow(req, kind, limit) {
   const ip = crypto.createHash("sha256").update("audial-rl:" + clientIp(req)).digest("base64url").slice(0, 22);
   const key = "rl:" + kind + ":" + ip + ":" + Math.floor(now() / 3600);
+  if (refused.has(key)) return false;
   const count = Number(await redis("INCR", key));
   if (count === 1) await redis("EXPIRE", key, 3600);
-  return count <= limit;
+  if (count > limit) {
+    if (refused.size > 10000) refused.clear();
+    refused.add(key);
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Runs fn while holding a short lock on `name` (SET NX with an expiry), so two calls never read and write the same
+ * invite at once (two PCs activating together both passed the PC limit). Waits up to ~3 s for the lock.
+ */
+async function withLock(name, fn) {
+  const key = "lock:" + name;
+  const token = crypto.randomBytes(9).toString("base64url");
+  for (let i = 0; ; i++) {
+    if ((await redis("SET", key, token, "NX", "PX", 10000)) === "OK") break;
+    if (i >= 15) throw new ServerError("busy", "O servidor está ocupado. Tente de novo em alguns segundos.", 503);
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  try {
+    return await fn();
+  } finally {
+    // only our own lock (it may have expired and been taken by another call)
+    await redis("EVAL", "if redis.call('GET', KEYS[1]) == ARGV[1] then return redis.call('DEL', KEYS[1]) else return 0 end", 1, key, token).catch(() => {});
+  }
 }
 
 function handler(methods, fn) {
@@ -227,6 +257,7 @@ module.exports = {
   send,
   readBody,
   allow,
+  withLock,
   clientIp,
   handler,
 };

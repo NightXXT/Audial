@@ -8,11 +8,11 @@ const { MESSAGES } = require("./activate");
 const UNREGISTERED = "Este computador não está mais ligado a este convite. Digite o código de novo.";
 
 module.exports = lib.handler(["POST"], async (req, res) => {
-  if (!(await lib.allow(req, "chk", 60))) return lib.send(res, 429, { status: "limit", message: MESSAGES.limit });
   const body = await lib.readBody(req);
   const code = lib.normalizeCode(body.code);
   const machine = String(body.machine || "");
   if (!code || !lib.MACHINE_PATTERN.test(machine)) return lib.send(res, 400, { status: "invalid", message: MESSAGES.invalid });
+  if (!(await lib.allow(req, "chk", 60))) return lib.send(res, 429, { status: "limit", message: MESSAGES.limit });
 
   const invite = await lib.getInvite(code);
   if (!invite) return lib.send(res, 404, { status: "unknown", message: MESSAGES.unknown });
