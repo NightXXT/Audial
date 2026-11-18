@@ -228,20 +228,33 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 	animation: write .75s calc(var(--t) + .28s) cubic-bezier(.45, .05, .35, 1) backwards; }
 #stage.vice.alert #tag i { animation: pop .5s calc(var(--t) + .18s) cubic-bezier(.2, 1.6, .4, 1) backwards; }
 #stage.vice.alert #tag .who { animation: ignite .6s calc(var(--t) + .25s) linear backwards; }
-/* Neon Vice's "Powered by Audial": a hand-lettered line, written the way a pen would (monoline script, stroke by stroke,
-   pen lifts included, the A's bar and the i's dot last), then the neon around it catches with a flicker.
-   Every stroke is a path drawn three times: a dark backing for any game behind, the pink glow and the white core.
-   Way out: every stroke runs back at once. */
-#pw { display: none; }
-.vice #pw { display: block; position: absolute; left: 6px; top: -22px; z-index: 7; width: 175px; height: 38px; overflow: visible; pointer-events: none; }
-#pw use { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 2; stroke-dashoffset: 1;
-	transition: stroke-dashoffset .35s cubic-bezier(.5, 0, .75, 0); }
-#pw .bk use { stroke: rgba(12, 3, 26, .85); stroke-width: 6; }
-#pw .gw use { stroke: #FF2E88; stroke-width: 3.6; stroke-opacity: .55; }
-#pw .co use { stroke: #FFF4FA; stroke-width: 1.35; }
-#stage.vice.sponsor #pw use { stroke-dashoffset: 0; transition: none; animation: pen var(--s) calc(.9s + var(--d)) cubic-bezier(.4, .05, .6, .95) backwards; }
-#stage.vice.sponsor #pw .gw { animation: flick .9s 3.3s linear backwards; }
-@keyframes pen { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+/* Neon Vice's signature: "Audial" written in one neon tube (A, u, d, i, a, l and the swash under them, in a single line),
+   at the top right corner, clear of the title. It is written like Trim Paths in After Effects when the card comes in
+   (power2.inOut, the glow two frames behind the tube, a spark on the pen's tip, the dot of the i lighting once the
+   pen has gone by), then flickers on and blooms; after that the glow breathes and twitches now and then. A new song
+   only makes it flicker. Three layers, each its own <svg>: the blurred glow, the tube and the blooms, so the glow's
+   breathing is a plain opacity change on its own layer and never repaints the blur. */
+#sig { display: none; }
+.vice #sig { display: block; position: absolute; right: 4px; top: -19px; z-index: 7; width: 73px; height: 33px; pointer-events: none; opacity: 0; transition: opacity .3s; }
+.vice #card.on ~ #sig { opacity: 1; }
+#sig .in, #sig .sg { position: absolute; inset: 0; }
+#sig .sg { width: 100%; height: 100%; overflow: visible; }
+#sig use { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+#sig .dot { opacity: 0; transition: opacity .12s; }
+#sig.dot .dot { opacity: 1; }
+#sig .spark { opacity: 0; }
+#sig .glow { opacity: .85; will-change: opacity; }
+#sig .bloom { opacity: .55; will-change: opacity; }
+#sig.lit .in { animation: sflick .1s linear; }
+#sig.lit .glow { animation: sbreathe 2.4s .9s ease-in-out infinite; }
+#sig.lit .bloom { animation: sbloom .8s .1s cubic-bezier(.2, .7, .3, 1); }
+#sig.blink { animation: sblink .14s linear; }
+@keyframes sflick { 0% { opacity: 1; } 17% { opacity: .3; } 50% { opacity: 1; } 67% { opacity: .6; } 100% { opacity: 1; } }
+@keyframes sbreathe { 0%, 100% { opacity: .85; } 50% { opacity: 1; } }
+@keyframes sbloom { 0% { opacity: .55; } 30% { opacity: 1; } 100% { opacity: .55; } }
+@keyframes sblink { 0% { opacity: 1; } 30% { opacity: .35; } 55% { opacity: .95; } 75% { opacity: .55; } 100% { opacity: 1; } }
+/* the alert sign stops short of the signature */
+.vice #slot { max-width: 300px; }
 @keyframes signbox { 0% { clip-path: inset(-12px 50% -12px 50% round 6px); filter: brightness(2.6); } 55% { filter: brightness(1.5); }
 	100% { clip-path: inset(-12px -12px -12px -12px round 14px); filter: none; } }
 @keyframes write {
@@ -252,7 +265,7 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 @keyframes ignite { 0% { opacity: 0; } 8% { opacity: 1; } 15% { opacity: .1; } 24% { opacity: .9; } 30% { opacity: .25; }
 	40% { opacity: 1; color: #fff; text-shadow: 0 0 4px #fff, 0 0 10px #FFB347, 0 0 22px rgba(255, 138, 61, .95); } 100% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
-	#frame *, #stage.vice #tag, #stage.vice #tag *, #pw * { animation: none !important; transition: none !important; }
+	#frame *, #stage.vice #tag, #stage.vice #tag *, #sig, #sig * { animation: none !important; transition: none !important; }
 	#garland .bulb { animation: none !important; }
 	#card.in, #card.in *, #eq i { animation: none !important; }
 	#card.out * { transition: none !important; }
@@ -262,8 +275,6 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 <body>
 <!-- The site's security policy (vercel.json) only runs this page's script by its SHA-256: after editing the script, update that hash. -->
 <div id="stage">
-	<svg id="pw" viewBox="0 0 214 46" aria-hidden="true"><defs><path id="pw0" pathLength="1" d="M10 31C11 24 12 14 14 6C20 3 28 6 27 11C26 16 18 18 13 16"/><path id="pw1" pathLength="1" d="M33 21C29 19 26 24 27 28C28 31 32 31 33 27C34 24 34 21 32 20C34 21 36 22 37 21C37 25 37 29 39 30C41 31 42 26 42 22C42 26 43 31 45 30C47 29 48 25 48 20C49 21 50 22 52 22C55 22 57 20 56 18C55 16 52 17 52 21C52 26 54 30 57 30C59 30 60 28 61 26C62 24 62 22 63 20C64 21 64 21 66 21C66 24 66 27 67 30C68 27 70 23 73 22C75 22 77 20 76 18C75 16 72 17 72 21C72 26 74 30 77 30C79 30 80 28 81 26C81 23 83 21 85 20C82 19 79 23 80 27C81 31 85 30 87 26C88 18 92 8 90 5C88 2 86 10 87 18C88 24 88 28 90 30C91 31 92 30 93 29"/><path id="pw2" pathLength="1" d="M98 22C101 16 104 9 103 5C101 4 99 12 99 20C99 25 99 28 100 30C101 25 104 20 107 21C109 22 108 28 104 30C103 30 101 30 100 29"/><path id="pw3" pathLength="1" d="M111 21C111 25 111 29 114 29C117 29 118 25 118 20C118 28 118 36 116 40C114 43 110 42 111 39C112 36 117 34 121 32"/><path id="pw4" pathLength="1" d="M128 31C131 22 135 12 140 6C140 14 141 24 143 30C144 31 146 30 147 28C148 25 148 22 148 21C148 26 148 30 151 30C154 30 155 26 155 21C155 25 155 29 157 30C158 27 160 22 163 21C160 19 157 23 158 27C159 31 163 30 165 26C166 18 170 8 168 5C166 2 164 10 165 18C166 24 166 28 168 30C169 31 170 30 171 28C172 25 172 23 173 21C173 24 173 28 175 30C176 30 177 29 178 28C178 24 180 21 183 21C180 19 177 23 178 27C179 31 183 30 185 26C185 24 185 22 186 21C186 24 186 28 188 30C190 27 194 18 195 10C195 5 192 5 191 10C190 17 191 25 193 30C194 31 196 30 198 28"/><path id="pw5" pathLength="1" d="M131 21C135 20 139 20 143 19"/><path id="pw6" pathLength="1" d="M173.5 16.5l.01 0"/></defs>
-		<g class="bk"><use href="#pw0" style="--d: 0s; --s: 0.16s"/><use href="#pw1" style="--d: 0.22s; --s: 0.66s"/><use transform="translate(4 0)" href="#pw2" style="--d: 0.94s; --s: 0.19s"/><use transform="translate(4 0)" href="#pw3" style="--d: 1.17s; --s: 0.16s"/><use transform="translate(4 0)" href="#pw4" style="--d: 1.4s; --s: 0.8s"/><use transform="translate(4 0)" href="#pw5" style="--d: 2.26s; --s: 0.08s"/><use transform="translate(4 0)" href="#pw6" style="--d: 2.4s; --s: 0.06s"/></g><g class="gw"><use href="#pw0" style="--d: 0s; --s: 0.16s"/><use href="#pw1" style="--d: 0.22s; --s: 0.66s"/><use transform="translate(4 0)" href="#pw2" style="--d: 0.94s; --s: 0.19s"/><use transform="translate(4 0)" href="#pw3" style="--d: 1.17s; --s: 0.16s"/><use transform="translate(4 0)" href="#pw4" style="--d: 1.4s; --s: 0.8s"/><use transform="translate(4 0)" href="#pw5" style="--d: 2.26s; --s: 0.08s"/><use transform="translate(4 0)" href="#pw6" style="--d: 2.4s; --s: 0.06s"/></g><g class="co"><use href="#pw0" style="--d: 0s; --s: 0.16s"/><use href="#pw1" style="--d: 0.22s; --s: 0.66s"/><use transform="translate(4 0)" href="#pw2" style="--d: 0.94s; --s: 0.19s"/><use transform="translate(4 0)" href="#pw3" style="--d: 1.17s; --s: 0.16s"/><use transform="translate(4 0)" href="#pw4" style="--d: 1.4s; --s: 0.8s"/><use transform="translate(4 0)" href="#pw5" style="--d: 2.26s; --s: 0.08s"/><use transform="translate(4 0)" href="#pw6" style="--d: 2.4s; --s: 0.06s"/></g></svg>
 	<div id="slot"><div id="tag"><i></i><span class="w">Powered by</span><b><span>A</span><span>u</span><span>d</span><span>i</span><span>a</span><span>l</span></b></div></div>
 	<div id="card">
 		<div id="scene" aria-hidden="true"><div id="sky"><div id="halo"></div><div id="sun"></div></div><div id="sea"></div><div id="glint"></div><div id="horizon"></div><div id="dusk"></div>
@@ -283,6 +294,23 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 	<svg id="frame" viewBox="0 0 420 96" aria-hidden="true"><defs><linearGradient id="vg" x1="0" x2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset=".45" stop-color="#FF2E88"/><stop offset="1" stop-color="#A24BFF"/></linearGradient>
 		<path id="vh" pathLength="1" d="M.75 48V14.75A14 14 0 0 1 14.75 .75H405.25A14 14 0 0 1 419.25 14.75V48"/></defs>
 		<g class="tube"><use class="fw" href="#vh"/><use class="fw" href="#vh" transform="matrix(1 0 0 -1 0 96)"/><use class="fm" href="#vh"/><use class="fm" href="#vh" transform="matrix(1 0 0 -1 0 96)"/><use class="fc" href="#vh"/><use class="fc" href="#vh" transform="matrix(1 0 0 -1 0 96)"/></g></svg>
+	<div id="sig" aria-hidden="true"><div class="in">
+		<svg class="sg glow" viewBox="19 -3 260 118"><defs>
+			<linearGradient id="sgg" x1="0" y1="0" x2="1" y2=".3"><stop offset="0" stop-color="#F43F5E"/><stop offset=".55" stop-color="#E64A9C"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient>
+			<radialGradient id="sgb"><stop offset="0" stop-color="#FFE3F1" stop-opacity=".95"/><stop offset=".35" stop-color="#F751A1" stop-opacity=".55"/><stop offset="1" stop-color="#F751A1" stop-opacity="0"/></radialGradient>
+			<radialGradient id="sgs"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#FFD6EA" stop-opacity=".9"/><stop offset="1" stop-color="#F751A1" stop-opacity="0"/></radialGradient>
+			<filter id="sgw" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="7"/></filter>
+			<filter id="sgm" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="2.6"/></filter>
+			<path id="sgt" d="M22 86C32 64 44 34 57 14C61 34 64 60 70 81C74 90 52 66 36 56C52 50 78 48 92 53C92 62 88 74 94 80C100 85 108 72 110 56C110 68 110 78 117 80C122 81 127 74 131 66C135 58 143 54 150 57C140 51 128 60 131 73C134 85 148 80 152 62C155 46 159 28 163 13C161 40 157 66 162 79C165 85 172 78 177 66C178 62 179 58 180 55C180 66 179 78 186 80C190 81 195 74 199 66C203 58 211 54 219 57C209 51 196 60 199 73C202 85 216 80 219 58C217 70 217 79 223 80C228 81 233 72 237 62C242 46 251 22 245 12C237 4 230 30 232 52C234 73 238 82 247 81C266 79 281 84 270 92C254 101 160 102 92 97C58 95 34 93 25 90C18 88 20 84 28 86"/></defs>
+			<g transform="rotate(-6 150 65) translate(150 65) skewX(-10) translate(-150 -65)"><g filter="url(#sgw)" opacity=".9"><use class="tg" href="#sgt" stroke="url(#sgg)" stroke-width="13"/><circle class="dot" cx="183" cy="40" r="3.6" fill="url(#sgg)"/></g>
+			<g filter="url(#sgm)" opacity=".95"><use class="tg" href="#sgt" stroke="url(#sgg)" stroke-width="8"/><circle class="dot" cx="183" cy="40" r="5.5" fill="#F751A1"/></g></g></svg>
+		<svg class="sg core" viewBox="19 -3 260 118"><g transform="rotate(-6 150 65) translate(150 65) skewX(-10) translate(-150 -65)">
+			<use class="tc" href="#sgt" stroke="#FF8CC4" stroke-width="1.6" opacity=".28" transform="translate(1.6 1.4)"/>
+			<use class="tc" href="#sgt" stroke="#F751A1" stroke-width="5.2"/><use class="tc" href="#sgt" stroke="#FFC2E0" stroke-width="1.9"/>
+			<circle class="dot" cx="183" cy="40" r="3.3" fill="#F751A1"/><circle class="dot" cx="183" cy="40" r="1.4" fill="#FFE3F1"/>
+			<circle class="spark" r="9" fill="url(#sgs)"/></g></svg>
+		<svg class="sg bloom" viewBox="19 -3 260 118"><g transform="rotate(-6 150 65) translate(150 65) skewX(-10) translate(-150 -65)"><circle cx="44" cy="54" r="9" fill="url(#sgb)"/><circle cx="66" cy="50" r="9" fill="url(#sgb)"/><circle cx="236" cy="62" r="8" fill="url(#sgb)"/></g></svg>
+	</div></div>
 </div>
 <script>
 const $ = id => document.getElementById(id);
@@ -439,6 +467,9 @@ function enter(n) {
 	card.classList.remove("out", "in");
 	void card.offsetWidth;
 	card.classList.add("in");
+	if ($("stage").classList.contains("vice")) {
+		if (card.classList.contains("boot")) writeSign(); else blinkSign();
+	}
 	// an alert on the tag gives way to the new song: the tag goes down and rises again as "Powered by"
 	if (alertUp) {
 		clearTimeout(alertTimer);
@@ -515,12 +546,71 @@ function connect() {
 		}
 	};
 }
+// Neon Vice's signature (see the CSS). The glow trails the tube by two frames (33 ms); the spark rides the pen's tip.
+const sign = { len: 0, raf: 0, twitch: 0 };
+function signAt(p, g) {
+	const box = $("sig");
+	if (!sign.len) {
+		sign.len = document.getElementById("sgt").getTotalLength();
+		box.querySelectorAll("use").forEach(u => u.style.strokeDasharray = sign.len + " " + sign.len * 2);
+	}
+	box.querySelectorAll(".tc").forEach(u => u.style.strokeDashoffset = sign.len * (1 - p));
+	box.querySelectorAll(".tg").forEach(u => u.style.strokeDashoffset = sign.len * (1 - g));
+	const spark = box.querySelector(".spark");
+	const tip = document.getElementById("sgt").getPointAtLength(sign.len * p);
+	spark.setAttribute("cx", tip.x);
+	spark.setAttribute("cy", tip.y);
+	spark.style.opacity = p > 0 && p < 1 ? 1 : 0;
+	// the i's stem ends about halfway along the line
+	box.classList.toggle("dot", p >= .49);
+}
+function writeSign() {
+	const box = $("sig");
+	cancelAnimationFrame(sign.raf);
+	box.classList.remove("lit", "blink");
+	if (reduced) {
+		signAt(1, 1);
+		return;
+	}
+	signAt(0, 0);
+	const start = performance.now() + 900, length = 1400;
+	const ease = t => t < .5 ? 2 * t * t : 1 - (2 - 2 * t) ** 2 / 2;
+	const clamp = t => Math.min(1, Math.max(0, t));
+	const frame = now => {
+		const t = (now - start) / length;
+		const g = ease(clamp(t - 33 / length));
+		signAt(ease(clamp(t)), g);
+		if (g < 1) sign.raf = requestAnimationFrame(frame);
+		else box.classList.add("lit");
+	};
+	sign.raf = requestAnimationFrame(frame);
+}
+function blinkSign() {
+	const box = $("sig");
+	if (reduced || !box.classList.contains("lit")) return;
+	box.classList.remove("blink");
+	void box.offsetWidth;
+	box.classList.add("blink");
+}
+// a micro-flicker every 6 to 9 s, at random
+function twitchSign() {
+	clearTimeout(sign.twitch);
+	sign.twitch = setTimeout(() => {
+		if ($("stage").classList.contains("vice") && $("card").classList.contains("on")) blinkSign();
+		twitchSign();
+	}, 6000 + Math.random() * 3000);
+}
 // Looks: "audial" (the usual) or "vice" (Neon Vice). The link picks the first one; the app's messages can switch it live.
 // Neon Vice's fonts (Bebas Neue, Kaushan Script, Monoton, all SIL Open Font License) come from Google Fonts, only for it.
 let fontsAsked = false;
 function setTheme(name) {
 	const vice = name === "vice";
 	$("stage").classList.toggle("vice", vice);
+	if (vice) {
+		signAt(1, 1);
+		$("sig").classList.add("lit");
+		twitchSign();
+	}
 	if (vice && !fontsAsked) {
 		fontsAsked = true;
 		const link = document.createElement("link");
