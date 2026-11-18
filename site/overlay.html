@@ -211,7 +211,7 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 	box-shadow: 0 0 6px rgba(255, 46, 136, .75), inset 0 0 6px rgba(255, 46, 136, .35); color: #FFB3D6;
 	font: 400 13px/16px "Kaushan Script", "Brush Script MT", cursive; letter-spacing: 0; text-shadow: 0 0 5px rgba(255, 46, 136, .9);
 	transform: none; opacity: 0; clip-path: inset(-12px 50% -12px 50% round 6px);
-	transition: clip-path .38s .08s cubic-bezier(.7, 0, .84, 0), opacity .1s .4s; }
+	transition: clip-path .3s .14s cubic-bezier(.55, 0, .45, 1), opacity .08s .38s; }
 .vice #tag b { padding-top: 1px; font: 400 11px/16px Monoton, "Bebas Neue", sans-serif; letter-spacing: 1px; background: none; color: #FFE08A;
 	text-shadow: 0 0 4px rgba(255, 170, 60, .95), 0 0 10px rgba(255, 120, 40, .6); }
 .vice #tag i { width: auto; height: auto; border-radius: 0; background: none; font: normal 11px/16px "Segoe UI Symbol", sans-serif; color: #8FF8FF; text-shadow: 0 0 5px rgba(45, 226, 230, .9); }
@@ -220,21 +220,28 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 .vice #tag .what { padding-right: 2px; }
 .vice #tag .who { padding-top: 2px; font: 400 15px/16px "Bebas Neue", Impact, sans-serif; letter-spacing: .8px; color: #C8FCFF; text-shadow: 0 0 5px rgba(45, 226, 230, .9); }
 .vice #tag .w { padding: 0 3px 0 1px; -webkit-mask: linear-gradient(90deg, #000 48%, transparent 58%) 100% 0 / 220% 100% no-repeat; mask: linear-gradient(90deg, #000 48%, transparent 58%) 100% 0 / 220% 100% no-repeat;
-	transition: -webkit-mask-position .3s cubic-bezier(.7, 0, .84, 0), mask-position .3s cubic-bezier(.7, 0, .84, 0); }
-#stage.vice.sponsor { --t: .9s; }
+	transition: -webkit-mask-position .26s cubic-bezier(.5, 0, .75, 0), mask-position .26s cubic-bezier(.5, 0, .75, 0); }
 #stage.vice.alert { --t: .05s; }
-#stage.vice.sponsor #tag, #stage.vice.alert #tag { opacity: 1; clip-path: inset(-12px -12px -12px -12px round 14px); transition: none;
+#stage.vice.alert #tag { opacity: 1; clip-path: inset(-12px -12px -12px -12px round 14px); transition: none;
 	animation: signbox .55s var(--t) cubic-bezier(.2, 1.15, .3, 1) backwards; }
-#stage.vice.sponsor #tag .w, #stage.vice.alert #tag .w { -webkit-mask-position: 0 0; mask-position: 0 0; transition: none;
+#stage.vice.alert #tag .w { -webkit-mask-position: 0 0; mask-position: 0 0; transition: none;
 	animation: write .75s calc(var(--t) + .28s) cubic-bezier(.45, .05, .35, 1) backwards; }
-#stage.vice.sponsor #tag i, #stage.vice.alert #tag i { animation: pop .5s calc(var(--t) + .18s) cubic-bezier(.2, 1.6, .4, 1) backwards; }
-#stage.vice.sponsor #tag b span { animation: ignite .6s calc(var(--t) + .9s) linear backwards; }
-#stage.vice.sponsor #tag b span:nth-child(2) { animation-delay: calc(var(--t) + .97s); }
-#stage.vice.sponsor #tag b span:nth-child(3) { animation-delay: calc(var(--t) + 1.04s); }
-#stage.vice.sponsor #tag b span:nth-child(4) { animation-delay: calc(var(--t) + 1.11s); }
-#stage.vice.sponsor #tag b span:nth-child(5) { animation-delay: calc(var(--t) + 1.18s); }
-#stage.vice.sponsor #tag b span:nth-child(6) { animation-delay: calc(var(--t) + 1.25s); }
+#stage.vice.alert #tag i { animation: pop .5s calc(var(--t) + .18s) cubic-bezier(.2, 1.6, .4, 1) backwards; }
 #stage.vice.alert #tag .who { animation: ignite .6s calc(var(--t) + .25s) linear backwards; }
+/* Neon Vice's "Powered by Audial": a hand-lettered line, written the way a pen would (monoline script, stroke by stroke,
+   pen lifts included, the A's bar and the i's dot last), then the neon around it catches with a flicker.
+   Every stroke is a path drawn three times: a dark backing for any game behind, the pink glow and the white core.
+   Way out: every stroke runs back at once. */
+#pw { display: none; }
+.vice #pw { display: block; position: absolute; left: 6px; top: -22px; z-index: 7; width: 175px; height: 38px; overflow: visible; pointer-events: none; }
+#pw use { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 2; stroke-dashoffset: 1;
+	transition: stroke-dashoffset .35s cubic-bezier(.5, 0, .75, 0); }
+#pw .bk use { stroke: rgba(12, 3, 26, .85); stroke-width: 6; }
+#pw .gw use { stroke: #FF2E88; stroke-width: 3.6; stroke-opacity: .55; }
+#pw .co use { stroke: #FFF4FA; stroke-width: 1.35; }
+#stage.vice.sponsor #pw use { stroke-dashoffset: 0; transition: none; animation: pen var(--s) calc(.9s + var(--d)) cubic-bezier(.4, .05, .6, .95) backwards; }
+#stage.vice.sponsor #pw .gw { animation: flick .9s 3.3s linear backwards; }
+@keyframes pen { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes signbox { 0% { clip-path: inset(-12px 50% -12px 50% round 6px); filter: brightness(2.6); } 55% { filter: brightness(1.5); }
 	100% { clip-path: inset(-12px -12px -12px -12px round 14px); filter: none; } }
 @keyframes write {
@@ -245,7 +252,7 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 @keyframes ignite { 0% { opacity: 0; } 8% { opacity: 1; } 15% { opacity: .1; } 24% { opacity: .9; } 30% { opacity: .25; }
 	40% { opacity: 1; color: #fff; text-shadow: 0 0 4px #fff, 0 0 10px #FFB347, 0 0 22px rgba(255, 138, 61, .95); } 100% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
-	#frame *, #stage.vice #tag, #stage.vice #tag * { animation: none !important; transition: none !important; }
+	#frame *, #stage.vice #tag, #stage.vice #tag *, #pw * { animation: none !important; transition: none !important; }
 	#garland .bulb { animation: none !important; }
 	#card.in, #card.in *, #eq i { animation: none !important; }
 	#card.out * { transition: none !important; }
@@ -255,6 +262,8 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 <body>
 <!-- The site's security policy (vercel.json) only runs this page's script by its SHA-256: after editing the script, update that hash. -->
 <div id="stage">
+	<svg id="pw" viewBox="0 0 214 46" aria-hidden="true"><defs><path id="pw0" pathLength="1" d="M10 31C11 24 12 14 14 6C20 3 28 6 27 11C26 16 18 18 13 16"/><path id="pw1" pathLength="1" d="M33 21C29 19 26 24 27 28C28 31 32 31 33 27C34 24 34 21 32 20C34 21 36 22 37 21C37 25 37 29 39 30C41 31 42 26 42 22C42 26 43 31 45 30C47 29 48 25 48 20C49 21 50 22 52 22C55 22 57 20 56 18C55 16 52 17 52 21C52 26 54 30 57 30C59 30 60 28 61 26C62 24 62 22 63 20C64 21 64 21 66 21C66 24 66 27 67 30C68 27 70 23 73 22C75 22 77 20 76 18C75 16 72 17 72 21C72 26 74 30 77 30C79 30 80 28 81 26C81 23 83 21 85 20C82 19 79 23 80 27C81 31 85 30 87 26C88 18 92 8 90 5C88 2 86 10 87 18C88 24 88 28 90 30C91 31 92 30 93 29"/><path id="pw2" pathLength="1" d="M98 22C101 16 104 9 103 5C101 4 99 12 99 20C99 25 99 28 100 30C101 25 104 20 107 21C109 22 108 28 104 30C103 30 101 30 100 29"/><path id="pw3" pathLength="1" d="M111 21C111 25 111 29 114 29C117 29 118 25 118 20C118 28 118 36 116 40C114 43 110 42 111 39C112 36 117 34 121 32"/><path id="pw4" pathLength="1" d="M128 31C131 22 135 12 140 6C140 14 141 24 143 30C144 31 146 30 147 28C148 25 148 22 148 21C148 26 148 30 151 30C154 30 155 26 155 21C155 25 155 29 157 30C158 27 160 22 163 21C160 19 157 23 158 27C159 31 163 30 165 26C166 18 170 8 168 5C166 2 164 10 165 18C166 24 166 28 168 30C169 31 170 30 171 28C172 25 172 23 173 21C173 24 173 28 175 30C176 30 177 29 178 28C178 24 180 21 183 21C180 19 177 23 178 27C179 31 183 30 185 26C185 24 185 22 186 21C186 24 186 28 188 30C190 27 194 18 195 10C195 5 192 5 191 10C190 17 191 25 193 30C194 31 196 30 198 28"/><path id="pw5" pathLength="1" d="M131 21C135 20 139 20 143 19"/><path id="pw6" pathLength="1" d="M173.5 16.5l.01 0"/></defs>
+		<g class="bk"><use href="#pw0" style="--d: 0s; --s: 0.16s"/><use href="#pw1" style="--d: 0.22s; --s: 0.66s"/><use transform="translate(4 0)" href="#pw2" style="--d: 0.94s; --s: 0.19s"/><use transform="translate(4 0)" href="#pw3" style="--d: 1.17s; --s: 0.16s"/><use transform="translate(4 0)" href="#pw4" style="--d: 1.4s; --s: 0.8s"/><use transform="translate(4 0)" href="#pw5" style="--d: 2.26s; --s: 0.08s"/><use transform="translate(4 0)" href="#pw6" style="--d: 2.4s; --s: 0.06s"/></g><g class="gw"><use href="#pw0" style="--d: 0s; --s: 0.16s"/><use href="#pw1" style="--d: 0.22s; --s: 0.66s"/><use transform="translate(4 0)" href="#pw2" style="--d: 0.94s; --s: 0.19s"/><use transform="translate(4 0)" href="#pw3" style="--d: 1.17s; --s: 0.16s"/><use transform="translate(4 0)" href="#pw4" style="--d: 1.4s; --s: 0.8s"/><use transform="translate(4 0)" href="#pw5" style="--d: 2.26s; --s: 0.08s"/><use transform="translate(4 0)" href="#pw6" style="--d: 2.4s; --s: 0.06s"/></g><g class="co"><use href="#pw0" style="--d: 0s; --s: 0.16s"/><use href="#pw1" style="--d: 0.22s; --s: 0.66s"/><use transform="translate(4 0)" href="#pw2" style="--d: 0.94s; --s: 0.19s"/><use transform="translate(4 0)" href="#pw3" style="--d: 1.17s; --s: 0.16s"/><use transform="translate(4 0)" href="#pw4" style="--d: 1.4s; --s: 0.8s"/><use transform="translate(4 0)" href="#pw5" style="--d: 2.26s; --s: 0.08s"/><use transform="translate(4 0)" href="#pw6" style="--d: 2.4s; --s: 0.06s"/></g></svg>
 	<div id="slot"><div id="tag"><i></i><span class="w">Powered by</span><b><span>A</span><span>u</span><span>d</span><span>i</span><span>a</span><span>l</span></b></div></div>
 	<div id="card">
 		<div id="scene" aria-hidden="true"><div id="sky"><div id="halo"></div><div id="sun"></div></div><div id="sea"></div><div id="glint"></div><div id="horizon"></div><div id="dusk"></div>
