@@ -91,10 +91,10 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 	background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32'><path d='M5 25 C9 12 18 3 28 4 C33 5 35 10 36 16 C31 12 27 13 25 17 L33 25 Z' fill='%23E11D48'/><rect x='2' y='22' width='34' height='8' rx='4' fill='%23fff'/><circle cx='36' cy='17' r='4' fill='%23fff'/></svg>") center / contain no-repeat; transform: rotate(-14deg); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .5)); }
 /* ---------- Neon Vice (#<id>&theme=vice, or "theme": "vice" in the message): the same card, at a Miami sunset ----------
    A sky going orange, magenta and violet over the sea, a striped sun on the horizon, palm and skyline silhouettes, a
-   neon tube around the card, film grain and faint scanlines. Same 440 x 120 as the usual look. Everything that moves
+   neon tube around the card. Same 440 x 120 as the usual look. Everything that moves
    is transform or opacity on its own layer (plus a few text-shadows during an entrance), so OBS stays at 60 fps. */
-#scene, #frame, #grain, #scan { display: none; }
-.vice #scene, .vice #grain, .vice #scan, .vice #frame { display: block; }
+#scene, #frame { display: none; }
+.vice #scene, .vice #frame { display: block; }
 .vice #card { height: 96px; padding: 12px; border: 0; border-radius: 14px; background: #0B0219; transform: none; transition: opacity .25s; }
 .vice #card.in { animation: none; }
 .vice #artbox, .vice #info { position: relative; z-index: 3; }
@@ -116,12 +116,6 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 #dusk { inset: 0; opacity: 0; background: linear-gradient(180deg, rgba(12, 3, 40, .82), rgba(5, 1, 15, .6)); }
 #palms { left: 0; top: 0; width: 420px; height: 96px; }
 #shade { inset: 0; background: linear-gradient(90deg, rgba(9, 2, 22, .96) 0, rgba(9, 2, 22, .9) 40%, rgba(9, 2, 22, .45) 68%, rgba(9, 2, 22, 0) 88%); }
-#grain { position: absolute; inset: -40px; z-index: 5; pointer-events: none; opacity: .1; will-change: transform; animation: grain .6s steps(1) infinite;
-	background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.5 -.45'/></filter><rect width='120' height='120' filter='url(%23n)'/></svg>") 0 0 / 120px 120px; }
-@keyframes grain { 0% { transform: translate(0, 0); } 17% { transform: translate(-14px, 9px); } 33% { transform: translate(11px, -17px); }
-	50% { transform: translate(-23px, -6px); } 67% { transform: translate(19px, 14px); } 83% { transform: translate(-7px, 22px); } }
-#scan { position: absolute; inset: 0; z-index: 5; pointer-events: none; border-radius: inherit; opacity: .5;
-	background: repeating-linear-gradient(180deg, rgba(0, 0, 0, .24) 0 1px, rgba(0, 0, 0, 0) 1px 3px); }
 
 /* the neon tube: three strokes of the same outline (wide faint glow, glow, white-hot core) instead of a blur filter */
 #frame { position: absolute; left: 0; top: 0; width: 420px; height: 96px; z-index: 2; overflow: visible; pointer-events: none; opacity: 0; transition: opacity .25s; }
@@ -179,8 +173,11 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 /* the equalizer stands at the end of the progress line, over the dark island under the palms, where it reads best */
 .vice #bar { margin-right: 32px; }
 .vice #eq { position: absolute; right: 0; bottom: -4px; height: 18px; gap: 3px; }
+/* a soft pool of light behind the bars (static, so it costs nothing per frame) */
+.vice #eq::before { content: ""; position: absolute; left: -12px; right: -12px; top: -6px; bottom: -8px; z-index: -1; pointer-events: none;
+	background: radial-gradient(closest-side, rgba(255, 46, 136, .45), rgba(178, 60, 255, .18) 60%, rgba(178, 60, 255, 0)); }
 .vice #eq i { height: 18px; border-radius: 1.5px; background: linear-gradient(180deg, #FFF3A6, #FF8A3D 35%, #FF2E88 72%, #9D4BFF);
-	box-shadow: 0 0 6px rgba(255, 46, 136, .8); animation-name: veq; animation-timing-function: cubic-bezier(.45, 0, .55, 1); }
+	box-shadow: 0 0 3px rgba(255, 220, 235, .9), 0 0 8px rgba(255, 46, 136, .95), 0 0 16px rgba(255, 46, 136, .55), 0 0 26px rgba(178, 60, 255, .35); animation-name: veq; animation-timing-function: cubic-bezier(.45, 0, .55, 1); }
 @keyframes veq { 0%, 100% { transform: scaleY(.2); } 28% { transform: scaleY(1); } 52% { transform: scaleY(.42); } 76% { transform: scaleY(.82); } }
 
 /* the song change, about 1.6 s, an evening falling and lifting: the old title smears off to the left as the sun sinks
@@ -203,12 +200,18 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 @keyframes vwipe { 0% { opacity: 1; transform: translateX(0) skewX(-22deg) scaleX(.5); } 50% { transform: translateX(165%) skewX(-22deg) scaleX(1.7); }
 	99% { opacity: 1; } 100% { opacity: 0; transform: translateX(330%) skewX(-22deg) scaleX(.5); } }
 
-/* the tag becomes a small neon sign over the card: it switches on with a flicker and goes out with a quick fade */
+/* the tag becomes a small neon sign over the card, animated like a title card:
+   in:  the box opens from its centre with a flash, the script line is written on from left to right (a soft-edged mask,
+        glowing hot while it writes), then the capitals switch on one by one with a neon flicker;
+   out: the writing is wiped back and the box closes on its centre.
+   The entrance only fills backwards: once it is over the class alone holds the sign on, so taking the class off runs the
+   way out as plain transitions. --t is when the sign starts (after the song's entrance, or at once for an alert). */
 .vice #slot { left: 16px; bottom: calc(100% + 2px); height: 18px; overflow: visible; }
 .vice #tag { gap: 6px; height: 18px; padding: 0 10px; border: 1px solid rgba(255, 120, 190, .9); border-radius: 6px; background: rgba(13, 3, 28, .9);
 	box-shadow: 0 0 6px rgba(255, 46, 136, .75), inset 0 0 6px rgba(255, 46, 136, .35); color: #FFB3D6;
 	font: 400 13px/16px "Kaushan Script", "Brush Script MT", cursive; letter-spacing: 0; text-shadow: 0 0 5px rgba(255, 46, 136, .9);
-	transform: none; opacity: 0; transition: opacity .28s ease-in; }
+	transform: none; opacity: 0; clip-path: inset(-12px 50% -12px 50% round 6px);
+	transition: clip-path .38s .08s cubic-bezier(.7, 0, .84, 0), opacity .1s .4s; }
 .vice #tag b { padding-top: 1px; font: 400 11px/16px Monoton, "Bebas Neue", sans-serif; letter-spacing: 1px; background: none; color: #FFE08A;
 	text-shadow: 0 0 4px rgba(255, 170, 60, .95), 0 0 10px rgba(255, 120, 40, .6); }
 .vice #tag i { width: auto; height: auto; border-radius: 0; background: none; font: normal 11px/16px "Segoe UI Symbol", sans-serif; color: #8FF8FF; text-shadow: 0 0 5px rgba(45, 226, 230, .9); }
@@ -216,11 +219,33 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 .vice #tag[data-kind="request"] i::before { content: "\266A"; font-size: 13px; }
 .vice #tag .what { padding-right: 2px; }
 .vice #tag .who { padding-top: 2px; font: 400 15px/16px "Bebas Neue", Impact, sans-serif; letter-spacing: .8px; color: #C8FCFF; text-shadow: 0 0 5px rgba(45, 226, 230, .9); }
-#stage.vice.sponsor #tag { opacity: 1; transform: none; transition: none; animation: sign 1.1s .9s both; }
-#stage.vice.alert #tag { opacity: 1; transform: none; transition: none; animation: sign 1s .05s both; }
-@keyframes sign { 0% { opacity: 0; } 6% { opacity: .9; } 9% { opacity: .1; } 15% { opacity: 1; } 18%, 23% { opacity: .2; } 30% { opacity: 1; } 52% { opacity: .75; } 56%, 100% { opacity: 1; } }
+.vice #tag .w { padding: 0 3px 0 1px; -webkit-mask: linear-gradient(90deg, #000 48%, transparent 58%) 100% 0 / 220% 100% no-repeat; mask: linear-gradient(90deg, #000 48%, transparent 58%) 100% 0 / 220% 100% no-repeat;
+	transition: -webkit-mask-position .3s cubic-bezier(.7, 0, .84, 0), mask-position .3s cubic-bezier(.7, 0, .84, 0); }
+#stage.vice.sponsor { --t: .9s; }
+#stage.vice.alert { --t: .05s; }
+#stage.vice.sponsor #tag, #stage.vice.alert #tag { opacity: 1; clip-path: inset(-12px -12px -12px -12px round 14px); transition: none;
+	animation: signbox .55s var(--t) cubic-bezier(.2, 1.15, .3, 1) backwards; }
+#stage.vice.sponsor #tag .w, #stage.vice.alert #tag .w { -webkit-mask-position: 0 0; mask-position: 0 0; transition: none;
+	animation: write .75s calc(var(--t) + .28s) cubic-bezier(.45, .05, .35, 1) backwards; }
+#stage.vice.sponsor #tag i, #stage.vice.alert #tag i { animation: pop .5s calc(var(--t) + .18s) cubic-bezier(.2, 1.6, .4, 1) backwards; }
+#stage.vice.sponsor #tag b span { animation: ignite .6s calc(var(--t) + .9s) linear backwards; }
+#stage.vice.sponsor #tag b span:nth-child(2) { animation-delay: calc(var(--t) + .97s); }
+#stage.vice.sponsor #tag b span:nth-child(3) { animation-delay: calc(var(--t) + 1.04s); }
+#stage.vice.sponsor #tag b span:nth-child(4) { animation-delay: calc(var(--t) + 1.11s); }
+#stage.vice.sponsor #tag b span:nth-child(5) { animation-delay: calc(var(--t) + 1.18s); }
+#stage.vice.sponsor #tag b span:nth-child(6) { animation-delay: calc(var(--t) + 1.25s); }
+#stage.vice.alert #tag .who { animation: ignite .6s calc(var(--t) + .25s) linear backwards; }
+@keyframes signbox { 0% { clip-path: inset(-12px 50% -12px 50% round 6px); filter: brightness(2.6); } 55% { filter: brightness(1.5); }
+	100% { clip-path: inset(-12px -12px -12px -12px round 14px); filter: none; } }
+@keyframes write {
+	0% { -webkit-mask-position: 100% 0; mask-position: 100% 0; color: #fff; text-shadow: 0 0 4px #fff, 0 0 10px rgba(255, 46, 136, 1), 0 0 18px rgba(255, 46, 136, .8); }
+	75% { color: #FFE3F0; text-shadow: 0 0 3px #fff, 0 0 9px rgba(255, 46, 136, 1), 0 0 16px rgba(255, 46, 136, .6); }
+	100% { -webkit-mask-position: 0 0; mask-position: 0 0; color: #FFB3D6; text-shadow: 0 0 5px rgba(255, 46, 136, .9), 0 0 0 transparent, 0 0 0 transparent; } }
+@keyframes pop { from { opacity: 0; transform: scale(0) rotate(-120deg); } to { opacity: 1; transform: none; } }
+@keyframes ignite { 0% { opacity: 0; } 8% { opacity: 1; } 15% { opacity: .1; } 24% { opacity: .9; } 30% { opacity: .25; }
+	40% { opacity: 1; color: #fff; text-shadow: 0 0 4px #fff, 0 0 10px #FFB347, 0 0 22px rgba(255, 138, 61, .95); } 100% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
-	#frame *, #grain, #stage.vice #tag { animation: none !important; }
+	#frame *, #stage.vice #tag, #stage.vice #tag * { animation: none !important; transition: none !important; }
 	#garland .bulb { animation: none !important; }
 	#card.in, #card.in *, #eq i { animation: none !important; }
 	#card.out * { transition: none !important; }
@@ -230,7 +255,7 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 <body>
 <!-- The site's security policy (vercel.json) only runs this page's script by its SHA-256: after editing the script, update that hash. -->
 <div id="stage">
-	<div id="slot"><div id="tag"><i></i>Sponsored by <b>Audial</b></div></div>
+	<div id="slot"><div id="tag"><i></i><span class="w">Sponsored by</span><b><span>A</span><span>u</span><span>d</span><span>i</span><span>a</span><span>l</span></b></div></div>
 	<div id="card">
 		<div id="scene" aria-hidden="true"><div id="sky"><div id="halo"></div><div id="sun"></div></div><div id="sea"></div><div id="glint"></div><div id="horizon"></div><div id="dusk"></div>
 			<svg id="palms" viewBox="0 0 420 96"><defs><path id="fr" d="M0 0C9-7 22-8 34 2C26-2 15-1 6 3Z"/><g id="crown"><use href="#fr" transform="rotate(-28)"/><use href="#fr" transform="rotate(8)"/><use href="#fr" transform="rotate(38) scale(.85)"/><use href="#fr" transform="scale(-1 1) rotate(-28)"/><use href="#fr" transform="scale(-1 1) rotate(8)"/><use href="#fr" transform="scale(-1 1) rotate(40) scale(.85)"/><use href="#fr" transform="rotate(-70) scale(.8)"/><use href="#fr" transform="scale(-1 1) rotate(-75) scale(.75)"/></g></defs>
@@ -245,7 +270,6 @@ html, body { margin: 0; background: transparent; overflow: hidden; font-family: 
 			<div id="artist"></div>
 			<div id="bar"><div id="fill"></div></div>
 		</div>
-		<div id="grain"></div><div id="scan"></div>
 	</div>
 	<svg id="frame" viewBox="0 0 420 96" aria-hidden="true"><defs><linearGradient id="vg" x1="0" x2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset=".45" stop-color="#FF2E88"/><stop offset="1" stop-color="#A24BFF"/></linearGradient>
 		<path id="vh" pathLength="1" d="M.75 48V14.75A14 14 0 0 1 14.75 .75H405.25A14 14 0 0 1 419.25 14.75V48"/></defs>
@@ -333,10 +357,17 @@ function sponsorTag() {
 	const tag = $("tag");
 	tag.textContent = "";
 	delete tag.dataset.kind;
-	tag.append(document.createElement("i"), "Sponsored by ");
+	// "Sponsored by" is written on and each letter of the name lights up on its own in Neon Vice, hence the spans
+	const line = document.createElement("span");
+	line.className = "w";
+	line.textContent = "Sponsored by";
 	const b = document.createElement("b");
-	b.textContent = "Audial";
-	tag.appendChild(b);
+	for (const letter of "Audial") {
+		const span = document.createElement("span");
+		span.textContent = letter;
+		b.appendChild(span);
+	}
+	tag.append(document.createElement("i"), line, b);
 }
 function alertTag(a) {
 	const tag = $("tag");
@@ -345,7 +376,7 @@ function alertTag(a) {
 	who.className = "who";
 	who.textContent = a.user;
 	const what = document.createElement("span");
-	what.className = "what";
+	what.className = "what w";
 	what.textContent = alertText(a);
 	tag.dataset.kind = a.kind;
 	tag.append(document.createElement("i"), who, what);
