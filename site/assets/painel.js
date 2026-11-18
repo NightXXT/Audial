@@ -88,7 +88,8 @@
             inv.creator ? el("span", { class: "pill creator" }, "Criador") : null,
             el("span", { class: "meta" }, inv.note || "(sem nota)"),
           ),
-          inv.profile ? el("div", { class: "meta" }, "Perfil: ", el("b", {}, inv.profile.name)) : null,
+          inv.profile ? el("div", { class: "meta" }, "Perfil: ", el("b", {}, inv.profile.name), inv.profile.photo ? " · com foto" : "") : null,
+          el("div", { class: "photo-box", id: "photo-" + inv.code }),
           el("div", { class: "meta" }, "Prazo: " + term + " · " + left + " · PCs: " + inv.pcs.length + "/" + inv.maxPcs + " · criado " + fmtDate(inv.createdAt) + (inv.discord ? " · ligado ao Discord" : "")),
           inv.pcs.length ? pcsBox : null,
           el("div", { class: "actions" },
@@ -101,6 +102,8 @@
             button("Editar", "edit", inv.code),
             button(inv.creator ? "Tirar Criador" : "Tornar Criador", inv.creator ? "uncreator" : "creator", inv.code),
             button(inv.badge === "apoiador" ? "Tirar Apoiador" : "Marcar Apoiador", inv.badge === "apoiador" ? "unsupporter" : "supporter", inv.code),
+            inv.profile && inv.profile.photo ? button("Ver foto", "viewPhoto", inv.code) : null,
+            inv.profile && inv.profile.photo ? button("Apagar foto", "deletePhoto", inv.code, "d") : null,
             inv.profile ? button("Apagar perfil", "deleteProfile", inv.code, "d") : null,
             inv.cancelled ? button("Reativar", "restore", inv.code) : button("Cancelar", "cancel", inv.code, "d"),
             button("Apagar", "delete", inv.code, "d"),
@@ -225,6 +228,18 @@
         case "uncreator": await call("update", { code, creator: false }); break;
         case "supporter": await call("update", { code, badge: "apoiador" }); break;
         case "unsupporter": await call("update", { code, badge: "beta" }); break;
+        case "viewPhoto": {
+          const { photo } = await call("photo", { code });
+          const box = $("photo-" + code);
+          box.textContent = "";
+          if (photo) box.append(el("img", { src: "data:image/jpeg;base64," + photo, width: "96", height: "96", alt: "Foto do perfil", style: "border-radius:48px;margin:8px 0" }));
+          else box.append(el("span", { class: "meta" }, "Sem foto."));
+          return;
+        }
+        case "deletePhoto":
+          if (!confirm("Apagar a foto do perfil de " + code + "? O avatar volta para as iniciais.")) return;
+          await call("deletePhoto", { code });
+          break;
         case "deleteProfile":
           if (!confirm("Apagar o perfil (nome e avatar) de " + code + "? A pessoa pode criar outro.")) return;
           await call("deleteProfile", { code });

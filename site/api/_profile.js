@@ -13,8 +13,13 @@
 // has ("pk"): in a listening room each person signs the room code and their peer id with it, so copying someone else's card
 // (the Creator's, say) is useless without that PC's private key.
 //
-// Storage: hash "profiles": invite code -> JSON { id, name, avatar: { k, id?, c }, pk, updatedAt }. The invite code never
-// leaves the server: the card has a random profile id instead.
+// Storage: hash "profiles": invite code -> JSON { id, name, avatar: { k, id?, ph?, c }, pk, updatedAt }. The invite code never
+// leaves the server: the card has a random profile id instead (hash "profile:pid": profile id -> invite code, for friends).
+//
+// Photo (optional): the app crops it square and shrinks it to 128x128 JPEG (~10 KB) before sending. Here only a small
+// baseline/progressive JPEG goes in, and it is rewritten without any metadata segment (EXIF, GPS, comments, ICC…).
+// It lives in "photo:<hash>" and the card carries that hash ("ph"), so the picture is covered by the signature: an app
+// shows a photo only when the bytes it got hash to the "ph" of a card that checks out.
 "use strict";
 
 const crypto = require("crypto");
@@ -30,6 +35,10 @@ const RESERVED = ["audial", "audio", "criador", "creator", "admin", "adm", "admi
 // words that are reserved only when they are the whole name (short ones would block too much as substrings)
 const RESERVED_WHOLE = new Set(["adm", "mod", "dev", "audio", "team"]);
 const LEET = { 0: "o", 1: "i", 2: "z", 3: "e", 4: "a", 5: "s", 6: "g", 7: "t", 8: "b", 9: "g", "@": "a", $: "s", "!": "i", "|": "l", "€": "e" };
+
+const PID_HASH = "profile:pid";
+const PHOTO_MAX = 16 * 1024;
+const PHOTO_SIDE_MAX = 256;
 
 const fail = (message, status = 400, code = "input") => new lib.ServerError(code, message, status);
 
@@ -78,6 +87,7 @@ function cleanAvatar(value) {
   const c = Math.round(Number(a.c));
   if (!(c >= 0 && c < COLORS)) throw fail("Cor inválida.");
   if (a.k === "ini") return { k: "ini", c };
+  if (a.k === "photo") return { k: "photo", c };
   if (a.k === "icon" && ICONS.includes(a.id)) return { k: "icon", id: a.id, c };
   throw fail("Avatar inválido.");
 }
@@ -92,6 +102,64 @@ function cleanKey(value) {
   } catch {
     return null;
   }
+}
+
+/**
+ * The photo as it will be stored: a JPEG of at most 256x256 and 16 KB, rewritten with only the segments needed to draw
+ * it (every APPn and COM segment dropped). Throws when it is anything else.
+ */
+function cleanPhoto(base64) {
+  const bad = () => fail("A foto precisa ser um JPEG pequeno (até 256x256 e 16 KB). Escolha a foto de novo.");
+  if (typeof base64 !== "string" || base64.length > Math.ceil((PHOTO_MAX * 4) / 3) + 4) throw bad();
+  const data = Buffer.from(base64, "base64");
+  if (data.length < 100 || data.length > PHOTO_MAX || data[0] !== 0xff || data[1] !== 0xd8) throw bad();
+  const out = [Buffer.from([0xff, 0xd8])];
+  let i = 2;
+  let size = null;
+  for (;;) {
+    if (i + 4 > data.length || data[i] !== 0xff) throw bad();
+    while (data[i] === 0xff && i < data.length) i++;
+    const marker = data[i++];
+    if (marker === 0xd9) throw bad(); // image ended before any scan
+    if ((marker >= 0xd0 && marker <= 0xd7) || marker === 0x01) continue;
+    const length = data.readUInt16BE(i);
+    if (length < 2 || i + length > data.length) throw bad();
+    const segment = data.subarray(i - 2, i + length);
+    if (marker === 0xc0 || marker === 0xc1 || marker === 0xc2) {
+      size = { h: data.readUInt16BE(i + 3), w: data.readUInt16BE(i + 5), comps: data[i + 7] };
+    } else if (marker >= 0xc3 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+      throw bad(); // lossless, hierarchical, arithmetic… nothing a normal encoder makes for this
+    }
+    if (marker === 0xda) {
+      if (!size || size.w < 16 || size.h < 16 || size.w > PHOTO_SIDE_MAX || size.h > PHOTO_SIDE_MAX || (size.comps !== 1 && size.comps !== 3)) throw bad();
+      out.push(data.subarray(i - 2)); // the scan and everything after it (entropy data, more scans, EOI)
+      break;
+    }
+    const metadata = (marker >= 0xe0 && marker <= 0xef) || marker === 0xfe;
+    if (!metadata) out.push(segment);
+    i += length;
+  }
+  const clean = Buffer.concat(out);
+  if (clean[clean.length - 2] !== 0xff || clean[clean.length - 1] !== 0xd9) throw bad();
+  return clean;
+}
+
+function photoHash(bytes) {
+  return crypto.createHash("sha256").update(bytes).digest("hex").slice(0, 32);
+}
+
+async function getPhoto(hash) {
+  if (typeof hash !== "string" || !/^[0-9a-f]{32}$/.test(hash)) return null;
+  return (await lib.redis("GET", "photo:" + hash)) || null;
+}
+
+/** Removes the stored photo of a profile and turns its avatar into the initials (same color). */
+async function dropPhoto(code, profile) {
+  if (!profile || profile.avatar?.k !== "photo") return profile;
+  if (profile.avatar.ph) await lib.redis("DEL", "photo:" + profile.avatar.ph);
+  profile.avatar = { k: "ini", c: profile.avatar.c };
+  await lib.redis("HSET", HASH, code, JSON.stringify(profile));
+  return profile;
 }
 
 function badgesOf(invite) {
@@ -142,12 +210,41 @@ async function saveProfile(invite, body) {
     pk: cleanKey(body.pk) ?? old?.pk ?? null,
     updatedAt: lib.now(),
   };
+  const oldPhoto = old?.avatar?.k === "photo" ? old.avatar.ph : null;
+  if (profile.avatar.k === "photo") {
+    if (body.photo != null) {
+      const bytes = cleanPhoto(body.photo);
+      profile.avatar.ph = photoHash(bytes);
+      await lib.redis("SET", "photo:" + profile.avatar.ph, bytes.toString("base64"));
+    } else if (oldPhoto) {
+      profile.avatar.ph = oldPhoto;
+    } else {
+      throw fail("Escolha uma foto.");
+    }
+  }
+  if (oldPhoto && oldPhoto !== profile.avatar.ph) await lib.redis("DEL", "photo:" + oldPhoto);
   await lib.redis("HSET", HASH, invite.code, JSON.stringify(profile));
+  await lib.redis("HSET", PID_HASH, profile.id, invite.code);
   return profile;
 }
 
+/** Invite code of a profile id (null when there is no such profile any more). */
+async function codeOfPid(pid) {
+  if (typeof pid !== "string" || !/^[A-Za-z0-9_-]{8,24}$/.test(pid)) return null;
+  const code = await lib.redis("HGET", PID_HASH, pid);
+  if (code) return code;
+  // profiles made before the index existed
+  const all = await allProfiles();
+  const found = Object.keys(all).find((c) => all[c].id === pid);
+  if (found) await lib.redis("HSET", PID_HASH, pid, found);
+  return found || null;
+}
+
 async function deleteProfile(code) {
+  const profile = await getProfile(code);
+  if (profile?.avatar?.k === "photo" && profile.avatar.ph) await lib.redis("DEL", "photo:" + profile.avatar.ph);
+  if (profile) await lib.redis("HDEL", PID_HASH, profile.id);
   await lib.redis("HDEL", HASH, code);
 }
 
-module.exports = { ICONS, COLORS, NAME_MAX, stripInvisible, isReserved, cleanName, cleanAvatar, cleanKey, badgesOf, getProfile, allProfiles, card, saveProfile, deleteProfile };
+module.exports = { ICONS, COLORS, NAME_MAX, PID_HASH, stripInvisible, isReserved, cleanName, cleanAvatar, cleanKey, cleanPhoto, photoHash, getPhoto, dropPhoto, badgesOf, getProfile, allProfiles, codeOfPid, card, saveProfile, deleteProfile };

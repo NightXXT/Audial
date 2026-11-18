@@ -165,7 +165,7 @@ async function readBody(req) {
   let size = 0;
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > 16 * 1024) throw new ServerError("body", "Pedido grande demais.", 413);
+    if (size > 48 * 1024) throw new ServerError("body", "Pedido grande demais.", 413);
     chunks.push(chunk);
   }
   return safeJson(Buffer.concat(chunks).toString("utf8"));

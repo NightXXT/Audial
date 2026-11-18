@@ -2,6 +2,9 @@
 //   get                         -> { profile|null, card|null, signature|null, badges }
 //   set { name, avatar, pk }    -> the same, after saving
 //   delete                      -> { profile: null }
+//   photo { h }                 -> { photo: base64 JPEG|null } (the photo of any profile, by the "ph" of its card)
+// set with avatar { k: "photo" } takes the picture in "photo" (base64 JPEG, see _profile.cleanPhoto); without it the
+// photo already stored stays. Any other avatar removes the stored photo ("não enviar, só neste PC").
 "use strict";
 
 const lib = require("./_lib");
@@ -25,6 +28,7 @@ module.exports = lib.handler(["POST"], async (req, res) => {
         profile.pk = pk;
         await lib.redis("HSET", "profiles", invite.code, JSON.stringify(profile));
       }
+      if (profile) await lib.redis("HSET", P.PID_HASH, profile.id, invite.code);
       return lib.send(res, 200, { status: "ok", ...answer(invite, profile) });
     }
     case "set": {
@@ -34,6 +38,8 @@ module.exports = lib.handler(["POST"], async (req, res) => {
       if (count > 20) return lib.send(res, 429, { status: "limit", message: "Você mudou o perfil muitas vezes nesta hora. Tente mais tarde." });
       return lib.send(res, 200, { status: "ok", ...answer(invite, await P.saveProfile(invite, body)) });
     }
+    case "photo":
+      return lib.send(res, 200, { status: "ok", photo: await P.getPhoto(body.h) });
     case "delete":
       await P.deleteProfile(invite.code);
       return lib.send(res, 200, { status: "ok", ...answer(invite, null) });

@@ -1,5 +1,5 @@
 // POST /api/admin { action, ... } with "Authorization: Bearer <AUDIAL_ADMIN_PASSWORD>". Used by the hidden admin page.
-// Actions: list, create, setDays, extend, update, cancel, restore, removePc, deleteProfile, delete, discordRegister, ticketUrl.
+// Actions: list, create, setDays, extend, update, cancel, restore, removePc, deletePhoto, photo, deleteProfile, delete, discordRegister, ticketUrl.
 "use strict";
 
 const crypto = require("crypto");
@@ -73,7 +73,7 @@ const actions = {
     const t = lib.now();
     const profiles = await P.allProfiles();
     invites.sort((a, b) => b.createdAt - a.createdAt);
-    return { now: t, invites: invites.map((i) => ({ ...view(i, t), profile: profiles[i.code] ? { name: profiles[i.code].name } : null })) };
+    return { now: t, invites: invites.map((i) => ({ ...view(i, t), profile: profiles[i.code] ? { name: profiles[i.code].name, photo: profiles[i.code].avatar?.k === "photo" } : null })) };
   },
 
   async create(body) {
@@ -160,6 +160,20 @@ const actions = {
   },
 
   // Removes the profile of an invite (an offensive name, for example). The person can make a new one.
+  // An improper photo: removed from the server, the avatar goes back to the initials. The person can choose another.
+  async deletePhoto(body) {
+    const invite = await load(body.code);
+    await P.dropPhoto(invite.code, await P.getProfile(invite.code));
+    return { invite: view(invite, lib.now()) };
+  },
+
+  // The photo of an invite's profile, to look at in the panel before removing it.
+  async photo(body) {
+    const invite = await load(body.code);
+    const profile = await P.getProfile(invite.code);
+    return { photo: profile?.avatar?.k === "photo" ? await P.getPhoto(profile.avatar.ph) : null };
+  },
+
   async deleteProfile(body) {
     const invite = await load(body.code);
     await P.deleteProfile(invite.code);
@@ -169,6 +183,10 @@ const actions = {
   async delete(body) {
     const invite = await load(body.code);
     await P.deleteProfile(invite.code);
+    // friendships, pending requests, "ouvindo agora" and invites of this invite go too
+    for (const friend of (await lib.redis("SMEMBERS", "fr:" + invite.code)) || []) await lib.redis("SREM", "fr:" + friend, invite.code);
+    for (const key of ["fr:", "frin:", "frout:", "now:", "lt:"]) await lib.redis("DEL", key + invite.code);
+    await lib.redis("HDEL", "frcfg", invite.code);
     await lib.redis("DEL", "inv:" + invite.code);
     await lib.redis("SREM", "invites", invite.code);
     // the community nickname goes too (posts stay, shown as "Alguém do beta")
