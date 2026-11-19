@@ -580,3 +580,6 @@ kbd { font: 600 11px/1 Inter, sans-serif; padding: 3px 6px; border-radius: 5px; 
 @keyframes xmas-fall { to { transform: translateY(105vh); } }
 @keyframes xmas-sway { from { margin-left: -12px; } to { margin-left: 12px; } }
 @media (prefers-reduced-motion: reduce) { .xmas-lights i { animation: none; } }
+/* Apoiar: cartão do Buy Me a Coffee */
+.coffee-cup { width: 190px; aspect-ratio: 1; margin: 8px 0 4px; border-radius: 16px; display: grid; place-items: center; font-size: 88px; background: radial-gradient(circle at 50% 40%, rgba(247,81,161,.22), rgba(139,92,246,.10) 60%, transparent 75%), rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); }
+.coffee-btn { margin-top: auto; width: 100%; min-height: 48px; padding: 12px 22px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; }
