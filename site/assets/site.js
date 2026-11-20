@@ -97,7 +97,8 @@
     if (!visible) return;
     if (lite && frame++ % 2) return; // half the frames on lighter devices
     ctx.clearRect(0, 0, w, h);
-    const bars = Math.floor(w / 14);
+    const step = 9; // finer bars: 3 px wide, 9 px apart
+    const bars = Math.floor(w / step);
     const grad = ctx.createLinearGradient(0, 0, w, 0);
     grad.addColorStop(0, "#F43F5E"); grad.addColorStop(0.5, "#F751A1"); grad.addColorStop(1, "#8B5CF6");
     ctx.fillStyle = grad;
@@ -106,11 +107,11 @@
       const x = i / bars;
       const beat = Math.pow(Math.max(0, Math.sin(s * 3.6)), 8) * 0.35;
       const v = 0.18 + 0.32 * Math.abs(Math.sin(x * 9 + s * 1.7)) * Math.abs(Math.cos(x * 4.3 - s * 1.1)) + 0.25 * Math.abs(Math.sin(x * 23 + s * 3.1)) * (0.6 + beat) + beat * Math.exp(-Math.pow((x - 0.5) * 3, 2));
-      const bh = v * h * 0.8;
-      const bx = i * 14 + 4;
+      const bh = v * h * 0.72;
+      const bx = i * step + 3;
       ctx.globalAlpha = 0.35 + 0.65 * Math.exp(-Math.pow((x - 0.5) * 2.2, 2));
       ctx.beginPath();
-      ctx.roundRect(bx, (h - bh) / 2, 6, bh, 3);
+      ctx.roundRect(bx, (h - bh) / 2, 3, bh, 1.5);
       ctx.fill();
     }
   };
@@ -230,7 +231,7 @@
   const snow = document.createElement("div");
   snow.className = "xmas-snow";
   snow.setAttribute("aria-hidden", "true");
-  const count = matchMedia("(max-width: 760px)").matches ? 22 : 45;
+  const count = matchMedia("(max-width: 760px), (hover: none)").matches ? 12 : 45;
   for (let i = 0; i < count; i++) {
     const f = document.createElement("i");
     const size = 2 + Math.random() * 4;

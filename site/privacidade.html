@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=3">
+<link rel="stylesheet" href="/assets/site.css?v=19">
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span></div>
@@ -24,9 +24,9 @@
 
 <main class="doc">
   <h1>Política de privacidade</h1>
-  <p class="updated">Atualizada em 11 de novembro de 2026</p>
+  <p class="updated">Atualizada em 20 de novembro de 2026</p>
 
-  <p>O Audial é um aplicativo gratuito para Windows, com código-fonte público no GitHub, que toca músicas do YouTube Music. Ele não exige conta no Audial e não exibe anúncios. O único servidor próprio é o do beta fechado (convites e Comunidade beta), descrito abaixo. Esta página explica o que o aplicativo acessa, onde guarda e com quais serviços ele conversa.</p>
+  <p>O Audial é um aplicativo gratuito para Windows que toca músicas do YouTube Music. O código do projeto fica no GitHub; durante o beta fechado, as mudanças mais recentes do aplicativo ainda não foram publicadas lá. Ele não exige conta no Audial, não exibe anúncios e não usa ferramentas de rastreamento ou de análise. O único servidor próprio é o do beta fechado (convites, Comunidade beta, perfis e amigos), descrito abaixo. Esta página explica o que o aplicativo acessa, onde guarda e com quais serviços ele conversa.</p>
 
   <h2>Convite do beta fechado</h2>
   <p>Durante o beta, o Audial pede um código de convite (no formato <code>AUD-XXXX-XXXX</code>). Para conferir o convite, o aplicativo envia ao servidor do Audial, hospedado na Vercel em <code>audial.com.br</code>:</p>
@@ -45,6 +45,25 @@
     <li>seus votos nas ideias e nas enquetes.</li>
   </ul>
   <p>O apelido, as postagens e os comentários ficam visíveis para as outras pessoas com convite. Os votos aparecem só como total. O criador do Audial pode apagar postagens e comentários e mudar o status das ideias. Você pode apagar o que escreveu a qualquer momento; para apagar também o apelido e os votos, peça pelo GitHub (veja “Mudanças e contato”). Quando um convite é apagado, o apelido ligado a ele também é.</p>
+
+  <h2>Perfil do beta</h2>
+  <p>Criar um perfil é opcional. Ele serve para aparecer nos amigos e nas salas do Ouvir junto. O servidor do Audial guarda, ligados ao código do seu convite:</p>
+  <ul>
+    <li>o nome que você escolher para o perfil (evite usar seu nome completo ou e-mail);</li>
+    <li>o avatar: um dos ícones prontos ou as suas iniciais, sobre uma cor;</li>
+    <li>a foto, só se você escolher enviar uma. O aplicativo corta e reduz a foto para 128 × 128 pixels antes de enviar, e o servidor regrava a imagem sem nenhum dado extra (como localização ou modelo da câmera). Você também pode deixar a foto <strong>só neste PC</strong>: aí ela não sai do seu computador, e os outros veem as suas iniciais;</li>
+    <li>a parte pública de uma chave criada pelo seu PC, que prova nas salas do Ouvir junto que o perfil é mesmo seu.</li>
+  </ul>
+  <p>Os selos (Criador, Beta e Apoiador) são decididos pelo servidor, que assina o perfil para ninguém conseguir falsificar. O código do seu convite nunca é mostrado a outras pessoas: o perfil usa um identificador aleatório. Em Configurações, “Apagar perfil” apaga o nome, o avatar e a foto do servidor.</p>
+
+  <h2>Amigos e “ouvindo agora”</h2>
+  <ul>
+    <li><strong>Amizade:</strong> só existe quando a outra pessoa aceita o pedido. O servidor guarda a lista de amigos e os pedidos pendentes, pelos identificadores dos perfis.</li>
+    <li><strong>Criador:</strong> todo perfil começa seguindo o criador do Audial, em um sentido só: você vê o que ele ouve (se ele mostrar), e ele não vê o que você ouve. Dá para deixar de seguir a qualquer momento.</li>
+    <li><strong>Ouvindo agora:</strong> fica desligado até você ligar “Mostrar o que estou ouvindo”. Ligado, o servidor guarda só a música atual (título, artista e capa) por até 6 minutos, sem histórico. “Ficar invisível” esconde na hora.</li>
+    <li><strong>Convites para ouvir junto:</strong> o código da sala vai só para o amigo convidado, só depois que ele aceita, e o convite expira em 3 minutos.</li>
+  </ul>
+  <p>Para apagar a sua lista de amigos do servidor, peça pelo GitHub (veja “Mudanças e contato”).</p>
 
   <h2>Servidor do Audial no Discord</h2>
   <p>O servidor do Audial no Discord tem um bot que faz sorteios de convites e dá o cargo Beta. Ele só responde a comandos e botões; não lê as conversas.</p>
@@ -73,21 +92,22 @@
     <li>Histórico recente do que você ouviu, usado na tela Início.</li>
     <li>Os tokens de login, cifrados como descrito acima.</li>
     <li>O código do convite e a última licença do beta.</li>
+    <li>O perfil assinado, a chave do perfil deste PC e a sua foto (se você escolheu uma), além das fotos dos amigos já baixadas.</li>
   </ul>
-  <p>Fora o código do convite e o identificador anônimo do computador, nada disso é enviado ao Audial. Desinstalar o aplicativo e apagar a pasta <code>%LOCALAPPDATA%\YtMusicDesktop</code> remove tudo.</p>
+  <p>Nada dessa lista é enviado ao Audial, a não ser o que está descrito nas seções acima (o convite, o identificador anônimo do computador e o que você escolher pôr no perfil e nos amigos). Desinstalar o aplicativo e apagar a pasta <code>%LOCALAPPDATA%\YtMusicDesktop</code> remove tudo.</p>
 
   <h2>Serviços com que o aplicativo conversa</h2>
   <ul>
     <li><strong>YouTube e YouTube Music:</strong> busca, recomendações, capas e o próprio áudio vêm direto deles para o seu PC, sujeitos à <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">política de privacidade do Google</a>.</li>
-    <li><strong>Discord</strong> (opcional, desligável em Configurações): o aplicativo do Discord aberto no seu PC recebe a música, o artista e a capa que você está ouvindo, e o Discord mostra isso no seu perfil.</li>
-    <li><strong>Ouvir junto</strong> (só quando você cria ou entra numa sala): o convite e o início da conexão passam pelo <a href="https://ntfy.sh" target="_blank" rel="noopener">ntfy.sh</a>, criptografados. Servidores STUN da Cloudflare e do Google ajudam a descobrir o endereço para a conexão direta. Depois disso, os computadores conversam direto e trocam o nome escolhido, a música e a posição. Quando a rede de alguém bloqueia a conexão direta, essa conversa passa por um servidor de retransmissão (TURN) do Metered, ainda criptografada de ponta a ponta. Para usar esse servidor, o app pede ao audial.com.br uma senha temporária, mostrando a licença do convite. As pessoas da sala podem ver o seu endereço IP.</li>
+    <li><strong>Discord</strong> (opcional, desligável em Configurações): o aplicativo do Discord aberto no seu PC recebe a música, o artista e a capa que você está ouvindo, e o Discord mostra isso no seu perfil. Quando você cria uma sala do Ouvir junto, o status mostra também quantas pessoas estão nela e o botão “Juntar-se”, com o código da sala, para quem vê o seu perfil. Com o Discord ligado, quem chega à sala pede para entrar e só entra se você aceitar.</li>
+    <li><strong>Ouvir junto</strong> (só quando você cria ou entra numa sala): o convite e o início da conexão passam pelo <a href="https://ntfy.sh" target="_blank" rel="noopener">ntfy.sh</a>, criptografados. Servidores STUN da Cloudflare e do Google ajudam a descobrir o endereço para a conexão direta. Depois disso, os computadores conversam direto e trocam o nome escolhido (ou o perfil do beta, se você tiver um), a música e a posição. Quando a rede de alguém bloqueia a conexão direta, essa conversa passa por um servidor de retransmissão (TURN) do Metered, ainda criptografada de ponta a ponta. Para usar esse servidor, o app pede ao audial.com.br uma senha temporária, mostrando a licença do convite. As pessoas da sala podem ver o seu endereço IP.</li>
     <li><strong>Overlay para lives</strong> (opcional, desligado por padrão): enquanto estiver ligado, a música atual (título, artista e capa) é publicada num canal aleatório do ntfy.sh, que qualquer pessoa com o link do overlay pode ver. Em Configurações, “Gerar novo link” troca o canal, e o link antigo para de funcionar.</li>
     <li><strong>Controle pelo celular</strong> (só quando você vincula): usa o serviço de pareamento por código de TV do YouTube.</li>
     <li><strong>GitHub:</strong> o aplicativo consulta a página de versões do projeto no GitHub para saber se há versão nova. Durante o beta fechado não há versões publicadas lá; as atualizações chegam pelo instalador enviado a quem está testando.</li>
   </ul>
 
   <h2>Este site</h2>
-  <p>O site é hospedado pela Vercel, que registra dados técnicos de acesso como endereço IP e navegador. As fontes vêm do Google Fonts. A página de apoio mostra uma chave Pix: o pagamento acontece no app do seu banco, e o site não recebe nem guarda dados de pagamento. O site não usa cookies de rastreamento nem ferramentas de análise.</p>
+  <p>O site é hospedado pela Vercel, que registra dados técnicos de acesso como endereço IP e navegador. As fontes vêm do Google Fonts. A página de apoio mostra uma chave Pix e um link para o Buy Me a Coffee: o Pix acontece no app do seu banco e o café é pago no site do Buy Me a Coffee, sujeito à política dele; este site não recebe nem guarda dados de pagamento. A página <code>/juntar</code>, aberta pelo botão “Juntar-se” do Discord, lê o código da sala no próprio endereço e só o repassa ao Audial do seu PC; nada é enviado ao servidor, mas o endereço pode aparecer nos registros técnicos da Vercel. O site guarda no seu navegador, só durante a visita, um aviso de que a tela de abertura já apareceu. O site não usa cookies de rastreamento nem ferramentas de análise.</p>
 
   <h2>Crianças</h2>
   <p>O Audial não é direcionado a crianças e não coleta dados de propósito de ninguém. O uso do YouTube segue os limites de idade do próprio YouTube.</p>
