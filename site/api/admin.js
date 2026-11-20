@@ -185,10 +185,7 @@ const actions = {
     const invite = await load(body.code);
     await P.deleteProfile(invite.code);
     // friendships, pending requests, "ouvindo agora" and invites of this invite go too
-    for (const friend of (await lib.redis("SMEMBERS", "fr:" + invite.code)) || []) await lib.redis("SREM", "fr:" + friend, invite.code);
-    for (const key of ["fr:", "frin:", "frout:", "now:", "lt:", "crunf:"]) await lib.redis("DEL", key + invite.code);
-    await lib.redis("DEL", "frcreators");
-    await lib.redis("HDEL", "frcfg", invite.code);
+    await P.forgetFriends(invite.code);
     await lib.redis("DEL", "inv:" + invite.code);
     await lib.redis("SREM", "invites", invite.code);
     // the community nickname goes too (posts stay, shown as "Alguém do beta")

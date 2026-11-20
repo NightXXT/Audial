@@ -247,4 +247,25 @@ async function deleteProfile(code) {
   await lib.redis("HDEL", HASH, code);
 }
 
-module.exports = { ICONS, COLORS, NAME_MAX, PID_HASH, stripInvisible, isReserved, cleanName, cleanAvatar, cleanKey, cleanPhoto, photoHash, getPhoto, dropPhoto, badgesOf, getProfile, allProfiles, codeOfPid, card, saveProfile, deleteProfile };
+/**
+ * Everything of this invite in Amigos, on both sides: friendships, requests sent and received, "ouvindo agora",
+ * listen-together invites, the Creators it unfollowed and its settings. Used when the person deletes the profile
+ * ("Apagar perfil" deletes it all, LGPD art. 18 VI) and when an invite is deleted in the panel.
+ */
+async function forgetFriends(code) {
+  const members = async (key) => (await lib.redis("SMEMBERS", key + code)) || [];
+  for (const friend of await members("fr:")) {
+    await lib.redis("SREM", "fr:" + friend, code);
+    await lib.redis("HDEL", "lt:" + friend, code);
+  }
+  for (const asker of await members("frin:")) await lib.redis("SREM", "frout:" + asker, code);
+  for (const asked of await members("frout:")) {
+    await lib.redis("SREM", "frin:" + asked, code);
+    await lib.redis("HDEL", "lt:" + asked, code);
+  }
+  for (const key of ["fr:", "frin:", "frout:", "now:", "lt:", "crunf:"]) await lib.redis("DEL", key + code);
+  await lib.redis("HDEL", "frcfg", code);
+  await lib.redis("DEL", "frcreators");
+}
+
+module.exports = { forgetFriends, ICONS, COLORS, NAME_MAX, PID_HASH, stripInvisible, isReserved, cleanName, cleanAvatar, cleanKey, cleanPhoto, photoHash, getPhoto, dropPhoto, badgesOf, getProfile, allProfiles, codeOfPid, card, saveProfile, deleteProfile };

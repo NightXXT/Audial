@@ -41,7 +41,9 @@ module.exports = lib.handler(["POST"], async (req, res) => {
     case "photo":
       return lib.send(res, 200, { status: "ok", photo: await P.getPhoto(body.h) });
     case "delete":
+      // the profile, its photo and everything in Amigos go together
       await P.deleteProfile(invite.code);
+      await P.forgetFriends(invite.code);
       return lib.send(res, 200, { status: "ok", ...answer(invite, null) });
     default:
       return lib.send(res, 400, { status: "input", message: "Ação desconhecida." });
