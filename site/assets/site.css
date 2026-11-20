@@ -402,6 +402,7 @@ kbd { font: 600 11px/1 Inter, sans-serif; padding: 3px 6px; border-radius: 5px; 
 .doc p, .doc li { color: #C7CBD3; font-size: 16px; }
 .doc p + p { margin-top: 14px; }
 .doc ul { padding-left: 20px; display: grid; gap: 8px; margin: 14px 0 0; }
+.doc ul + p { margin-top: 14px; }
 .doc a { color: #FB7185; text-decoration: underline; text-underline-offset: 3px; }
 .doc strong { color: #fff; }
 .doc .card { margin-top: 20px; }
