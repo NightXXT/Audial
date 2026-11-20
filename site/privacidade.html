@@ -26,7 +26,7 @@
   <h1>Política de privacidade</h1>
   <p class="updated">Atualizada em 20 de novembro de 2026</p>
 
-  <p>O Audial é um aplicativo gratuito para Windows que toca músicas do YouTube Music. O código do projeto fica no GitHub; durante o beta fechado, as mudanças mais recentes do aplicativo ainda não foram publicadas lá. Ele não exige conta no Audial, não exibe anúncios e não usa ferramentas de rastreamento ou de análise. O único servidor próprio é o do beta fechado (convites, Comunidade beta, perfis e amigos), descrito abaixo. Esta página explica o que o aplicativo acessa, onde guarda e com quais serviços ele conversa.</p>
+  <p>O Audial é um aplicativo gratuito para Windows que toca músicas do YouTube Music e arquivos de música do seu próprio PC. O código do projeto fica no GitHub; durante o beta fechado, as mudanças mais recentes do aplicativo ainda não foram publicadas lá. Ele não exige conta no Audial, não exibe anúncios e não usa ferramentas de rastreamento ou de análise. O único servidor próprio é o do beta fechado (convites, Comunidade beta, perfis e amigos), descrito abaixo. Esta página explica o que o aplicativo acessa, onde guarda e com quais serviços ele conversa.</p>
 
   <h2>Convite do beta fechado</h2>
   <p>Durante o beta, o Audial pede um código de convite (no formato <code>AUD-XXXX-XXXX</code>). Para conferir o convite, o aplicativo envia ao servidor do Audial, hospedado na Vercel em <code>audial.com.br</code>:</p>
@@ -60,7 +60,7 @@
   <ul>
     <li><strong>Amizade:</strong> só existe quando a outra pessoa aceita o pedido. O servidor guarda a lista de amigos e os pedidos pendentes, pelos identificadores dos perfis.</li>
     <li><strong>Criador:</strong> todo perfil começa seguindo o criador do Audial, em um sentido só: você vê o que ele ouve (se ele mostrar), e ele não vê o que você ouve. Dá para deixar de seguir a qualquer momento.</li>
-    <li><strong>Ouvindo agora:</strong> fica desligado até você ligar “Mostrar o que estou ouvindo”. Ligado, o servidor guarda só a música atual (título, artista e capa) por até 6 minutos, sem histórico. “Ficar invisível” esconde na hora.</li>
+    <li><strong>Ouvindo agora:</strong> fica desligado até você ligar “Mostrar o que estou ouvindo”. Ligado, o servidor guarda só a música atual (título, artista e capa) por até 6 minutos, sem histórico. As músicas do seu PC nunca aparecem aqui. “Ficar invisível” esconde na hora.</li>
     <li><strong>Convites para ouvir junto:</strong> o código da sala vai só para o amigo convidado, só depois que ele aceita, e o convite expira em 3 minutos.</li>
   </ul>
   <p>Para apagar tudo isso de uma vez, use “Apagar perfil” em Configurações.</p>
@@ -86,10 +86,21 @@
   <p>Você pode sair a qualquer momento em Configurações. Ao apagar a sessão, o Audial revoga o acesso junto ao Google. Também é possível revogar em <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">myaccount.google.com/permissions</a>.</p>
   <p>O uso de informações recebidas das APIs do Google segue a <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Política de Dados do Usuário dos Serviços de API do Google</a>, incluindo os requisitos de Uso Limitado.</p>
 
+  <h2>Músicas do PC</h2>
+  <p>Você pode escolher pastas do seu computador para o Audial tocar os arquivos de música que estão nelas (mp3, flac, m4a, ogg e wav). Os arquivos nunca saem do seu PC:</p>
+  <ul>
+    <li>o Audial só lê os arquivos, sem mudar nada neles, e toca direto do disco;</li>
+    <li>o arquivo, as informações dele (título, artista, álbum, capa) e o caminho da pasta não são enviados ao servidor do Audial, ao YouTube nem a nenhum outro serviço. A busca, as capas e as recomendações dessas músicas acontecem no próprio PC;</li>
+    <li>no Discord e no overlay para lives, se estiverem ligados, aparecem só o título e o artista da música, sem a capa nem o álbum;</li>
+    <li>essas músicas não aparecem no “ouvindo agora” dos amigos e não são enviadas às salas do Ouvir junto, porque os outros computadores não têm o arquivo: enquanto uma delas toca, a sala avisa e espera a próxima.</li>
+  </ul>
+  <p>O Audial guarda no seu computador a lista das pastas escolhidas, as informações lidas dos arquivos e as capas tiradas deles, para abrir a lista mais rápido. Tirar uma pasta em “Músicas do PC” apaga essa lista e essas capas, e os seus arquivos continuam onde estavam.</p>
+
   <h2>Dados guardados no seu computador</h2>
   <ul>
     <li>Preferências do aplicativo (volume, aparência, integrações ligadas).</li>
     <li>Histórico recente do que você ouviu, usado na tela Início.</li>
+    <li>As pastas escolhidas em “Músicas do PC”, as informações lidas dos arquivos e as capas tiradas deles (veja “Músicas do PC”).</li>
     <li>Os tokens de login, cifrados como descrito acima.</li>
     <li>O código do convite e a última licença do beta.</li>
     <li>O perfil assinado, a chave do perfil deste PC e a sua foto (se você escolheu uma), além das fotos dos amigos já baixadas.</li>
@@ -99,9 +110,9 @@
   <h2>Serviços com que o aplicativo conversa</h2>
   <ul>
     <li><strong>YouTube e YouTube Music:</strong> busca, recomendações, capas e o próprio áudio vêm direto deles para o seu PC, sujeitos à <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">política de privacidade do Google</a>.</li>
-    <li><strong>Discord</strong> (opcional, desligável em Configurações): o aplicativo do Discord aberto no seu PC recebe a música, o artista e a capa que você está ouvindo, e o Discord mostra isso no seu perfil. Quando você cria uma sala do Ouvir junto, o status mostra também quantas pessoas estão nela e o botão “Juntar-se”, com o código da sala, para quem vê o seu perfil. Com o Discord ligado, quem chega à sala pede para entrar e só entra se você aceitar.</li>
-    <li><strong>Ouvir junto</strong> (só quando você cria ou entra numa sala): o convite e o início da conexão passam pelo <a href="https://ntfy.sh" target="_blank" rel="noopener">ntfy.sh</a>, criptografados. Servidores STUN da Cloudflare e do Google ajudam a descobrir o endereço para a conexão direta. Depois disso, os computadores conversam direto e trocam o nome escolhido (ou o perfil do beta, se você tiver um), a música e a posição. Quando a rede de alguém bloqueia a conexão direta, essa conversa passa por um servidor de retransmissão (TURN) do Metered, ainda criptografada de ponta a ponta. Para usar esse servidor, o app pede ao audial.com.br uma senha temporária, mostrando a licença do convite. As pessoas da sala podem ver o seu endereço IP.</li>
-    <li><strong>Overlay para lives</strong> (opcional, desligado por padrão): enquanto estiver ligado, a música atual (título, artista e capa) é publicada num canal aleatório do ntfy.sh, que qualquer pessoa com o link do overlay pode ver. Em Configurações, “Gerar novo link” troca o canal, e o link antigo para de funcionar.</li>
+    <li><strong>Discord</strong> (opcional, desligável em Configurações): o aplicativo do Discord aberto no seu PC recebe a música, o artista e a capa que você está ouvindo (de uma música do seu PC, só o título e o artista), e o Discord mostra isso no seu perfil. Quando você cria uma sala do Ouvir junto, o status mostra também quantas pessoas estão nela e o botão “Juntar-se”, com o código da sala, para quem vê o seu perfil. Com o Discord ligado, quem chega à sala pede para entrar e só entra se você aceitar.</li>
+    <li><strong>Ouvir junto</strong> (só quando você cria ou entra numa sala): o convite e o início da conexão passam pelo <a href="https://ntfy.sh" target="_blank" rel="noopener">ntfy.sh</a>, criptografados. Servidores STUN da Cloudflare e do Google ajudam a descobrir o endereço para a conexão direta. Depois disso, os computadores conversam direto e trocam o nome escolhido (ou o perfil do beta, se você tiver um), a música e a posição. As músicas do seu PC não são enviadas à sala. Quando a rede de alguém bloqueia a conexão direta, essa conversa passa por um servidor de retransmissão (TURN) do Metered, ainda criptografada de ponta a ponta. Para usar esse servidor, o app pede ao audial.com.br uma senha temporária, mostrando a licença do convite. As pessoas da sala podem ver o seu endereço IP.</li>
+    <li><strong>Overlay para lives</strong> (opcional, desligado por padrão): enquanto estiver ligado, a música atual (título, artista e capa; de uma música do seu PC, só o título e o artista) é publicada num canal aleatório do ntfy.sh, que qualquer pessoa com o link do overlay pode ver. Em Configurações, “Gerar novo link” troca o canal, e o link antigo para de funcionar.</li>
     <li><strong>Controle pelo celular</strong> (só quando você vincula): usa o serviço de pareamento por código de TV do YouTube.</li>
     <li><strong>GitHub:</strong> o aplicativo consulta a página de versões do projeto no GitHub para saber se há versão nova. Durante o beta fechado não há versões publicadas lá; as atualizações chegam pelo instalador enviado a quem está testando.</li>
   </ul>
