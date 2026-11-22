@@ -412,7 +412,7 @@ kbd { font: 600 11px/1 Inter, sans-serif; padding: 3px 6px; border-radius: 5px; 
 .support-head { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 18px; margin-bottom: 56px; }
 .support-head h1 { font-size: clamp(40px, 6vw, 72px); font-weight: 800; letter-spacing: -0.045em; line-height: 1.05; }
 .support-head p { color: var(--text-2); font-size: 18px; max-width: 620px; }
-.support-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 440px)); justify-content: center; gap: 20px; align-items: stretch; }
+.support-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 440px)); justify-content: center; gap: 20px; align-items: stretch; }
 .support-card { align-items: center; text-align: center; }
 .support-card h3 { font-size: 24px; }
 .pix-qr { width: 190px; aspect-ratio: 1; margin: 8px 0 4px; padding: 12px; border-radius: 16px; background: #fff; display: grid; place-items: center; color: var(--text-3); font-size: 13px; font-weight: 600; text-align: center; }
@@ -423,8 +423,11 @@ kbd { font: 600 11px/1 Inter, sans-serif; padding: 3px 6px; border-radius: 5px; 
 .final-inner .cta-row { margin: 4px 0 0; }
 .final-inner .cta-row .btn { margin-top: 0; }
 @media (max-width: 760px) {
-  .support-grid { grid-template-columns: 1fr; }
   .support { padding: 48px 16px 96px; }
+}
+/* lado a lado até o celular; só no celular um embaixo do outro */
+@media (max-width: 600px) {
+  .support-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 420px) {
   .pix-key code { font-size: 11px; }
@@ -592,9 +595,10 @@ kbd { font: 600 11px/1 Inter, sans-serif; padding: 3px 6px; border-radius: 5px; 
 @keyframes xmas-fall { to { transform: translateY(105vh); } }
 @keyframes xmas-sway { from { margin-left: -12px; } to { margin-left: 12px; } }
 @media (prefers-reduced-motion: reduce) { .xmas-lights i { animation: none; } }
-/* Apoiar: cartão do Buy Me a Coffee */
-/* (o cartão do café usa o mesmo quadro de QR do Pix) */
+/* Apoiar: cartão do Ko-fi */
 .coffee-btn { margin-top: auto; width: 100%; min-height: 48px; padding: 12px 22px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; }
+.btn.kofi-btn { background: #ed1782; box-shadow: 0 12px 32px -12px rgba(237,23,130,.7); }
+.btn.kofi-btn:hover { background: #f4369a; box-shadow: 0 16px 40px -10px rgba(237,23,130,.8); }
 
 /* ---------- Tela de carregamento (boot.js liga na primeira página da visita) ---------- */
 /* fundo: na hora, antes de qualquer coisa aparecer */
