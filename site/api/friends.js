@@ -269,6 +269,9 @@ const actions = {
 };
 
 module.exports = lib.handler(["POST"], async (req, res) => {
+  // Paused by default: the open apps asking every 30 s used up the database's monthly quota. Answering before any
+  // database call costs nothing; set FRIENDS_ENABLED=1 on the host to turn friends back on.
+  if (process.env.FRIENDS_ENABLED !== "1") return lib.send(res, 503, { status: "paused", message: "Os amigos estão pausados por enquanto." });
   if (!(await lib.allow(req, "fr", 900))) return lib.send(res, 429, { status: "limit", message: "Muitos pedidos. Espere um pouco." });
   const body = await lib.readBody(req);
   const action = Object.prototype.hasOwnProperty.call(actions, body.action) ? actions[body.action] : null;
