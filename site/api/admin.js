@@ -203,6 +203,11 @@ const actions = {
     return { commands: await require("./discord").registerCommands() };
   },
 
+  // Page visits of the last days (counted by server.js, without cookies or IPs).
+  async visits(body) {
+    return { days: await require("./_visits").report(body.days) };
+  },
+
   // Signed link to the invite flyer (PNG) of this invite, to send by hand.
   async ticketUrl(body) {
     const invite = await load(body.code);

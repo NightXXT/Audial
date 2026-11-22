@@ -9,6 +9,8 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
+const visits = require("./api/_visits");
+
 const ROOT = __dirname;
 const PORT = Number(process.env.PORT) || 3000;
 const BODY_LIMIT = 1024 * 1024; // the photo upload in /api/profile is the largest body (a small webp, base64)
@@ -193,7 +195,10 @@ const server = http.createServer(async (req, res) => {
       const file = path.join(ROOT, rel);
       if (!file.startsWith(ROOT + path.sep)) return notFound(res);
       const stat = statFile(file);
-      if (stat) return sendFile(req, res, file, stat);
+      if (stat) {
+        if (req.method === "GET" && file.endsWith(".html")) visits.count(req, pathname);
+        return sendFile(req, res, file, stat);
+      }
     }
     return notFound(res);
   } catch (e) {
@@ -209,4 +214,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.keepAliveTimeout = 65000; // above the host's proxy timeout, so kept-alive connections are not cut mid-request
+visits.start();
 server.listen(PORT, () => console.log(`Audial site on :${PORT}`));

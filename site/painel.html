@@ -49,6 +49,12 @@
   .pcs { font-size: 12px; color: var(--text-3); display: grid; gap: 4px; }
   .pcs span { font-family: ui-monospace, Consolas, monospace; }
   .hidden { display: none !important; }
+  .v-chart { display: flex; align-items: flex-end; gap: 3px; height: 90px; margin-top: 14px; }
+  .v-chart span { flex: 1; min-width: 2px; border-radius: 3px 3px 0 0; background: linear-gradient(180deg, #F751A1, #F43F5E); opacity: .85; }
+  .v-chart span.zero { background: rgba(255,255,255,.08); height: 2px !important; }
+  .v-pages { display: grid; gap: 6px; margin-top: 14px; font-size: 13px; }
+  .v-pages div { display: flex; justify-content: space-between; gap: 12px; padding: 6px 10px; border-radius: 8px; background: rgba(255,255,255,.04); }
+  .v-pages b { color: #fff; font-weight: 600; }
   .new-code { font-family: ui-monospace, Consolas, monospace; font-size: 22px; font-weight: 800; color: #fff; }
 </style>
 </head>
@@ -92,6 +98,18 @@
       <div id="stats" class="stats"></div>
       <p id="list-msg" class="msg"></p>
       <div id="list"></div>
+    </section>
+
+    <section class="box">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+        <h2 style="margin: 0;">Visitas ao site</h2>
+        <select id="v-days" class="b s" aria-label="Período"><option value="7">7 dias</option><option value="30" selected>30 dias</option><option value="90">90 dias</option></select>
+      </div>
+      <p class="meta" style="margin:8px 0 0;">Contadas pelo servidor, sem cookies e sem guardar IP. "Entradas" são as páginas abertas vindo de fora do site (perto do número de visitas); robôs e prévias de link não contam.</p>
+      <div id="v-stats" class="stats" style="margin-top:12px;"></div>
+      <div id="v-chart" class="v-chart" aria-hidden="true"></div>
+      <div id="v-pages" class="v-pages"></div>
+      <p id="v-msg" class="msg"></p>
     </section>
 
     <section class="box">

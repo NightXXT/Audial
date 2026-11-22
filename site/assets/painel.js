@@ -124,6 +124,43 @@
     }
   }
 
+  const PAGE_NAMES = { "/": "Início", "/apoiar": "Apoiar", "/privacidade": "Privacidade", "/termos": "Termos", "/juntar": "Juntar-se (Discord)", "/overlay": "Overlay da live", "/painel": "Painel" };
+
+  async function loadVisits() {
+    const msg = $("v-msg");
+    setMsg(msg, "Carregando…");
+    try {
+      const { days } = await call("visits", { days: Number($("v-days").value) });
+      let views = 0;
+      let entries = 0;
+      const pages = {};
+      for (const d of days) {
+        views += d.views;
+        entries += d.entries;
+        for (const [path, p] of Object.entries(d.pages)) {
+          const t = (pages[path] = pages[path] || { views: 0, entries: 0 });
+          t.views += p.views;
+          t.entries += p.entries;
+        }
+      }
+      const last = days[days.length - 1] || { views: 0, entries: 0 };
+      const stat = (label, value) => el("span", {}, el("b", {}, String(value)), " " + label);
+      $("v-stats").replaceChildren(stat("entradas no período", entries), stat("páginas abertas", views), stat("entradas hoje", last.entries));
+      const max = Math.max(1, ...days.map((d) => d.entries));
+      $("v-chart").replaceChildren(...days.map((d) => {
+        const bar = el("span", { title: d.day.split("-").reverse().join("/") + ": " + d.entries + " entradas, " + d.views + " páginas" });
+        if (d.entries === 0) bar.className = "zero";
+        else bar.style.height = Math.max(4, Math.round((d.entries / max) * 90)) + "px";
+        return bar;
+      }));
+      const top = Object.entries(pages).sort((a, b) => b[1].views - a[1].views).slice(0, 8);
+      $("v-pages").replaceChildren(...top.map(([path, p]) => el("div", {}, el("span", {}, PAGE_NAMES[path] || path), el("span", {}, el("b", {}, String(p.views)), " abertas · " + p.entries + " entradas"))));
+      setMsg(msg, views === 0 ? "Nenhuma visita contada ainda. A contagem começou quando o site passou para o Render." : "");
+    } catch (e) {
+      setMsg(msg, e.message, "err");
+    }
+  }
+
   async function enter() {
     try {
       const data = await call("list");
@@ -131,6 +168,7 @@
       $("login").classList.add("hidden");
       $("app").classList.remove("hidden");
       render(data);
+      loadVisits();
     } catch (e) {
       if (password) logout(e.message);
     }
@@ -177,7 +215,8 @@
     }
   });
 
-  $("refresh").addEventListener("click", load);
+  $("refresh").addEventListener("click", () => { load(); loadVisits(); });
+  $("v-days").addEventListener("change", loadVisits);
   $("logout").addEventListener("click", () => logout());
 
   $("list").addEventListener("click", async (e) => {
