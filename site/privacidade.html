@@ -60,7 +60,7 @@
   <ul>
     <li><strong>Amizade:</strong> só existe quando a outra pessoa aceita o pedido. O servidor guarda a lista de amigos e os pedidos pendentes, pelos identificadores dos perfis.</li>
     <li><strong>Criador:</strong> todo perfil começa seguindo o criador do Audial, em um sentido só: você vê o que ele ouve (se ele mostrar), e ele não vê o que você ouve. Dá para deixar de seguir a qualquer momento.</li>
-    <li><strong>Ouvindo agora:</strong> fica desligado até você ligar “Mostrar o que estou ouvindo”. Ligado, o servidor guarda só a música atual (título, artista e capa) por até 6 minutos, sem histórico. As músicas do seu PC nunca aparecem aqui. “Ficar invisível” esconde na hora.</li>
+    <li><strong>Ouvindo agora:</strong> fica desligado até você ligar “Mostrar o que estou ouvindo”. Ligado, o seu app manda a música atual (título, artista, capa e duração) direto para os seus amigos, <strong>criptografada</strong> com uma chave que só eles recebem, por um canal aleatório do ntfy.sh. O servidor do Audial não recebe nem guarda a música. O ntfy.sh só vê texto cifrado e o guarda por até 12 horas. Não há histórico, e as músicas do seu PC nunca aparecem aqui. “Ficar invisível” para o envio na hora; ao desfazer uma amizade, o canal e a chave são trocados, e a pessoa deixa de receber.</li>
     <li><strong>Convites para ouvir junto:</strong> o código da sala vai só para o amigo convidado, só depois que ele aceita, e o convite expira em 3 minutos.</li>
   </ul>
   <p>Para apagar tudo isso de uma vez, use “Apagar perfil” em Configurações.</p>
@@ -130,7 +130,7 @@
 
   <h2>Por quanto tempo guardamos</h2>
   <ul>
-    <li><strong>“Ouvindo agora”:</strong> até 6 minutos, sem histórico.</li>
+    <li><strong>“Ouvindo agora”:</strong> nada no servidor do Audial; no ntfy.sh, só cifrado e por até 12 horas, sem histórico.</li>
     <li><strong>Convites para ouvir junto:</strong> 3 minutos.</li>
     <li><strong>Contagem contra abuso:</strong> 1 hora.</li>
     <li><strong>Lista de um sorteio no Discord:</strong> até o sorteio acabar.</li>

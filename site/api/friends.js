@@ -18,14 +18,24 @@
 //   crunf:<code>  set of Creator codes this person unfollowed      frcreators   cached JSON list of Creator codes
 //   fr:<code>     set of friend codes          frin:<code>   set of codes that asked me     frout:<code> set I asked
 //   frcfg         hash code -> { share, invisible }
-//   now:<code>    JSON { title, artist, art, at }, expires after NOW_TTL
+//   frpush        hash code -> JSON { inbox, now, key }: this person's ntfy.sh topics and presence key (see "Push")
 //   lt:<code>     hash fromCode -> JSON { room, at }, the whole key expires after INVITE_TTL
+//
+// Push (version 2 of the app): nobody asks the server every few seconds any more.
+//   - "ouvindo agora" never touches the server: each app encrypts its song (AES-256-GCM, its own key) and publishes it
+//     to its own random ntfy.sh topic; the state below hands the topic and key only to the friends allowed to see it
+//     (and to followers of a Creator). ntfy.sh sees topic names and ciphertext, never the song or who is who.
+//   - when something changes for someone (request, accept, invite to listen...) the server sends an empty ping to their
+//     random inbox topic, and their app asks for the state once. Apps also ask now and then as a safety net.
+//   - ending a friendship gives both people new presence topics and keys, so the old friend stops hearing them.
+// Apps older than version 2 still poll every 30 s: for them the friends stay paused (answered before the database).
 "use strict";
 
+const crypto = require("crypto");
 const lib = require("./_lib");
 const P = require("./_profile");
 
-const NOW_TTL = 6 * 60;
+const NTFY = "https://ntfy.sh/";
 const INVITE_TTL = 3 * 60;
 const MAX_FRIENDS = 200;
 const MAX_PENDING = 50;
@@ -61,6 +71,39 @@ async function settingsOf(code) {
   const raw = await lib.redis("HGET", "frcfg", code);
   const s = raw ? JSON.parse(raw) : {};
   return { share: s.share === true, invisible: s.invisible === true };
+}
+
+const randomTopic = () => "audial-f-" + crypto.randomBytes(18).toString("base64url");
+
+/** This person's push channels, created the first time. */
+async function pushOf(code) {
+  const raw = await lib.redis("HGET", "frpush", code);
+  if (raw) return JSON.parse(raw);
+  const push = { inbox: randomTopic(), now: randomTopic(), key: crypto.randomBytes(32).toString("base64") };
+  await lib.redis("HSET", "frpush", code, JSON.stringify(push));
+  return push;
+}
+
+/** New presence topic and key (the inbox stays): whoever had the old ones stops hearing this person. */
+async function rotatePresence(code) {
+  const raw = await lib.redis("HGET", "frpush", code);
+  if (!raw) return;
+  const push = JSON.parse(raw);
+  push.now = randomTopic();
+  push.key = crypto.randomBytes(32).toString("base64");
+  await lib.redis("HSET", "frpush", code, JSON.stringify(push));
+}
+
+/** "Something changed for you": an empty message to their inbox topic. Never fails the request it comes from. */
+async function ping(code) {
+  try {
+    const raw = await lib.redis("HGET", "frpush", code);
+    if (!raw) return; // never opened the friends with a version that listens: they get it on their next state
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 3000);
+    await fetch(NTFY + JSON.parse(raw).inbox, { method: "POST", body: "1", headers: { Cache: "no" }, signal: ctrl.signal }).catch(() => {});
+    clearTimeout(timer);
+  } catch {}
 }
 
 /** The other person by profile id; never yourself. */
@@ -130,9 +173,10 @@ const actions = {
       if (!friends.includes(inviteMap[i]) && (await follows(inviteMap[i], ctx.code))) fans.push(inviteMap[i]);
     }
     const cards = await cardsOf([...seen, ...incoming, ...outgoing, ...fans]);
-    // what each one is hearing: one MGET, and only for those who share and are not invisible
-    const nowTexts = seen.length ? (await lib.redis("MGET", ...seen.map((c) => "now:" + c))) || [] : [];
+    // where each one publishes what they hear, only for those who share and are not invisible
+    const pushTexts = seen.length ? (await lib.redis("HMGET", "frpush", ...seen)) || [] : [];
     const cfgTexts = seen.length ? (await lib.redis("HMGET", "frcfg", ...seen)) || [] : [];
+    const mine = await pushOf(ctx.code);
     const t = lib.now();
     const invites = [];
     for (let i = 0; i < inviteMap.length; i += 2) {
@@ -141,15 +185,15 @@ const actions = {
       if (cards[from] && (friends.includes(from) || fans.includes(from)) && t - inv.at < INVITE_TTL) invites.push({ ...cards[from], at: inv.at }); // with the card: a follower is not in the Creator's list
     }
     return {
-      me: { pid: ctx.profile.id, ...settings },
+      me: { pid: ctx.profile.id, ...settings, push: mine },
       friends: seen
         .filter((c) => cards[c])
         .map((c) => {
           const i = seen.indexOf(c);
           const cfg = cfgTexts[i] ? JSON.parse(cfgTexts[i]) : {};
-          const now = nowTexts[i];
-          const visible = cfg.share === true && cfg.invisible !== true && now;
-          return { ...cards[c], now: visible ? JSON.parse(now) : null, ...(following.includes(c) ? { follow: true } : {}) };
+          const push = pushTexts[i] ? JSON.parse(pushTexts[i]) : null;
+          const visible = cfg.share === true && cfg.invisible !== true && push;
+          return { ...cards[c], live: visible ? { topic: push.now, key: push.key } : null, ...(following.includes(c) ? { follow: true } : {}) };
         }),
       incoming: incoming.filter((c) => cards[c]).map((c) => cards[c]),
       outgoing: outgoing.filter((c) => cards[c]).map((c) => cards[c]),
@@ -172,6 +216,7 @@ const actions = {
     if (Number(await lib.redis("SCARD", "frin:" + code)) >= MAX_PENDING) throw fail("Essa pessoa tem pedidos demais esperando. Tente mais tarde.");
     await lib.redis("SADD", "frin:" + code, ctx.code);
     await lib.redis("SADD", "frout:" + ctx.code, code);
+    await ping(code);
     return { result: "requested" };
   },
 
@@ -185,6 +230,7 @@ const actions = {
     await lib.redis("SREM", "frout:" + code, ctx.code);
     await lib.redis("SREM", "frin:" + code, ctx.code);
     await lib.redis("SREM", "frout:" + ctx.code, code);
+    await ping(code);
     return { result: "friends" };
   },
 
@@ -199,6 +245,7 @@ const actions = {
     const code = await other(ctx, body.pid);
     await lib.redis("SREM", "frout:" + ctx.code, code);
     await lib.redis("SREM", "frin:" + code, ctx.code);
+    await ping(code);
     return {};
   },
 
@@ -209,6 +256,10 @@ const actions = {
     await lib.redis("HDEL", "lt:" + ctx.code, code);
     await lib.redis("HDEL", "lt:" + code, ctx.code);
     if ((await creators()).includes(code)) await lib.redis("SADD", "crunf:" + ctx.code, code);
+    // both stop hearing each other: new presence channels (their other friends pick them up on their next state)
+    await rotatePresence(ctx.code);
+    await rotatePresence(code);
+    await ping(code);
     return {};
   },
 
@@ -226,23 +277,12 @@ const actions = {
     if (body.share !== undefined) s.share = body.share === true;
     if (body.invisible !== undefined) s.invisible = body.invisible === true;
     await lib.redis("HSET", "frcfg", ctx.code, JSON.stringify(s));
-    if (!s.share || s.invisible) await lib.redis("DEL", "now:" + ctx.code);
-    return { me: { pid: ctx.profile.id, ...s } };
+    return { me: { pid: ctx.profile.id, ...s, push: await pushOf(ctx.code) } };
   },
 
-  // The song playing now. Ignored (and the old one erased) while sharing is off or invisible.
-  async presence(ctx, body) {
-    await limit(ctx.code, "now", 240);
-    const s = await settingsOf(ctx.code);
-    if (!s.share || s.invisible || body.clear === true) {
-      await lib.redis("DEL", "now:" + ctx.code);
-      return { stored: false };
-    }
-    const title = text(body.title, 150);
-    if (!title) throw fail("Música sem título.");
-    const now = { title, artist: text(body.artist, 150), art: cleanArt(body.art), at: lib.now() };
-    await lib.redis("SET", "now:" + ctx.code, JSON.stringify(now), "EX", NOW_TTL);
-    return { stored: true };
+  // The song playing now goes straight from the app to ntfy.sh, encrypted (see "Push"); nothing is stored here.
+  async presence() {
+    return { stored: false };
   },
 
   // "Fulano quer ouvir junto": the room code waits on the server and only goes to the friend who accepts.
@@ -254,6 +294,7 @@ const actions = {
     await limit(ctx.code, "inv", 30);
     await lib.redis("HSET", "lt:" + code, ctx.code, JSON.stringify({ room, at: lib.now() }));
     await lib.redis("EXPIRE", "lt:" + code, INVITE_TTL);
+    await ping(code);
     return {};
   },
 
@@ -269,9 +310,9 @@ const actions = {
 };
 
 module.exports = lib.handler(["POST"], async (req, res) => {
-  // Paused by default: the open apps asking every 30 s used up the database's monthly quota. Answering before any
-  // database call costs nothing; set FRIENDS_ENABLED=1 on the host to turn friends back on.
-  if (process.env.FRIENDS_ENABLED !== "1") return lib.send(res, 503, { status: "paused", message: "Os amigos estão pausados por enquanto." });
+  // Apps before version 2 poll every 30 s: they stay paused (answered before the database). FRIENDS_ENABLED=0 pauses all.
+  const version = Number(req.body && typeof req.body === "object" ? req.body.v : 0) || 0;
+  if (version < 2 || process.env.FRIENDS_ENABLED === "0") return lib.send(res, 503, { status: "paused", message: version < 2 ? "Atualize o Audial para usar os amigos." : "Os amigos estão pausados por enquanto." });
   if (!(await lib.allow(req, "fr", 900))) return lib.send(res, 429, { status: "limit", message: "Muitos pedidos. Espere um pouco." });
   const body = await lib.readBody(req);
   const action = Object.prototype.hasOwnProperty.call(actions, body.action) ? actions[body.action] : null;
