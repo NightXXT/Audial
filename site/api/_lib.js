@@ -31,7 +31,63 @@ function redisConfig() {
   return { url: url.replace(/\/+$/, ""), token };
 }
 
+// ---------- Redis Cloud (TCP), once the data was moved there ----------
+//
+// REDIS_URL (redis://… or rediss://…) is the new database. It is only used once it carries the marker key
+// "audial:migrated", written by the copy in /painel (api/_migrate.js) after everything was copied: adding the
+// variable before the copy changes nothing, so the site never runs on an empty database (which would make the apps
+// throw their licenses away). Until then, and if it can't be reached, everything stays on Upstash (REST).
+
+const MIGRATED = "audial:migrated";
+let tcpClient = null;
+let tcpReady = null; // null: not checked yet; true: use it; a number: checked at that time, not ready
+let tcpError = "";
+
+function tcp() {
+  if (!process.env.REDIS_URL) return null;
+  if (!tcpClient) {
+    const Redis = require("ioredis");
+    tcpClient = new Redis(process.env.REDIS_URL, { maxRetriesPerRequest: 2, connectTimeout: 8000, lazyConnect: false });
+    tcpClient.on("error", (e) => {
+      tcpError = String((e && e.message) || e).slice(0, 120);
+    });
+  }
+  return tcpClient;
+}
+
+async function cloud() {
+  const client = tcp();
+  if (!client) return null;
+  if (tcpReady === true) return client;
+  if (typeof tcpReady === "number" && Date.now() - tcpReady < 60000) return null;
+  try {
+    tcpReady = Number(await client.exists(MIGRATED)) === 1 ? true : Date.now();
+  } catch {
+    tcpReady = Date.now();
+  }
+  return tcpReady === true ? client : null;
+}
+
+/** Where the data lives now, for the panel. */
+async function backend() {
+  const client = await cloud();
+  return { using: client ? "redis-cloud" : "upstash", cloudConfigured: !!process.env.REDIS_URL, cloudError: tcpError || null };
+}
+
 async function redis(...command) {
+  const client = await cloud();
+  if (client) {
+    try {
+      return await client.call(...command.map(String));
+    } catch (e) {
+      throw new ServerError("storage", "Falha no banco: " + String((e && e.message) || e).slice(0, 160));
+    }
+  }
+  return upstash(...command);
+}
+
+/** Upstash (REST). Also the source of the copy to Redis Cloud. */
+async function upstash(...command) {
   const { url, token } = redisConfig();
   const res = await fetch(url, {
     method: "POST",
@@ -253,6 +309,10 @@ function handler(methods, fn) {
 
 module.exports = {
   pausedExtra,
+  upstash,
+  tcp,
+  backend,
+  MIGRATED,
   DAY,
   OFFLINE_DAYS,
   MACHINE_PATTERN,

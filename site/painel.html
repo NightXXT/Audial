@@ -113,6 +113,16 @@
     </section>
 
     <section class="box">
+      <h2>Banco de dados</h2>
+      <p id="db-status" class="meta" style="margin:8px 0 0;">…</p>
+      <p class="meta" style="margin:8px 0 0;">Para sair do limite mensal do Upstash: crie um banco grátis no Redis Cloud, coloque o endereço dele (redis://…) na variável <code>REDIS_URL</code> do Render e clique em copiar. O site só passa a usar o Redis Cloud depois que tudo foi copiado e conferido.</p>
+      <div class="actions" style="margin-top: 12px;">
+        <button id="db-migrate" class="b" type="button">Copiar tudo para o Redis Cloud</button>
+      </div>
+      <p id="db-msg" class="msg"></p>
+    </section>
+
+    <section class="box">
       <h2>Bot do Discord</h2>
       <p class="meta">Depois de configurar o bot na Vercel (DISCORD_APP_ID, DISCORD_PUBLIC_KEY e DISCORD_BOT_TOKEN), clique uma vez para mandar os comandos /sorteio, /beta e /audial ao Discord. Clique de novo só se os comandos mudarem.</p>
       <div class="actions" style="margin-top: 12px;">

@@ -203,6 +203,16 @@ const actions = {
     return { commands: await require("./discord").registerCommands() };
   },
 
+  // Where the data lives (Upstash or Redis Cloud) and whether REDIS_URL is set.
+  async dbStatus() {
+    return { db: await lib.backend() };
+  },
+
+  // Copies everything from Upstash to Redis Cloud; the site switches over by itself within a minute.
+  async migrate() {
+    return { result: await require("./_migrate").migrate(), db: await lib.backend() };
+  },
+
   // Page visits of the last days (counted by server.js, without cookies or IPs).
   async visits(body) {
     return { days: await require("./_visits").report(body.days) };

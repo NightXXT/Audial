@@ -161,6 +161,23 @@
     }
   }
 
+  function showDb(db) {
+    const where = db.using === "redis-cloud" ? "Redis Cloud" : "Upstash";
+    let text = "Os dados estão no " + where + ".";
+    if (db.using !== "redis-cloud") text += db.cloudConfigured ? " A REDIS_URL está configurada; falta copiar." : " A REDIS_URL ainda não foi configurada no Render.";
+    if (db.cloudError) text += " Erro do Redis Cloud: " + db.cloudError;
+    $("db-status").textContent = text;
+    $("db-migrate").disabled = db.using === "redis-cloud" || !db.cloudConfigured;
+  }
+
+  async function loadDb() {
+    try {
+      showDb((await call("dbStatus")).db);
+    } catch (e) {
+      $("db-status").textContent = e.message;
+    }
+  }
+
   async function enter() {
     try {
       const data = await call("list");
@@ -169,6 +186,7 @@
       $("app").classList.remove("hidden");
       render(data);
       loadVisits();
+      loadDb();
     } catch (e) {
       if (password) logout(e.message);
     }
@@ -215,7 +233,21 @@
     }
   });
 
-  $("refresh").addEventListener("click", () => { load(); loadVisits(); });
+  $("refresh").addEventListener("click", () => { load(); loadVisits(); loadDb(); });
+  $("db-migrate").addEventListener("click", async () => {
+    if (!confirm("Copiar todos os dados do Upstash para o Redis Cloud? O Upstash continua como está, nada é apagado.")) return;
+    const msg = $("db-msg");
+    setMsg(msg, "Copiando… pode levar alguns minutos, não feche a página.");
+    $("db-migrate").disabled = true;
+    try {
+      const { result, db } = await call("migrate");
+      setMsg(msg, "Pronto: " + result.copied + " itens copiados (" + result.invites + " convites) em " + result.seconds + " s. O site passa a usar o Redis Cloud em até 1 minuto.", "ok");
+      showDb(db);
+    } catch (e) {
+      setMsg(msg, e.message, "err");
+      $("db-migrate").disabled = false;
+    }
+  });
   $("v-days").addEventListener("change", loadVisits);
   $("logout").addEventListener("click", () => logout());
 
