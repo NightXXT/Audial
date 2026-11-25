@@ -310,6 +310,7 @@ const actions = {
 };
 
 module.exports = lib.handler(["POST"], async (req, res) => {
+  if (lib.pausedExtra(res, "Os amigos estão pausados por enquanto.")) return;
   // Apps before version 2 poll every 30 s: they stay paused (answered before the database). FRIENDS_ENABLED=0 pauses all.
   const version = Number(req.body && typeof req.body === "object" ? req.body.v : 0) || 0;
   if (version < 2 || process.env.FRIENDS_ENABLED === "0") return lib.send(res, 503, { status: "paused", message: version < 2 ? "Atualize o Audial para usar os amigos." : "Os amigos estão pausados por enquanto." });

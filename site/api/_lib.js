@@ -224,6 +224,17 @@ async function withLock(name, fn) {
   }
 }
 
+// Essentials only (the default): the database is used just for invites, the license check and /painel. Profiles,
+// friends, the community and the room relay answer "paused" before touching it. AUDIAL_ONLY_INVITES=0 turns them back on.
+const ONLY_INVITES = process.env.AUDIAL_ONLY_INVITES !== "0";
+
+/** For endpoints outside the essentials: true (and the answer already sent) while they are paused. */
+function pausedExtra(res, what) {
+  if (!ONLY_INVITES) return false;
+  send(res, 503, { status: "paused", message: what });
+  return true;
+}
+
 function handler(methods, fn) {
   return async (req, res) => {
     if (!methods.includes(req.method)) {
@@ -241,6 +252,7 @@ function handler(methods, fn) {
 }
 
 module.exports = {
+  pausedExtra,
   DAY,
   OFFLINE_DAYS,
   MACHINE_PATTERN,

@@ -30,6 +30,7 @@ function normalize(data) {
 }
 
 module.exports = lib.handler(["POST"], async (req, res) => {
+  if (lib.pausedExtra(res, "O relay das salas está pausado por enquanto. As salas tentam a conexão direta.")) return;
   if (!(await lib.allow(req, "turn", 60))) return lib.send(res, 429, { status: "limit", message: "Muitos pedidos. Espere um pouco." });
   const body = await lib.readBody(req);
   await lib.authenticate(body.license, body.signature);

@@ -16,6 +16,7 @@ function answer(invite, profile) {
 }
 
 module.exports = lib.handler(["POST"], async (req, res) => {
+  if (lib.pausedExtra(res, "O perfil está pausado por enquanto.")) return;
   if (!(await lib.allow(req, "prof", 120))) return lib.send(res, 429, { status: "limit", message: "Muitos pedidos. Espere um pouco." });
   const body = await lib.readBody(req);
   const { invite } = await lib.authenticate(body.license, body.signature);

@@ -293,6 +293,7 @@ function creatorOnly(ctx) {
 const OPEN_WITHOUT_NICK = new Set(["me", "setNick"]);
 
 module.exports = lib.handler(["POST"], async (req, res) => {
+  if (lib.pausedExtra(res, "A Comunidade está pausada por enquanto.")) return;
   if (!(await lib.allow(req, "com", 600))) return lib.send(res, 429, { status: "limit", message: "Muitos pedidos. Espere um pouco." });
   const body = await lib.readBody(req);
   const action = Object.prototype.hasOwnProperty.call(actions, body.action) ? actions[body.action] : null;
