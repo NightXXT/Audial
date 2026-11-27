@@ -241,3 +241,43 @@
   }
   document.body.appendChild(snow);
 })();
+
+// Baixar: the download starts (the link goes to the GitHub release) and a dialog explains the Windows warning
+(() => {
+  const dlg = document.getElementById("dl-help");
+  if (!dlg || typeof dlg.showModal !== "function") return;
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest('a[href="/baixar"]');
+    if (!a || dlg.contains(a)) return;
+    if (document.documentElement.classList.contains("pre")) {
+      // before the launch the button counts down: it takes you to the countdown instead
+      e.preventDefault();
+      document.getElementById("baixar")?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    setTimeout(() => { if (!dlg.open) dlg.showModal(); }, 250);
+  });
+  dlg.querySelector(".dl-close").addEventListener("click", () => dlg.close());
+  dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
+})();
+
+// The countdown to the launch (1 December 2026, Brasília); at zero the page reloads as launched
+(() => {
+  const root = document.documentElement;
+  if (!root.classList.contains("pre")) return;
+  const launch = Date.parse("2026-12-01T00:00:00-03:00");
+  const two = (n) => String(n).padStart(2, "0");
+  const q = (s) => document.querySelectorAll(s);
+  const tick = () => {
+    const left = launch - Date.now();
+    if (left <= 0) { location.reload(); return; }
+    const s = Math.floor(left / 1000), d = Math.floor(s / 86400), h = Math.floor(s / 3600) % 24, m = Math.floor(s / 60) % 60;
+    q("[data-cd-d]").forEach((el) => (el.textContent = two(d)));
+    q("[data-cd-h]").forEach((el) => (el.textContent = two(h)));
+    q("[data-cd-m]").forEach((el) => (el.textContent = two(m)));
+    q("[data-cd-s]").forEach((el) => (el.textContent = two(s % 60)));
+    q("[data-cd-short]").forEach((el) => (el.textContent = d > 0 ? `${d} ${d === 1 ? "dia" : "dias"} e ${h}h` : `${h}h ${two(m)}min`));
+  };
+  tick();
+  setInterval(tick, 1000);
+})();

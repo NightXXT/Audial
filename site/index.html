@@ -17,8 +17,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=20">
-<script src="/assets/boot.js?v=3"></script>
+<link rel="stylesheet" href="/assets/site.css?v=22">
+<script src="/assets/boot.js?v=4"></script>
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
@@ -40,9 +40,9 @@
       <a href="https://discord.gg/v6RtzaeP7" target="_blank" rel="noopener">Discord</a>
       <a href="/apoiar">Apoiar</a>
     </nav>
-    <a class="btn btn-primary btn-sm magnetic" href="#video">
-      <svg viewBox="0 0 24 24" class="ico ico-fill" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
-      Ver o vídeo
+    <a class="btn btn-primary btn-sm magnetic" href="/baixar">
+      <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
+      <span class="post">Baixar</span><span class="pre-only">1º de dezembro</span>
     </a>
   </div>
 </header>
@@ -52,9 +52,9 @@
   <section class="hero">
     <canvas class="visualizer" id="visualizer" aria-hidden="true"></canvas>
     <div class="wrap hero-copy">
-      <a class="pill intro" style="--d:0" href="#em-breve">
+      <a class="pill intro" style="--d:0" href="#baixar">
         <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-        Beta fechado · Chega em 2027
+        <span class="post">Já disponível · Grátis para Windows</span><span class="pre-only">Chega em 1º de dezembro · Grátis para Windows</span>
         <svg viewBox="0 0 24 24" class="ico ico-sm" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
       </a>
       <h1 class="headline">
@@ -69,7 +69,11 @@
       </h1>
       <p class="lead intro" style="--d:8">Interface Fluent, mini player, ouvir junto com amigos e status no Discord. Sem Electron e sem aba de navegador disfarçada de aplicativo.</p>
       <div class="cta-row intro" style="--d:9">
-        <a class="btn btn-primary btn-lg magnetic glow" href="#video">
+        <a class="btn btn-primary btn-lg magnetic glow" href="/baixar">
+          <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
+          <span class="post">Baixar grátis</span><span class="pre-only">Faltam <span data-cd-short>poucos dias</span></span>
+        </a>
+        <a class="btn btn-ghost btn-lg magnetic" href="#video">
           <svg viewBox="0 0 24 24" class="ico ico-fill" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
           Assistir ao vídeo
         </a>
@@ -78,7 +82,7 @@
           Entrar no Discord
         </a>
       </div>
-      <p class="fine intro" style="--d:10">Lançamento em 2027 · Grátis para Windows 10 e 11 · Código no GitHub</p>
+      <p class="fine intro" style="--d:10">Grátis para Windows 10 e 11 · Sem conta e sem anúncio · Código no GitHub</p>
     </div>
 
     <div class="wrap stage-wrap">
@@ -341,8 +345,8 @@
     <div class="wrap">
       <div class="section-head reveal">
         <span class="kicker">Progresso</span>
-        <h2>Do primeiro play <span class="grad">até 2027.</span></h2>
-        <p>O que já saiu do papel e o que falta para o Audial abrir pra todo mundo. No beta, as versões são 0.x; a 1.0 chega com o lançamento.</p>
+        <h2>Do primeiro play <span class="grad">ao lançamento.</span></h2>
+        <p>O que já saiu do papel até o Audial abrir pra todo mundo, e o que vem depois.</p>
       </div>
       <div class="timeline" id="timeline">
         <div class="tl-rail" aria-hidden="true"></div>
@@ -476,11 +480,11 @@
               <div class="chips"><span>Tema Neon Vice</span><span>Letreiro em neon</span></div>
             </aside>
           </li>
-          <li class="tl-item now">
+          <li class="tl-item">
             <div class="tl-when reveal"><span class="tl-date">20 de novembro de 2026</span><span class="tl-ver">v0.17</span></div>
             <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24" class="fill"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg></span>
             <article class="tl-card glass reveal">
-              <span class="tl-badge"><span class="dot"></span>Agora · em teste no beta</span>
+              <span class="tl-badge">No beta</span>
               <h3>Juntar-se pelo Discord</h3>
               <p>Quem cria uma sala do Ouvir junto mostra no status do Discord o botão “Juntar-se” e quantas pessoas estão ouvindo. Quem chega pede para entrar, e você aceita ou recusa, pela barra de Amigos ou pela tela da sala. Também saiu o brilho que pulsava com a música e foi corrigido o selo de Criador que piscava na lista de amigos.</p>
               <div class="chips"><span>Juntar-se no Discord</span><span>Pedir para entrar</span><span>Selo sem piscar</span></div>
@@ -493,34 +497,35 @@
               <div class="chips"><span>Perguntas frequentes</span><span>Ko-fi</span><span>Mais leve no celular</span></div>
             </aside>
           </li>
+          <li class="tl-item now">
+            <div class="tl-when reveal"><span class="tl-date">1º de dezembro de 2026</span><span class="tl-ver">v1.0</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 21V4m0 0h11l-2 4 2 4H5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <span class="tl-badge"><span class="dot"></span><span class="post">Agora</span><span class="pre-only">Em breve</span></span>
+              <h3>Lançamento</h3>
+              <p>O Audial sai do beta e abre pra todo mundo, de graça, no Windows 10 e 11, sem convite. Vem com o som novo dos modos Caixas de som e Fone: o “tum” do bumbo de volta, sem som abafado e sem a voz abaixando a cada batida, e capas de verdade nas playlists.</p>
+              <div class="chips"><span>Sem convite</span><span>Grave novo</span><span>Capas nas playlists</span></div>
+            </article>
+          </li>
           <li class="tl-item next">
-            <div class="tl-when reveal"><span class="tl-date">Até o lançamento</span><span class="tl-ver">Antes da 1.0</span></div>
+            <div class="tl-when reveal"><span class="tl-date">Depois do lançamento</span><span class="tl-ver">1.x</span></div>
             <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4 2.6-2.6Z"/></svg></span>
             <article class="tl-card glass reveal">
-              <h3>O que ainda falta</h3>
+              <h3>O que vem agora</h3>
               <ul class="tl-todo">
                 <li><strong>Para arrumar:</strong> o aviso “O Windows protegeu o computador” na primeira instalação, que aparece porque o instalador ainda não tem certificado da Microsoft.</li>
                 <li><strong>Para funcionar certinho:</strong> o “Juntar-se” do Discord testado com muita gente ao mesmo tempo, e as luzes RGB testadas em mais marcas de teclado, mouse e headset.</li>
-                <li><strong>Para lapidar:</strong> o que a Comunidade beta for pedindo e apontando.</li>
+                <li><strong>Para lapidar:</strong> o que a galera for pedindo e apontando no Discord.</li>
               </ul>
-              <div class="chips"><span>Certificado</span><span>Testes no Discord</span><span>Ideias do beta</span></div>
+              <div class="chips"><span>Certificado</span><span>Testes no Discord</span><span>Ideias da galera</span></div>
             </article>
             <!-- a side branch off the trunk: what comes after, not a promise for the 1.0 -->
             <aside class="tl-twig glass reveal">
-              <span class="tl-twig-tag">depois do lançamento</span>
+              <span class="tl-twig-tag">mais pra frente</span>
               <h4>Audial no celular</h4>
-              <p>Uma versão para Android está nos planos depois da 1.0. Para iPhone, não há previsão. Enquanto isso, dá para controlar o Audial do PC pelo celular.</p>
+              <p>Uma versão para Android está nos planos. Para iPhone, não há previsão. Enquanto isso, dá para controlar o Audial do PC pelo celular.</p>
               <div class="chips"><span>Android</span><span>Controle pelo celular</span></div>
             </aside>
-          </li>
-          <li class="tl-item next">
-            <div class="tl-when reveal"><span class="tl-date">2027</span><span class="tl-ver">v1.0</span></div>
-            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 21V4m0 0h11l-2 4 2 4H5"/></svg></span>
-            <article class="tl-card glass reveal">
-              <h3>Lançamento</h3>
-              <p>O Audial sai do beta e chega à versão 1.0, pra todo mundo e de graça, no Windows 10 e 11.</p>
-              <div class="chips"><span>Grátis</span><span>Windows 10 e 11</span></div>
-            </article>
           </li>
         </ol>
       </div>
@@ -545,12 +550,12 @@
           <p>Nada. O Audial é grátis, não tem anúncios e não tem plano pago. Dá para apoiar o projeto com Pix ou Ko-fi, mas isso é opcional e não libera nada a mais: todo mundo recebe o mesmo Audial.</p>
         </details>
         <details>
-          <summary>Quando lança? Como eu entro no beta?</summary>
-          <p>O Audial está em beta fechado e chega para todo mundo em 2027. Por enquanto, só entra quem tem um código de convite. Os convites saem principalmente em sorteios no <a href="https://discord.gg/v6RtzaeP7" target="_blank" rel="noopener">servidor do Audial no Discord</a>.</p>
+          <summary>Como eu baixo?</summary>
+          <p>Clique em <a href="/baixar">Baixar grátis</a>, abra o <strong>AudialSetup.exe</strong> e siga o instalador. Não precisa de convite nem de conta. Depois disso, o Audial se atualiza sozinho.</p>
         </details>
         <details>
           <summary>Preciso criar uma conta?</summary>
-          <p>Não. Não existe conta no Audial: no beta, você usa só o código do convite. Entrar com a sua conta Google é opcional e serve apenas para ver as suas playlists e curtidas, com permissão <strong>somente de leitura</strong>. O Audial não cria, edita nem apaga nada na sua conta, e você pode sair quando quiser.</p>
+          <p>Não. Não existe conta no Audial. Entrar com a sua conta Google é opcional e serve apenas para ver as suas playlists e curtidas, com permissão <strong>somente de leitura</strong>. O Audial não cria, edita nem apaga nada na sua conta, e você pode sair quando quiser.</p>
         </details>
         <details>
           <summary>É seguro instalar?</summary>
@@ -558,36 +563,43 @@
         </details>
         <details>
           <summary>O que o Audial sabe sobre mim?</summary>
-          <p>O mínimo. Não tem anúncio, rastreamento nem ferramenta de análise. O login fica cifrado pelo próprio Windows, só no seu PC. O servidor do Audial guarda o convite e um identificador anônimo do computador e, se você quiser, o seu perfil (nome, avatar e foto) e a sua lista de amigos. A foto pode ficar só no seu PC, e “Apagar perfil” apaga tudo isso de uma vez. Os detalhes, inclusive os seus direitos pela LGPD, estão na <a href="/privacidade">política de privacidade</a>.</p>
-        </details>
-        <details>
-          <summary>Meus amigos veem o que eu ouço?</summary>
-          <p>Só se você quiser. “Mostrar o que estou ouvindo” começa desligado, e “Ficar invisível” esconde na hora. Só vê quem você aceitou como amigo, e o servidor guarda apenas a música do momento, por até 6 minutos, sem histórico. Todo perfil começa seguindo o criador do Audial, em um sentido só: ele não vê o que você ouve, e dá para deixar de seguir.</p>
+          <p>O mínimo. Não tem anúncio, rastreamento nem ferramenta de análise. O login fica cifrado pelo próprio Windows, só no seu PC. Não existe perfil nem lista de amigos: o servidor do Audial não guarda nada de quem só baixa e usa o app. No Ouvir junto, os computadores se conectam direto um ao outro. Os detalhes, inclusive os seus direitos pela LGPD, estão na <a href="/privacidade">política de privacidade</a>.</p>
         </details>
         <details>
           <summary>Tem versão para celular?</summary>
-          <p>Ainda não. Primeiro o Audial chega no Windows, em 2027. Uma versão para Android está nos planos depois disso; para iPhone, não há previsão. Enquanto isso, dá para controlar o Audial do PC pelo celular.</p>
+          <p>Ainda não. Por enquanto o Audial é só para Windows. Uma versão para Android está nos planos; para iPhone, não há previsão. Enquanto isso, dá para controlar o Audial do PC pelo celular.</p>
         </details>
         <details>
           <summary>O código é aberto?</summary>
-          <p>O código do projeto fica no <a href="https://github.com/NightXXT/Audial" target="_blank" rel="noopener">GitHub</a>. Durante o beta fechado, as mudanças mais recentes do aplicativo ainda não foram publicadas lá.</p>
+          <p>O código do projeto fica no <a href="https://github.com/NightXXT/Audial" target="_blank" rel="noopener">GitHub</a>. Os instaladores oficiais ficam nas <a href="https://github.com/NightXXT/Audial/releases" target="_blank" rel="noopener">releases do GitHub</a>; as mudanças mais recentes do código do aplicativo ainda não foram publicadas lá.</p>
         </details>
         <details>
           <summary>Como falo com o suporte?</summary>
-          <p>Pelo <a href="https://discord.gg/v6RtzaeP7" target="_blank" rel="noopener">servidor do Audial no Discord</a> ou abrindo uma <a href="https://github.com/NightXXT/Audial/issues" target="_blank" rel="noopener">issue no GitHub</a>. Quem tem convite também pode mandar ideias e problemas pela Comunidade beta, dentro do app. Para pedidos sobre os seus dados, mande uma mensagem direta para o criador no Discord, e não uma issue, que é pública.</p>
+          <p>Pelo <a href="https://discord.gg/v6RtzaeP7" target="_blank" rel="noopener">servidor do Audial no Discord</a> ou abrindo uma <a href="https://github.com/NightXXT/Audial/issues" target="_blank" rel="noopener">issue no GitHub</a>. Para pedidos sobre os seus dados, mande uma mensagem direta para o criador no Discord, e não uma issue, que é pública.</p>
         </details>
       </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="section final" id="em-breve">
+  <section class="section final" id="baixar">
     <div class="wrap final-inner reveal">
       <div class="ring" aria-hidden="true"></div>
       <img class="final-logo" src="/img/logo.png?v=2" alt="" width="96" height="96">
-      <h2 class="huge">Chega em <span class="grad">2027.</span></h2>
-      <p>O Audial está em beta fechado. Quando abrir pra todo mundo, vai ser de graça.</p>
+      <h2 class="huge post">Baixe <span class="grad">agora.</span></h2>
+      <h2 class="huge pre-only">Chega em <span class="grad">1º de dezembro.</span></h2>
+      <div class="countdown pre-only" data-cd role="timer" aria-label="Tempo até o lançamento">
+        <div><b data-cd-d>--</b><span>dias</span></div>
+        <div><b data-cd-h>--</b><span>horas</span></div>
+        <div><b data-cd-m>--</b><span>min</span></div>
+        <div><b data-cd-s>--</b><span>seg</span></div>
+      </div>
+      <p>O Audial é grátis, sem conta, sem anúncio e sem rastreamento.</p>
       <div class="cta-row">
+        <a class="btn btn-primary btn-xl magnetic glow post" href="/baixar">
+          <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
+          Baixar grátis
+        </a>
         <a class="btn btn-discord btn-xl magnetic" href="https://discord.gg/v6RtzaeP7" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" class="ico ico-fill" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03ZM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418Z"/></svg>
           Entrar no Discord
@@ -597,7 +609,7 @@
           Apoiar o projeto
         </a>
       </div>
-      <p class="fine">Para Windows 10 (versão 2004 ou mais nova) e Windows 11, 64 bits.</p>
+      <p class="fine">Para Windows 10 (versão 2004 ou mais nova) e Windows 11, 64 bits. Na primeira instalação, o Windows pode mostrar “O Windows protegeu o computador”: clique em “Mais informações” e depois em “Executar assim mesmo”. Não é afiliado ao YouTube nem ao Google.</p>
     </div>
   </section>
 </main>
@@ -615,7 +627,27 @@
   </div>
 </footer>
 
+<!-- depois de clicar em Baixar: o download começou e o passo a passo do aviso do Windows (assets/site.js) -->
+<dialog class="dl-help glass" id="dl-help" aria-labelledby="dl-help-title">
+  <button class="dl-close" type="button" aria-label="Fechar">&times;</button>
+  <span class="kicker">Download iniciado</span>
+  <h3 id="dl-help-title">Quase lá! Abra o <span class="grad">AudialSetup.exe</span></h3>
+  <p class="dl-lead">Como o Audial é novo, o Windows pode mostrar um aviso azul na primeira vez. É normal: o instalador é o oficial.</p>
+  <ol class="dl-steps">
+    <li><b>1</b><div><h4>Abra o arquivo baixado</h4><p>Ele aparece nos downloads do navegador.</p></div></li>
+    <li><b>2</b><div><h4>Clique em “Mais informações”</h4><p>Se aparecer “O Windows protegeu o computador”.</p></div></li>
+    <li><b>3</b><div><h4>Clique em “Executar assim mesmo”</h4><p>E siga o instalador. Depois disso, o Audial se atualiza sozinho.</p></div></li>
+  </ol>
+  <div class="dl-smart" aria-hidden="true">
+    <strong>O Windows protegeu o computador</strong>
+    <span>O Microsoft Defender SmartScreen impediu que um aplicativo não reconhecido fosse iniciado…</span>
+    <u class="dl-hl">Mais informações</u>
+    <div class="dl-smart-btns"><i class="dl-hl">Executar assim mesmo</i><i>Não executar</i></div>
+  </div>
+  <p class="dl-fine">O download não começou? <a href="/baixar">Clique aqui</a>. Baixe o Audial só por este site ou pelo GitHub oficial.</p>
+</dialog>
+
 <script src="/assets/guard.js" defer></script>
-<script src="/assets/site.js?v=7" defer></script>
+<script src="/assets/site.js?v=9" defer></script>
 </body>
 </html>

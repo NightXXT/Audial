@@ -1,3 +1,11 @@
+// Launch: until 1 December 2026 (Brasília) the page is in "pre" mode, with the countdown in place of the download
+// buttons (CSS: html.pre .post / html:not(.pre) .pre-only). Set here, before the first paint, so nothing flashes.
+// ?lancado shows the launched page early (to check it).
+(() => {
+  const launch = Date.parse("2026-12-01T00:00:00-03:00");
+  if (Date.now() < launch && !/[?&]lancado\b/.test(location.search)) document.documentElement.classList.add("pre");
+})();
+
 // Loading screen of the site: the "A" lights up alone in the middle, then slides left pulling the name out from behind
 // it ("Audial", as in the top bar), a thin line fills and the page comes in. Only on the first page of a visit
 // (sessionStorage) and never with "reduce motion". It lives in the <head>, before the first paint: the backdrop is CSS

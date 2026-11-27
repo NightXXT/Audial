@@ -182,7 +182,7 @@ function giveawayMessage(gw, channel) {
           `• Uma inscrição por pessoa. Contas criadas há menos de ${MIN_ACCOUNT_DAYS} dias não entram.\n` +
           `• Quem ganhar recebe o código por **DM**: deixe suas mensagens diretas abertas.`,
         color: COLOR,
-        footer: { text: "Audial · beta fechado · pra todo mundo em 2027" },
+        footer: { text: "Audial · grátis para Windows · audial.com.br/baixar" },
       },
     ],
     components: [{ type: 1, components: [{ type: 2, style: 1, label: "Participar", emoji: { name: "🎟️" }, custom_id: "gw:join:" + channel }] }],
@@ -316,9 +316,9 @@ function about() {
       {
         title: now ? `Audial ${now.version} · ${now.title}` : "Audial",
         url: "https://audial.com.br",
-        description: (now ? now.text + "\n\n" : "") + "Um app de música de verdade, feito pro Windows. Em beta fechado agora, pra todo mundo em 2027.",
+        description: (now ? now.text + "\n\n" : "") + "Um app de música de verdade, feito pro Windows. Grátis, sem conta e sem convite: audial.com.br/baixar",
         color: COLOR,
-        footer: { text: now && now.date ? "Em teste no beta desde " + now.date.toLowerCase() : "audial.com.br" },
+        footer: { text: now && now.date ? "Desde " + now.date.toLowerCase() : "audial.com.br" },
       },
     ],
   });

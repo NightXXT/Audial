@@ -189,6 +189,20 @@ const server = http.createServer(async (req, res) => {
       return redirect(res, clean + url.search);
     }
     if (PRIVATE.test(pathname)) return notFound(res);
+    // the installer lives in the GitHub releases (free bandwidth): this always points to the newest one
+    if (pathname === "/baixar") {
+      // before the launch (1 December 2026, Brasília) the link goes to the countdown, not to a release that isn't there yet
+      if (Date.now() < Date.parse("2026-12-01T00:00:00-03:00")) {
+        res.statusCode = 302;
+        res.setHeader("Location", "/#baixar");
+        res.setHeader("Cache-Control", "no-store");
+        return res.end();
+      }
+      res.statusCode = 302;
+      res.setHeader("Location", "https://github.com/NightXXT/Audial/releases/latest/download/AudialSetup.exe");
+      res.setHeader("Cache-Control", "no-store");
+      return res.end();
+    }
 
     const candidates = pathname === "/" ? ["index.html"] : [pathname.slice(1), pathname.slice(1) + ".html"];
     for (const rel of candidates) {

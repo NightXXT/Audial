@@ -694,3 +694,53 @@ html.boot:not(.boot-out) .word, html.boot:not(.boot-out) .intro, html.boot:not(.
 .tl-todo { margin: 2px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; color: #C7CBD3; font-size: 15px; }
 .tl-todo li::marker { color: #C4B5FD; }
 .tl-todo strong { color: #E9E3FF; }
+
+/* ---------- Depois de clicar em Baixar ---------- */
+.dl-help {
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  padding: 32px 28px 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: rgba(20, 22, 29, 0.96);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(244, 63, 94, 0.12), 0 0 60px rgba(139, 92, 246, 0.18);
+}
+.dl-help::backdrop { background: rgba(5, 6, 9, 0.72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.dl-help[open] { animation: dl-in .45s var(--ease); }
+@keyframes dl-in { from { opacity: 0; transform: translateY(14px) scale(.97); } }
+.dl-help h3 { font-size: 26px; margin: 8px 0 10px; }
+.dl-close { position: absolute; top: 12px; right: 14px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgba(255,255,255,.06); font-size: 22px; line-height: 1; cursor: pointer; }
+.dl-close:hover { background: rgba(255,255,255,.12); }
+.dl-lead { color: var(--text-2); font-size: 15px; }
+.dl-steps { list-style: none; margin: 18px 0; padding: 0; display: grid; gap: 12px; }
+.dl-steps li { display: flex; gap: 14px; align-items: flex-start; }
+.dl-steps b { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--grad); font-size: 14px; }
+.dl-steps h4 { font-size: 15px; margin: 3px 0 2px; }
+.dl-steps p { font-size: 14px; color: var(--text-2); }
+.dl-smart { background: #1f6fd1; border-radius: 10px; padding: 16px 18px; font-family: "Segoe UI", system-ui, sans-serif; font-size: 13px; line-height: 1.45; display: grid; gap: 8px; color: #fff; }
+.dl-smart strong { font-size: 17px; font-weight: 600; }
+.dl-smart span { opacity: .9; }
+.dl-smart u { text-decoration: underline; justify-self: start; }
+.dl-smart-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+.dl-smart-btns i { font-style: normal; border: 1px solid rgba(255,255,255,.7); padding: 5px 12px; }
+.dl-hl { outline: 2px solid #FFD60A; outline-offset: 3px; border-radius: 3px; animation: dl-pulse 1.6s ease-in-out infinite; }
+@keyframes dl-pulse { 50% { outline-color: rgba(255, 214, 10, .25); } }
+.dl-fine { margin-top: 16px; font-size: 13px; color: var(--text-3); }
+.dl-fine a { color: var(--text); text-decoration: underline; }
+@media (prefers-reduced-motion: reduce) { .dl-help[open], .dl-hl { animation: none; } }
+
+/* ---------- Lançamento: antes (html.pre) e depois ---------- */
+html.pre .post { display: none !important; }
+html:not(.pre) .pre-only { display: none !important; }
+.countdown { display: flex; justify-content: center; gap: 14px; margin: 22px 0 18px; }
+.countdown > div { min-width: 92px; padding: 16px 10px 12px; border-radius: 18px; background: rgba(255,255,255,.04); border: 1px solid var(--border); box-shadow: 0 0 40px rgba(244,63,94,.10); display: grid; gap: 2px; }
+.countdown b { font-size: 46px; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums; background: var(--grad-2); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.countdown span { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-2); }
+@media (max-width: 520px) {
+  .countdown { gap: 8px; }
+  .countdown > div { min-width: 0; flex: 1; padding: 12px 4px 10px; border-radius: 14px; }
+  .countdown b { font-size: 32px; }
+  .countdown span { font-size: 10px; letter-spacing: .08em; }
+}
