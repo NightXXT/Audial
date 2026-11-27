@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audial · Player de música feito para o Windows</title>
+<meta name="description" content="Player de música nativo para Windows, com interface Fluent, mini player, ouvir junto com amigos e status no Discord. Grátis. Projeto independente.">
+<meta name="theme-color" content="#0D0E12">
+<meta property="og:title" content="Audial · Player de música feito para o Windows">
+<meta property="og:description" content="Interface Fluent, mini player, ouvir junto e status no Discord. Sem Electron.">
+<meta property="og:image" content="https://audial.com.br/img/og.png?v=3">
+<meta property="og:url" content="https://audial.com.br/">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://audial.com.br/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.png?v=2" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css?v=22">
+<script src="/assets/boot.js?v=4"></script>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor-glow" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/">
+      <img src="/img/logo.png?v=2" alt="" width="36" height="36">
+      <span>Audial</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#recursos">Recursos</a>
+      <a href="#ouvir-junto">Ouvir junto</a>
+      <a href="#telas">Telas</a>
+      <a href="#privacidade">Privacidade</a>
+      <a href="#progresso">Progresso</a>
+      <a href="https://discord.gg/v6RtzaeP7" target="_blank" rel="noopener">Discord</a>
+      <a href="/apoiar">Apoiar</a>
+    </nav>
+    <a class="btn btn-primary btn-sm magnetic" href="https://github.com/NightXXT/Audial/releases/latest/download/AudialSetup.exe" data-baixar>
+      <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
+      <span class="post">Baixar</span><span class="pre-only">1º de dezembro</span>
+    </a>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <canvas class="visualizer" id="visualizer" aria-hidden="true"></canvas>
+    <div class="wrap hero-copy">
+      <a class="pill intro" style="--d:0" href="#baixar">
+        <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="post">Já disponível · Grátis para Windows</span><span class="pre-only">Chega em 1º de dezembro · Grátis para Windows</span>
+        <svg viewBox="0 0 24 24" class="ico ico-sm" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <h1 class="headline">
+        <span class="word" style="--d:1">Ouça</span>
+        <span class="nowrap"><span class="word" style="--d:2">suas</span>
+        <span class="word" style="--d:3">músicas</span></span>
+        <br>
+        <span class="word shine" style="--d:4">num</span>
+        <span class="word shine" style="--d:5">app</span>
+        <span class="word shine" style="--d:6">de</span>
+        <span class="word shine" style="--d:7">verdade.</span>
+      </h1>
+      <p class="lead intro" style="--d:8">Interface Fluent, mini player, ouvir junto com amigos e status no Discord. Sem Electron e sem aba de navegador disfarçada de aplicativo.</p>
+      <div class="cta-row intro" style="--d:9">
+        <a class="btn btn-primary btn-lg magnetic glow" href="https://github.com/NightXXT/Audial/releases/latest/download/AudialSetup.exe" data-baixar>
+          <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
+          <span class="post">Baixar grátis</span><span class="pre-only">Faltam <span data-cd-short>poucos dias</span></span>
+        </a>
+        <a class="btn btn-ghost btn-lg magnetic" href="#video">
+          <svg viewBox="0 0 24 24" class="ico ico-fill" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
+          Assistir ao vídeo
+        </a>
+        <a class="btn btn-discord btn-lg" href="https://discord.gg/v6RtzaeP7" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" class="ico ico-fill" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03ZM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418Z"/></svg>
+          Entrar no Discord
+        </a>
+      </div>
+      <p class="fine intro" style="--d:10">Grátis para Windows 10 e 11 · Sem conta e sem anúncio · Código no GitHub</p>
+    </div>
+
+    <div class="wrap stage-wrap">
+      <div class="stage" id="stage">
+        <div class="stage-glow" aria-hidden="true"></div>
+        <figure class="window main-shot">
+          <img src="/img/tocando.webp?v=2" alt="Tela Tocando agora do Audial" width="1424" height="951">
+        </figure>
+        <figure class="float float-mini" data-depth="40" role="img" aria-label="Mini Player do Audial">
+          <div class="mp">
+            <div class="mp-glow"></div>
+            <div class="mp-top"><span class="mp-brand"><img src="/img/logo.png?v=2" alt="" width="14" height="14">Audial Mini</span><span class="mp-pin"><svg viewBox="0 0 24 24"><path d="M12 17v5M9 3h6l-1 6 3 3H7l3-3-1-6Z"/></svg></span></div>
+            <div class="mp-body">
+              <div class="mp-art"></div>
+              <div class="mp-info">
+                <div class="mp-title">Spectral Horizons</div>
+                <div class="mp-artist">Aether Collective</div>
+                <div class="mp-controls">
+                  <svg viewBox="0 0 24 24" class="mp-btn"><path d="M6 5v14M19 5 9 12l10 7V5Z"/></svg>
+                  <span class="mp-play"><svg viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg></span>
+                  <svg viewBox="0 0 24 24" class="mp-btn"><path d="M18 5v14M5 5l10 7-10 7V5Z"/></svg>
+                  <span class="mp-vol"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Zm13 0a4 4 0 0 1 0 6"/></svg><i><b></b></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="mp-time"><span>0:37</span><div class="mp-bar"><b></b></div><span>2:37</span></div>
+          </div>
+        </figure>
+        <div class="float float-discord glass" data-depth="70">
+          <div class="dc-head">Ouvindo <b>Audial</b></div>
+          <div class="dc-body">
+            <div class="dc-art"></div>
+            <div>
+              <div class="dc-title">Spectral Horizons</div>
+              <div class="dc-sub">Aether Collective</div>
+              <div class="dc-bar"><span></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="float float-room glass" data-depth="55">
+          <div class="avatars"><i style="--c:#F43F5E">V</i><i style="--c:#8B5CF6">B</i><i style="--c:#F751A1">R</i></div>
+          <div><b>Ouvir junto</b><span class="live"><span class="dot"></span>3 pessoas sincronizadas</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="section video-section" id="video">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Veja em 1 minuto</span>
+        <h2>O Audial <span class="grad">em movimento.</span></h2>
+      </div>
+      <div class="player reveal" id="player">
+        <div class="player-glow" aria-hidden="true"></div>
+        <button class="player-cover" id="playVideo" aria-label="Assistir ao vídeo do Audial">
+          <img src="/img/video-poster.webp?v=3" alt="" width="1280" height="720" loading="lazy">
+          <span class="play-btn"><span class="play-ring" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>Assistir · 1:15</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Efeito Mica</span><span>Mini Player</span><span>Ouvir junto</span><span>Status no Discord</span><span>Overlay para lives</span><span>Controle pelo celular</span><span>Atalhos de teclado</span><span>Sem anúncios</span><span>Capas de álbum</span>
+      <span>Efeito Mica</span><span>Mini Player</span><span>Ouvir junto</span><span>Status no Discord</span><span>Overlay para lives</span><span>Controle pelo celular</span><span>Atalhos de teclado</span><span>Sem anúncios</span><span>Capas de álbum</span>
+    </div>
+  </div>
+
+  <!-- RECURSOS -->
+  <section class="section" id="recursos">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Recursos</span>
+        <h2>Tudo o que um player de música <span class="grad">deveria ser</span> no PC.</h2>
+        <p>Um app de verdade, que abre rápido, fica no lugar certo e conversa com o resto do Windows.</p>
+      </div>
+
+      <div class="bento">
+        <article class="card spot span-2 reveal">
+          <div class="card-copy">
+            <div class="icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+            <h3>Nativo de verdade</h3>
+            <p>WinUI 3 com efeito Mica, integrado aos controles de mídia do Windows e às teclas de mídia do teclado.</p>
+            <div class="chips"><span>WinUI 3</span><span>Sem Electron</span><span>Controles de mídia</span></div>
+          </div>
+          <div class="card-shot"><img src="/img/inicio.webp?v=2" alt="Tela inicial do Audial" loading="lazy" width="1424" height="951"></div>
+        </article>
+
+        <article class="card spot reveal">
+          <div class="icon violet"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h3>Ouvir junto</h3>
+          <p>Crie uma sala, mande o convite e todo mundo escuta sincronizado, cada um no seu PC.</p>
+          <div class="mini-room">
+            <div class="avatars"><i style="--c:#F43F5E">V</i><i style="--c:#8B5CF6">B</i><i style="--c:#F751A1">R</i></div>
+            <div class="sync-bars"><span></span><span></span><span></span></div>
+          </div>
+        </article>
+
+        <article class="card spot reveal">
+          <div class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="11" y="11" width="8" height="6" rx="1"/></svg></div>
+          <h3>Mini Player</h3>
+          <p>Sempre visível sobre as outras janelas, com volume na rodinha do mouse.</p>
+          <!-- drawn in HTML instead of a screenshot, so it has no Windows title bar and stays sharp -->
+          <div class="mini-shot" aria-hidden="true">
+            <div class="mp">
+              <div class="mp-glow"></div>
+              <div class="mp-top"><span class="mp-brand"><img src="/img/logo.png?v=2" alt="" width="14" height="14">Audial Mini</span><span class="mp-pin"><svg viewBox="0 0 24 24"><path d="M12 17v5M9 3h6l-1 6 3 3H7l3-3-1-6Z"/></svg></span></div>
+              <div class="mp-body">
+                <div class="mp-art"></div>
+                <div class="mp-info">
+                  <div class="mp-title">Spectral Horizons</div>
+                  <div class="mp-artist">Aether Collective</div>
+                  <div class="mp-controls">
+                    <svg viewBox="0 0 24 24" class="mp-btn"><path d="M6 5v14M19 5 9 12l10 7V5Z"/></svg>
+                    <span class="mp-play"><svg viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg></span>
+                    <svg viewBox="0 0 24 24" class="mp-btn"><path d="M18 5v14M5 5l10 7-10 7V5Z"/></svg>
+                    <span class="mp-vol"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Zm13 0a4 4 0 0 1 0 6"/></svg><i><b></b></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="mp-time"><span>0:37</span><div class="mp-bar"><b></b></div><span>2:37</span></div>
+            </div>
+          </div>
+          <div class="card-foot"><span>Abrir com <kbd>Ctrl</kbd> + <kbd>M</kbd></span></div>
+        </article>
+
+        <article class="card spot reveal">
+          <div class="icon violet"><svg viewBox="0 0 24 24"><path d="M8 12h.01M16 12h.01M7.5 17.5c3 1.5 6 1.5 9 0M5 7.5C8 6 16 6 19 7.5l2 9c-2 2-4 2.5-5 2.5l-1-2M9 17l-1 2c-1 0-3-.5-5-2.5l2-9"/></svg></div>
+          <h3>Status no Discord</h3>
+          <p>Mostra a música, o artista, a capa e o tempo enquanto você ouve.</p>
+          <div class="discord-mock">
+            <div class="dc-head">Ouvindo <b>Audial</b></div>
+            <div class="dc-body">
+              <div class="dc-art"></div>
+              <div><div class="dc-title">Spectral Horizons</div><div class="dc-sub">Aether Collective</div><div class="dc-bar"><span></span></div></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card spot reveal">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="m23 7-7 5 7 5V7Z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+          <h3>Overlay para lives</h3>
+          <p>Um link para o OBS ou TikTok LIVE Studio com a música atual, em fundo transparente.</p>
+          <div class="overlay-mock">
+            <div class="ov-card"><div class="dc-art"></div><div><div class="dc-title">Afterglow</div><div class="dc-sub">Aether Collective</div></div><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
+          </div>
+        </article>
+
+        <article class="card spot span-3 row reveal">
+          <div class="row-left">
+            <div class="icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div>
+            <div>
+              <h3>Controle pelo celular</h3>
+              <p>Vincule o app do YouTube no celular com um código de TV e controle o que toca no PC.</p>
+            </div>
+          </div>
+          <div class="tv-code" aria-label="Código de exemplo"><span>482</span><span>731</span><span>906</span><span>215</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUVIR JUNTO -->
+  <section class="section" id="ouvir-junto">
+    <div class="wrap">
+      <div class="together glass reveal">
+        <div class="together-copy">
+          <span class="kicker violet">Ponto a ponto</span>
+          <h2>Ouça junto, <span class="grad">de qualquer lugar.</span></h2>
+          <p>Os computadores se conectam direto um ao outro. O convite é criptografado e ninguém precisa criar conta.</p>
+          <ol class="steps">
+            <li class="reveal"><b>1</b><div><h4>Crie a sala</h4><p>Um clique gera o código do convite.</p></div></li>
+            <li class="reveal"><b>2</b><div><h4>Mande o código</h4><p>Pelo WhatsApp, Discord ou onde quiser.</p></div></li>
+            <li class="reveal"><b>3</b><div><h4>Ouçam juntos</h4><p>Música, pausa e posição ficam sincronizadas. Cada um toca o próprio áudio.</p></div></li>
+          </ol>
+        </div>
+        <div class="network" id="network">
+          <svg class="links" viewBox="0 0 400 400" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#F43F5E"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient>
+            </defs>
+            <path id="p1" d="M200 95 C 120 160, 90 220, 80 300"/>
+            <path id="p2" d="M200 95 C 280 160, 310 220, 320 300"/>
+            <path id="p3" d="M80 300 C 160 340, 240 340, 320 300"/>
+            <circle r="4" class="packet"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#p1"/></animateMotion></circle>
+            <circle r="4" class="packet"><animateMotion dur="2.4s" begin="0.8s" repeatCount="indefinite"><mpath href="#p2"/></animateMotion></circle>
+            <circle r="3" class="packet dim"><animateMotion dur="3.2s" begin="0.4s" repeatCount="indefinite"><mpath href="#p3"/></animateMotion></circle>
+          </svg>
+          <div class="device host" style="--x:50%;--y:20%">
+            <div class="dev-top"><i style="--c:#F43F5E">V</i><span>Você<small>host</small></span></div>
+            <div class="dev-song"><div class="dc-art"></div><div><div class="dc-title">Velvet Echoes</div><div class="dc-sub">Aether Collective</div></div></div>
+            <div class="dev-bar"><span class="sync"></span></div>
+          </div>
+          <div class="device" style="--x:18%;--y:76%">
+            <div class="dev-top"><i style="--c:#8B5CF6">B</i><span>Bia<small>ouvindo</small></span></div>
+            <div class="dev-bar"><span class="sync"></span></div>
+          </div>
+          <div class="device" style="--x:82%;--y:76%">
+            <div class="dev-top"><i style="--c:#F751A1">R</i><span>Rafa<small>ouvindo</small></span></div>
+            <div class="dev-bar"><span class="sync"></span></div>
+          </div>
+          <div class="sync-time"><span id="syncClock">0:00</span> em todos os PCs</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TELAS -->
+  <section class="section" id="telas">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Telas</span>
+        <h2>Cada tela pensada para o <span class="grad">Windows 11.</span></h2>
+      </div>
+      <div class="showcase" id="showcase">
+        <div class="showcase-list">
+          <button class="sc-item active" data-shot="0"><h4>Início</h4><p>Recomendações, ouvidos recentemente, álbuns e mixes com um clique.</p></button>
+          <button class="sc-item" data-shot="1"><h4>Busca</h4><p>Músicas, playlists, artistas e álbuns, com o melhor resultado em destaque.</p></button>
+          <button class="sc-item" data-shot="2"><h4>Artista</h4><p>Músicas mais tocadas e discografia num lugar só.</p></button>
+          <button class="sc-item" data-shot="3"><h4>Playlist</h4><p>Capa grande e lista de faixas pronta para tocar.</p></button>
+          <button class="sc-item" data-shot="4"><h4>Fila</h4><p>Veja o que vem a seguir, pule, remova e limpe.</p></button>
+        </div>
+        <div class="showcase-frame">
+          <div class="showcase-glow" aria-hidden="true"></div>
+          <img class="sc-shot active" src="/img/inicio.webp?v=2" alt="Tela Início" loading="lazy" width="1424" height="951">
+          <img class="sc-shot" src="/img/busca.webp?v=2" alt="Tela Busca" loading="lazy" width="1424" height="951">
+          <img class="sc-shot" src="/img/artista.webp" alt="Tela Artista" loading="lazy" width="1424" height="952">
+          <img class="sc-shot" src="/img/playlist.webp?v=2" alt="Tela Playlist" loading="lazy" width="1424" height="951">
+          <img class="sc-shot" src="/img/fila.webp?v=2" alt="Tela Fila" loading="lazy" width="1424" height="951">
+          <div class="sc-progress"><span id="scProgress"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVACIDADE -->
+  <section class="section" id="privacidade">
+    <div class="wrap narrow">
+      <div class="privacy glass reveal">
+        <div class="shield">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="draw" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path class="draw late" d="m8.5 12 2.5 2.5 4.5-5"/></svg>
+        </div>
+        <h2>Seus dados ficam <span class="grad">no seu PC.</span></h2>
+        <ul class="checks">
+          <li class="reveal"><span class="check"></span>Acesso somente leitura à sua biblioteca do YouTube</li>
+          <li class="reveal"><span class="check"></span>Login guardado e cifrado pelo próprio Windows</li>
+          <li class="reveal"><span class="check"></span>Sem conta no Audial, sem anúncios, sem rastreamento</li>
+        </ul>
+        <a class="link-arrow" href="/privacidade">Ler a política de privacidade <svg viewBox="0 0 24 24" class="ico ico-sm" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRESSO -->
+  <section class="section" id="progresso">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Progresso</span>
+        <h2>Do primeiro play <span class="grad">ao lançamento.</span></h2>
+        <p>O que já saiu do papel até o Audial abrir pra todo mundo, e o que vem depois.</p>
+      </div>
+      <div class="timeline" id="timeline">
+        <div class="tl-rail" aria-hidden="true"></div>
+        <ol class="tl-list">
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-date">Setembro de 2026</span><span class="tl-ver">A ideia</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>Começou com uma pergunta</h3>
+              <p>Dá pra ouvir música no PC num app de verdade, sem depender de uma aba do navegador? Daí saíram o plano do app e um design de vidro escuro pensado para o Windows 11.</p>
+              <div class="chips"><span>App nativo</span><span>Vidro escuro</span><span>Windows 11</span></div>
+            </article>
+          </li>
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-date">Setembro e outubro de 2026</span><span class="tl-ver">v0.01 – v0.04</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>Primeiros passos</h3>
+              <p>A primeira versão já tinha a entrada com vidro escuro, biblioteca, playlists, fila e player, em modo demonstração. Em seguida vieram o login com a conta Google e as primeiras músicas tocando.</p>
+              <div class="chips"><span>WinUI 3</span><span>Sem Electron</span><span>Login com Google</span></div>
+            </article>
+          </li>
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-ver">v0.05 – v0.06</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>Som nativo e controle pelo celular</h3>
+              <p>Na 0.05 o Audial passou a tocar só o áudio, no player do próprio app, sem vídeo. A 0.06 trouxe a interface refeita e o controle pelo celular, com o código de TV do app do YouTube.</p>
+              <div class="chips"><span>Só o áudio</span><span>Player nativo</span><span>Controle pelo celular</span></div>
+            </article>
+          </li>
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-ver">v0.07 – v0.08</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>Telas novas e status no Discord</h3>
+              <p>Perfil do artista, fila nas playlists e as telas de artista e Ouvir junto seguindo o design à risca. E o status no Discord, com a música, o logo do Audial, o tempo e “Ouvindo” no lugar de “Jogando”.</p>
+              <div class="chips"><span>Perfil do artista</span><span>Ouvir junto</span><span>Status no Discord</span></div>
+            </article>
+          </li>
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-date">2 de novembro de 2026</span><span class="tl-ver">v0.09</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>Cara nova do Windows 11</h3>
+              <p>Telas redesenhadas no estilo Fluent, o logo do Audial e atualização automática. O status no Discord ficou completo, o Ouvir junto passou a ligar os PCs direto um ao outro e chegou o overlay para lives no OBS e no TikTok LIVE Studio.</p>
+              <div class="chips"><span>Visual Fluent</span><span>Ouvir junto P2P</span><span>Overlay para lives</span></div>
+            </article>
+          </li>
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-date">3 de novembro de 2026</span><span class="tl-ver">v0.10</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>Login simples e site no ar</h3>
+              <p>Entrar com o Google sem importar arquivo nenhum, capas de álbum de verdade no lugar das miniaturas de vídeo e este site, com o vídeo de apresentação. Começa o beta fechado.</p>
+              <div class="chips"><span>Login com Google</span><span>Capas de álbum</span><span>Beta fechado</span></div>
+            </article>
+          </li>
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-date">4 de novembro de 2026</span><span class="tl-ver">v0.11</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>Logo novo</h3>
+              <p>O play foi para o centro do A, e o site ganhou a página para apoiar o projeto.</p>
+              <div class="chips"><span>Logo novo</span><span>Apoie o projeto</span></div>
+            </article>
+          </li>
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-date">5 de novembro de 2026</span><span class="tl-ver">v0.12</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>O som do Audial</h3>
+              <p>Um motor de áudio próprio: Automix com transições de DJ no compasso, equalizador de 10 bandas, som espacial e luz que dança nos teclados e mouses RGB. E atualizações assinadas: o app só instala versões verificadas.</p>
+              <div class="chips"><span>Automix</span><span>Equalizador</span><span>Som espacial</span><span>Luz que dança</span></div>
+            </article>
+          </li>
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-date">11 de novembro de 2026</span><span class="tl-ver">v0.13</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>Convites e Comunidade beta</h3>
+              <p>O beta passa a ser só com convite: um código por pessoa, sem conta e sem senha, com selo de Beta ou Apoiador. E quem testa ganha a Comunidade beta, dentro do app: mural de ideias e bugs com votos, enquetes e avisos direto de quem cria o Audial.</p>
+              <div class="chips"><span>Convites</span><span>Comunidade beta</span><span>Mural de ideias</span><span>Enquetes</span></div>
+            </article>
+          </li>
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-date">12 de novembro de 2026</span><span class="tl-ver">v0.14</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>Letras, playlists e controle total</h3>
+              <p>Letras sincronizadas que acendem no ritmo da música, estilo karaokê, e playlists salvas no próprio PC. Quando o que toca é um clipe, o Audial troca sozinho pela versão em áudio. No Ouvir junto, o dono da sala pode dar controle total aos amigos. E ainda: aleatório e repetir, luzes RGB nos aparelhos Razer, SteelSeries e OpenRGB, menos uso de CPU com a música parada e o overlay de live que se reconecta sozinho.</p>
+              <div class="chips"><span>Letras sincronizadas</span><span>Playlists no PC</span><span>Controle total</span><span>Aleatório e repetir</span></div>
+            </article>
+            <!-- a side branch off the trunk: an extra of the same day, not a new version -->
+            <aside class="tl-twig glass reveal">
+              <span class="tl-twig-tag">12 de novembro · extra</span>
+              <h4>Alertas e pedidos na live</h4>
+              <p>O overlay de live ganhou alertas na etiqueta do card: quem começou a seguir e os presentes no TikTok, inscritos, Super Chats e membros no YouTube. E quem assiste pode pedir música no chat com !musica, com um filtro anti-zoeira que barra funk pesado, memes e versões aceleradas.</p>
+              <div class="chips"><span>TikFinity</span><span>Streamer.bot</span><span>!musica</span></div>
+            </aside>
+          </li>
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-date">13 de novembro de 2026</span><span class="tl-ver">v0.15</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>Visual novo e som sob medida</h3>
+              <p>Uma interface toda redesenhada, do Início à barra do player. O som ficou sob medida: correção para o modelo do seu fone, volume igual entre as músicas e o Som Espacial+ de sempre. A busca sugere músicas e artistas enquanto você digita, e o Audial lembra a última música e de onde parou quando você volta. E ainda: perfis com selos de Criador, Beta e Apoiador, e uma rodada de reforço na segurança.</p>
+              <div class="chips"><span>Visual novo</span><span>Correção do fone</span><span>Volume igual</span><span>Sugestões na busca</span><span>Perfis com selos</span></div>
+            </article>
+            <!-- a side branch off the trunk: an extra of the same day, not a new version -->
+            <aside class="tl-twig glass reveal">
+              <span class="tl-twig-tag">13 de novembro · extra</span>
+              <h4>Rádio Audial nos jogos de caminhão</h4>
+              <p>No Euro Truck Simulator 2 e no American Truck Simulator, as suas músicas tocam pelo rádio do caminhão. O Modo Cabine deixa o som com cara de alto-falante de cabine, sobe o volume com a velocidade e desliga junto com a ignição.</p>
+              <div class="chips"><span>Rádio do caminhão</span><span>Modo Cabine</span></div>
+            </aside>
+          </li>
+          <li class="tl-item done">
+            <div class="tl-when reveal"><span class="tl-date">18 de novembro de 2026</span><span class="tl-ver">v0.16</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>Amigos no Audial</h3>
+              <p>Uma barra de Amigos ao lado: veja o que cada um está ouvindo agora e chame para ouvir junto, sempre com o aceite da outra pessoa. O perfil ganhou foto, que pode ficar só no seu PC, e todo mundo começa seguindo o Criador, em um sentido só e com a opção de deixar de seguir. “Ouvindo agora” começa desligado e tem o modo invisível.</p>
+              <div class="chips"><span>Barra de Amigos</span><span>Ouvindo agora</span><span>Ouvir junto com aceite</span><span>Foto de perfil</span></div>
+            </article>
+            <!-- a side branch off the trunk: an extra of the same day, not a new version -->
+            <aside class="tl-twig glass reveal">
+              <span class="tl-twig-tag">18 de novembro · extra</span>
+              <h4>Overlay Neon Vice</h4>
+              <p>Um tema novo para o overlay de live, com pôr do sol em neon: a placa se escreve letra a letra e o letreiro “Audial” acende em neon, traço a traço.</p>
+              <div class="chips"><span>Tema Neon Vice</span><span>Letreiro em neon</span></div>
+            </aside>
+          </li>
+          <li class="tl-item">
+            <div class="tl-when reveal"><span class="tl-date">20 de novembro de 2026</span><span class="tl-ver">v0.17</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24" class="fill"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg></span>
+            <article class="tl-card glass reveal">
+              <span class="tl-badge">No beta</span>
+              <h3>Juntar-se pelo Discord</h3>
+              <p>Quem cria uma sala do Ouvir junto mostra no status do Discord o botão “Juntar-se” e quantas pessoas estão ouvindo. Quem chega pede para entrar, e você aceita ou recusa, pela barra de Amigos ou pela tela da sala. Também saiu o brilho que pulsava com a música e foi corrigido o selo de Criador que piscava na lista de amigos.</p>
+              <div class="chips"><span>Juntar-se no Discord</span><span>Pedir para entrar</span><span>Selo sem piscar</span></div>
+            </article>
+            <!-- a side branch off the trunk: an extra of the same day, not a new version -->
+            <aside class="tl-twig glass reveal">
+              <span class="tl-twig-tag">19 e 20 de novembro · site</span>
+              <h4>Site de cara nova</h4>
+              <p>Tela de abertura com o logo, perguntas frequentes, apoio também pelo Ko-fi, política de privacidade e termos atualizados, mais contraste e um site mais leve no celular.</p>
+              <div class="chips"><span>Perguntas frequentes</span><span>Ko-fi</span><span>Mais leve no celular</span></div>
+            </aside>
+          </li>
+          <li class="tl-item now">
+            <div class="tl-when reveal"><span class="tl-date">1º de dezembro de 2026</span><span class="tl-ver">v1.0</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 21V4m0 0h11l-2 4 2 4H5"/></svg></span>
+            <article class="tl-card glass reveal">
+              <span class="tl-badge"><span class="dot"></span><span class="post">Agora</span><span class="pre-only">Em breve</span></span>
+              <h3>Lançamento</h3>
+              <p>O Audial sai do beta e abre pra todo mundo, de graça, no Windows 10 e 11, sem convite. Vem com o som novo dos modos Caixas de som e Fone: o “tum” do bumbo de volta, sem som abafado e sem a voz abaixando a cada batida, e capas de verdade nas playlists.</p>
+              <div class="chips"><span>Sem convite</span><span>Grave novo</span><span>Capas nas playlists</span></div>
+            </article>
+          </li>
+          <li class="tl-item next">
+            <div class="tl-when reveal"><span class="tl-date">Depois do lançamento</span><span class="tl-ver">1.x</span></div>
+            <span class="tl-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4 2.6-2.6Z"/></svg></span>
+            <article class="tl-card glass reveal">
+              <h3>O que vem agora</h3>
+              <ul class="tl-todo">
+                <li><strong>Para arrumar:</strong> o aviso “O Windows protegeu o computador” na primeira instalação, que aparece porque o instalador ainda não tem certificado da Microsoft.</li>
+                <li><strong>Para funcionar certinho:</strong> o “Juntar-se” do Discord testado com muita gente ao mesmo tempo, e as luzes RGB testadas em mais marcas de teclado, mouse e headset.</li>
+                <li><strong>Para lapidar:</strong> o que a galera for pedindo e apontando no Discord.</li>
+              </ul>
+              <div class="chips"><span>Certificado</span><span>Testes no Discord</span><span>Ideias da galera</span></div>
+            </article>
+            <!-- a side branch off the trunk: what comes after, not a promise for the 1.0 -->
+            <aside class="tl-twig glass reveal">
+              <span class="tl-twig-tag">mais pra frente</span>
+              <h4>Audial no celular</h4>
+              <p>Uma versão para Android está nos planos. Para iPhone, não há previsão. Enquanto isso, dá para controlar o Audial do PC pelo celular.</p>
+              <div class="chips"><span>Android</span><span>Controle pelo celular</span></div>
+            </aside>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERGUNTAS FREQUENTES -->
+  <section class="section" id="duvidas">
+    <div class="wrap narrow">
+      <div class="section-head reveal">
+        <span class="kicker">Perguntas frequentes</span>
+        <h2>Antes de <span class="grad">instalar.</span></h2>
+        <p>O que todo mundo pergunta sobre o Audial, respondido sem letra miúda.</p>
+      </div>
+      <div class="faq reveal">
+        <details>
+          <summary>O que é o Audial?</summary>
+          <p>Um player de música para Windows 10 e 11, feito como app nativo do Windows (WinUI 3, sem Electron e sem aba de navegador por trás), que toca as músicas do YouTube Music. É um projeto independente, feito por uma pessoa só, e não tem ligação com o YouTube nem com o Google.</p>
+        </details>
+        <details>
+          <summary>Quanto custa?</summary>
+          <p>Nada. O Audial é grátis, não tem anúncios e não tem plano pago. Dá para apoiar o projeto com Pix ou Ko-fi, mas isso é opcional e não libera nada a mais: todo mundo recebe o mesmo Audial.</p>
+        </details>
+        <details>
+          <summary>Como eu baixo?</summary>
+          <p>Clique em <a href="https://github.com/NightXXT/Audial/releases/latest/download/AudialSetup.exe" data-baixar>Baixar grátis</a>, abra o <strong>AudialSetup.exe</strong> e siga o instalador. Não precisa de convite nem de conta. Depois disso, o Audial se atualiza sozinho.</p>
+        </details>
+        <details>
+          <summary>Preciso criar uma conta?</summary>
+          <p>Não. Não existe conta no Audial. Entrar com a sua conta Google é opcional e serve apenas para ver as suas playlists e curtidas, com permissão <strong>somente de leitura</strong>. O Audial não cria, edita nem apaga nada na sua conta, e você pode sair quando quiser.</p>
+        </details>
+        <details>
+          <summary>É seguro instalar?</summary>
+          <p>O Audial só aceita atualização com a assinatura digital do projeto: se o instalador for alterado no caminho, o app recusa. O instalador ainda não tem certificado da Microsoft, então na primeira instalação o Windows pode mostrar “O Windows protegeu o computador”; é só clicar em “Mais informações” e depois em “Executar assim mesmo”. Baixe o Audial só pelos links oficiais, nunca de sites de terceiros.</p>
+        </details>
+        <details>
+          <summary>O que o Audial sabe sobre mim?</summary>
+          <p>O mínimo. Não tem anúncio, rastreamento nem ferramenta de análise. O login fica cifrado pelo próprio Windows, só no seu PC. Não existe perfil nem lista de amigos: o servidor do Audial não guarda nada de quem só baixa e usa o app. No Ouvir junto, os computadores se conectam direto um ao outro. Os detalhes, inclusive os seus direitos pela LGPD, estão na <a href="/privacidade">política de privacidade</a>.</p>
+        </details>
+        <details>
+          <summary>Tem versão para celular?</summary>
+          <p>Ainda não. Por enquanto o Audial é só para Windows. Uma versão para Android está nos planos; para iPhone, não há previsão. Enquanto isso, dá para controlar o Audial do PC pelo celular.</p>
+        </details>
+        <details>
+          <summary>O código é aberto?</summary>
+          <p>O código do projeto fica no <a href="https://github.com/NightXXT/Audial" target="_blank" rel="noopener">GitHub</a>. Os instaladores oficiais ficam nas <a href="https://github.com/NightXXT/Audial/releases" target="_blank" rel="noopener">releases do GitHub</a>; as mudanças mais recentes do código do aplicativo ainda não foram publicadas lá.</p>
+        </details>
+        <details>
+          <summary>Como falo com o suporte?</summary>
+          <p>Pelo <a href="https://discord.gg/v6RtzaeP7" target="_blank" rel="noopener">servidor do Audial no Discord</a> ou abrindo uma <a href="https://github.com/NightXXT/Audial/issues" target="_blank" rel="noopener">issue no GitHub</a>. Para pedidos sobre os seus dados, mande uma mensagem direta para o criador no Discord, e não uma issue, que é pública.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section final" id="baixar">
+    <div class="wrap final-inner reveal">
+      <div class="ring" aria-hidden="true"></div>
+      <img class="final-logo" src="/img/logo.png?v=2" alt="" width="96" height="96">
+      <h2 class="huge post">Baixe <span class="grad">agora.</span></h2>
+      <h2 class="huge pre-only">Chega em <span class="grad">1º de dezembro.</span></h2>
+      <div class="countdown pre-only" data-cd role="timer" aria-label="Tempo até o lançamento">
+        <div><b data-cd-d>--</b><span>dias</span></div>
+        <div><b data-cd-h>--</b><span>horas</span></div>
+        <div><b data-cd-m>--</b><span>min</span></div>
+        <div><b data-cd-s>--</b><span>seg</span></div>
+      </div>
+      <p>O Audial é grátis, sem conta, sem anúncio e sem rastreamento.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary btn-xl magnetic glow post" href="https://github.com/NightXXT/Audial/releases/latest/download/AudialSetup.exe" data-baixar>
+          <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
+          Baixar grátis
+        </a>
+        <a class="btn btn-discord btn-xl magnetic" href="https://discord.gg/v6RtzaeP7" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" class="ico ico-fill" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03ZM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418Z"/></svg>
+          Entrar no Discord
+        </a>
+        <a class="btn btn-ghost btn-xl magnetic" href="/apoiar">
+          <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 20.5s-7.6-4.6-9.3-9.3C1.5 7.9 3.8 4.5 7.3 4.5c2 0 3.6 1.1 4.7 2.7 1.1-1.6 2.7-2.7 4.7-2.7 3.5 0 5.8 3.4 4.6 6.7-1.7 4.7-9.3 9.3-9.3 9.3Z"/></svg>
+          Apoiar o projeto
+        </a>
+      </div>
+      <p class="fine">Para Windows 10 (versão 2004 ou mais nova) e Windows 11, 64 bits. Na primeira instalação, o Windows pode mostrar “O Windows protegeu o computador”: clique em “Mais informações” e depois em “Executar assim mesmo”. Não é afiliado ao YouTube nem ao Google.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <a class="brand" href="/"><img src="/img/logo.png?v=2" alt="" width="28" height="28"><span>Audial</span></a>
+    <nav>
+      <a href="https://github.com/NightXXT/Audial" target="_blank" rel="noopener">GitHub</a>
+      <a href="/apoiar">Apoiar</a>
+      <a href="/privacidade">Privacidade</a>
+      <a href="/termos">Termos</a>
+    </nav>
+    <p>O Audial é um projeto independente e não é afiliado ao YouTube ou ao Google.</p>
+  </div>
+</footer>
+
+<!-- depois de clicar em Baixar: o download começou e o passo a passo do aviso do Windows (assets/site.js) -->
+<dialog class="dl-help glass" id="dl-help" aria-labelledby="dl-help-title">
+  <button class="dl-close" type="button" aria-label="Fechar">&times;</button>
+  <span class="kicker">Download iniciado</span>
+  <h3 id="dl-help-title">Quase lá! Abra o <span class="grad">AudialSetup.exe</span></h3>
+  <p class="dl-lead">Como o Audial é novo, o Windows pode mostrar um aviso azul na primeira vez. É normal: o instalador é o oficial.</p>
+  <ol class="dl-steps">
+    <li><b>1</b><div><h4>Abra o arquivo baixado</h4><p>Ele aparece nos downloads do navegador.</p></div></li>
+    <li><b>2</b><div><h4>Clique em “Mais informações”</h4><p>Se aparecer “O Windows protegeu o computador”.</p></div></li>
+    <li><b>3</b><div><h4>Clique em “Executar assim mesmo”</h4><p>E siga o instalador. Depois disso, o Audial se atualiza sozinho.</p></div></li>
+  </ol>
+  <div class="dl-smart" aria-hidden="true">
+    <strong>O Windows protegeu o computador</strong>
+    <span>O Microsoft Defender SmartScreen impediu que um aplicativo não reconhecido fosse iniciado…</span>
+    <u class="dl-hl">Mais informações</u>
+    <div class="dl-smart-btns"><i class="dl-hl">Executar assim mesmo</i><i>Não executar</i></div>
+  </div>
+  <p class="dl-fine">O download não começou? <a href="https://github.com/NightXXT/Audial/releases/latest/download/AudialSetup.exe" data-baixar>Clique aqui</a>. Baixe o Audial só por este site ou pelo GitHub oficial.</p>
+</dialog>
+
+<script src="/assets/guard.js" defer></script>
+<script src="/assets/site.js?v=9" defer></script>
+</body>
+</html>

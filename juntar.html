@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ouvir junto no Audial</title>
+<meta name="description" content="Alguém te chamou para ouvir junto no Audial, o player de música feito para o Windows.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0D0E12">
+<link rel="icon" href="/favicon.png?v=2" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css?v=20">
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span></div>
+<header class="nav scrolled">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/"><img src="/img/logo.png?v=2" alt="" width="36" height="36"><span>Audial</span></a>
+    <a class="btn btn-ghost btn-sm" href="/">Conhecer o Audial</a>
+  </div>
+</header>
+
+<main class="join">
+  <article class="card join-card">
+    <img class="join-logo" src="/img/logo.png?v=2" alt="" width="76" height="76">
+    <span class="kicker">Ouvir junto</span>
+    <h1>Te chamaram para ouvir junto</h1>
+    <p id="joinText">Entre na sala e ouça a mesma música, no mesmo segundo, cada um no seu PC. Quem criou a sala recebe o seu pedido e aceita.</p>
+    <code class="join-code" id="joinCode" hidden></code>
+    <a class="btn btn-primary btn-lg" id="joinOpen" href="/" hidden>
+      Abrir no Audial
+      <svg viewBox="0 0 24 24" class="ico ico-sm" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+    </a>
+    <p class="join-hint" id="joinHint" hidden>Se nada abrir, confira se o Audial está instalado neste PC. No Audial, você também pode colar o código em Ouvir junto.</p>
+  </article>
+
+  <article class="card join-other">
+    <h2>Ainda não tem o Audial?</h2>
+    <p>O Audial é um player de música feito de verdade para o Windows, grátis e sem anúncios. É grátis, sem conta e sem convite.</p>
+    <div class="row">
+      <a class="btn btn-ghost" href="/">Conhecer o Audial</a>
+      <a class="btn btn-ghost" href="https://discord.gg/v6RtzaeP7" target="_blank" rel="noopener">Entrar no Discord</a>
+    </div>
+  </article>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <a class="brand" href="/"><img src="/img/logo.png?v=2" alt="" width="28" height="28"><span>Audial</span></a>
+    <nav><a href="https://github.com/NightXXT/Audial" target="_blank" rel="noopener">GitHub</a><a href="/apoiar">Apoiar</a><a href="/privacidade">Privacidade</a><a href="/termos">Termos</a></nav>
+    <p>O Audial é um projeto independente e não é afiliado ao YouTube ou ao Google.</p>
+  </div>
+</footer>
+
+<script src="/assets/guard.js" defer></script>
+<script src="/assets/juntar.js?v=1" defer></script>
+</body>
+</html>
