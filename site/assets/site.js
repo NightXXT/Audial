@@ -247,7 +247,7 @@
   const dlg = document.getElementById("dl-help");
   if (!dlg || typeof dlg.showModal !== "function") return;
   document.addEventListener("click", (e) => {
-    const a = e.target.closest && e.target.closest('a[href="/baixar"]');
+    const a = e.target.closest && e.target.closest('a[data-baixar]');
     if (!a || dlg.contains(a)) return;
     if (document.documentElement.classList.contains("pre")) {
       // before the launch the button counts down: it takes you to the countdown instead
