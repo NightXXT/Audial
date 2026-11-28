@@ -17,14 +17,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/inicio.css?v=1">
+<link rel="stylesheet" href="/assets/inicio.css?v=3">
 <script src="/assets/boot.js?v=4"></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
 <header class="nav" id="nav">
-  <div class="nav-pill">
+  <div class="nav-pill nav-in">
     <a class="brand" href="/"><img src="/img/logo.png?v=2" alt="" width="28" height="28"><span>Audial</span></a>
     <nav class="nav-links" aria-label="Seções">
       <a href="#recursos">Recursos</a>
@@ -43,9 +43,9 @@
     <canvas class="viz" id="viz" aria-hidden="true"></canvas>
     <div class="wrap hero-copy">
       <p class="badge enter" style="--d:0"><span class="dot"></span><span class="post">Já disponível · Grátis para Windows 10 e 11</span><span class="pre-only">Chega em 1º de dezembro · Grátis para Windows</span></p>
-      <h1 class="enter" style="--d:1">Suas músicas num app <br>de verdade.</h1>
-      <p class="lead enter" style="--d:2">O Audial é um player de YouTube Music feito para o Windows: abre rápido, tem a cara do Windows 11 e conversa com o resto do PC.</p>
-      <div class="actions enter" style="--d:3">
+      <h1 class="title" aria-label="Suas músicas num app de verdade."><span class="w" aria-hidden="true"><span style="--i:0">Suas</span></span> <span class="w" aria-hidden="true"><span style="--i:1">músicas</span></span> <span class="w" aria-hidden="true"><span style="--i:2">num</span></span> <span class="w" aria-hidden="true"><span style="--i:3">app</span></span> <br><span class="w hl" aria-hidden="true"><span style="--i:4">de</span></span> <span class="w hl" aria-hidden="true"><span style="--i:5">verdade.</span></span></h1>
+      <p class="lead enter" style="--d:4">O Audial é um player de YouTube Music feito para o Windows: abre rápido, tem a cara do Windows 11 e conversa com o resto do PC.</p>
+      <div class="actions enter" style="--d:5">
         <a class="btn btn-lg post" href="https://github.com/NightXXT/Audial/releases/latest/download/AudialSetup.exe" data-baixar>
           <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>Baixar grátis
         </a>
@@ -54,10 +54,10 @@
           <svg viewBox="0 0 24 24" class="ico ico-fill" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>Ver o vídeo
         </a>
       </div>
-      <p class="fine enter" style="--d:4">Sem conta, sem anúncio e sem rastreamento · Código no GitHub</p>
+      <p class="fine enter" style="--d:6">Sem conta, sem anúncio e sem rastreamento · Código no GitHub</p>
     </div>
     <div class="wrap">
-      <figure class="app-window enter" style="--d:5">
+      <figure class="app-window rise">
         <img src="/img/tocando.webp?v=3" alt="Tela Tocando agora do Audial, com a capa do álbum e a fila" width="1424" height="951" fetchpriority="high">
       </figure>
     </div>
@@ -177,6 +177,27 @@
           <h3>Controle pelo celular</h3>
           <p>Vincule o app do YouTube no celular com um código de TV e controle o que toca no PC.</p>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- TUDO O QUE VEM JUNTO: os outros recursos, um por bloco -->
+  <section class="extras" id="tudo">
+    <div class="wrap">
+      <h2>E vem muito mais junto.</h2>
+      <div class="extra-grid">
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><path d="M4 6h10M4 10h16M4 14h12M4 18h8"/></svg></span><h3>Letras no ritmo</h3><p>Letras sincronizadas que acendem verso a verso, estilo karaokê.</p></article>
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 11h.01M10 11h.01M14 11h.01M18 11h.01M7 14h10"/></svg></span><h3>Luz no teclado e no mouse</h3><p>Teclados, mouses e fitas de LED dançam nas cores da capa. Funciona com a Iluminação dinâmica do Windows, Razer Chroma, SteelSeries e OpenRGB.</p></article>
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><h3>Abaixa quando alguém fala</h3><p>Numa chamada do Discord, Teams ou Zoom, a música baixa sozinha e volta quando o papo acaba.</p></article>
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="2" y="14" width="5" height="7" rx="2"/><rect x="17" y="14" width="5" height="7" rx="2"/></svg></span><h3>Som feito pro seu fone</h3><p>Escolha o modelo do seu fone e o Audial corrige o som dele. Um teste de audição ajusta o resto pro seu ouvido.</p></article>
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><path d="M3 16V8a2 2 0 0 1 2-2h9v10"/><path d="M14 9h4l3 4v3h-7"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></span><h3>Rádio do caminhão</h3><p>No Euro Truck Simulator 2 e no American Truck Simulator, suas músicas tocam no rádio da cabine.</p></article>
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/><path d="M9 11h6M9 14h4"/></svg></span><h3>Pedidos pelo chat da live</h3><p>Quem assiste pede música com <code>!musica</code>, com filtro de palavras e limite por pessoa. O overlay mostra seguidores, inscritos e presentes.</p></article>
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M12 11v5m-2-1.5a1.5 1.5 0 1 0 3 0"/></svg></span><h3>Músicas do PC</h3><p>Seus arquivos mp3, flac, m4a, ogg e wav tocam junto com o resto, sem sair do computador.</p></article>
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span><h3>Traga suas playlists</h3><p>Importe as playlists que você exportou do Spotify. O arquivo é lido no PC e não vai pra lugar nenhum.</p></article>
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="m10 9 4 2-4 2V9Z"/><path d="M8 21h8"/></svg></span><h3>Clipe vira áudio</h3><p>Quando o que toca é um clipe, o Audial troca sozinho pela versão em áudio da música.</p></article>
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3Z"/></svg></span><h3>Mixes pra você</h3><p>Recomendações e mixes montados a partir do que você ouve, calculados no seu PC.</p></article>
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg></span><h3>Atalhos e teclas de mídia</h3><p>As teclas de mídia do teclado, os controles do Windows e atalhos como <kbd>Ctrl</kbd> + <kbd>K</kbd> pra buscar.</p></article>
+        <article class="extra"><span class="ei"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>Atualiza sozinho</h3><p>Versões novas chegam sozinhas, e o app só instala as que têm a assinatura digital do projeto.</p></article>
       </div>
     </div>
   </section>
@@ -319,6 +340,6 @@
 </dialog>
 
 <script src="/assets/guard.js" defer></script>
-<script src="/assets/inicio.js?v=1" defer></script>
+<script src="/assets/inicio.js?v=2" defer></script>
 </body>
 </html>

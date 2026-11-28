@@ -104,7 +104,7 @@
   if (!canvas || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const ctx = canvas.getContext("2d");
   const lite = matchMedia("(max-width: 760px), (hover: none)").matches;
-  let w = 0, h = 0, visible = true, lastDraw = 0;
+  let w = 0, h = 0, visible = true, lastDraw = 0, introStart = 0;
   const resize = () => {
     const dpr = lite ? 1 : Math.min(devicePixelRatio || 1, 2);
     w = canvas.clientWidth; h = canvas.clientHeight;
@@ -121,6 +121,8 @@
     ctx.clearRect(0, 0, w, h);
     // barras de equalizador: largas, com vão entre elas, e cada uma num ritmo próprio (vizinhas não andam juntas,
     // senão o contorno fica liso e parece uma nuvem)
+    if (!introStart) { if (document.documentElement.classList.contains("boot")) return; introStart = t; }
+    const intro = Math.min(1, (t - introStart) / 1500);
     const step = 14, bw = 6, bars = Math.floor(w / step), s = t / 1000, off = (w - bars * step + step - bw) / 2;
     const grad = ctx.createLinearGradient(0, 0, w, 0);
     grad.addColorStop(0, "#F43F5E"); grad.addColorStop(0.5, "#F751A1"); grad.addColorStop(1, "#8B5CF6");
@@ -132,7 +134,10 @@
       const wave = Math.abs(Math.sin(s * (1.6 + r * 2.4) + r * 6.3));
       const env = 0.35 + 0.65 * Math.exp(-Math.pow((x - 0.5) * 2.4, 2)); // mais alto no meio
       const v = Math.min(1, (0.12 + 0.6 * wave * (0.55 + 0.45 * r) + 0.3 * beat * env) * env);
-      const bh = Math.max(bw, v * h * 0.9);
+      // entrada: as barras crescem do meio para as pontas no primeiro segundo e meio
+      const grow = Math.min(1, Math.max(0, (intro * 1.5 - Math.abs(x - 0.5) * 1.2) / 0.5));
+      if (grow <= 0) continue;
+      const bh = Math.max(bw, v * h * 0.9) * (1 - Math.pow(1 - grow, 3));
       ctx.beginPath();
       ctx.roundRect(off + i * step, (h - bh) / 2, bw, bh, bw / 2);
       ctx.fill();
