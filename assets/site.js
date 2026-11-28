@@ -82,7 +82,7 @@
   // Fake audio visualizer behind the hero.
   const canvas = $("#visualizer");
   const ctx = canvas.getContext("2d");
-  let w = 0, h = 0, dpr = 1, visible = true, frame = 0;
+  let w = 0, h = 0, dpr = 1, visible = true, lastDraw = 0;
   const resize = () => {
     dpr = lite ? 1 : Math.min(devicePixelRatio || 1, 2);
     w = canvas.clientWidth; h = canvas.clientHeight;
@@ -95,7 +95,8 @@
   const draw = t => {
     requestAnimationFrame(draw);
     if (!visible) return;
-    if (lite && frame++ % 2) return; // half the frames on lighter devices
+    if (t - lastDraw < (lite ? 66 : 33)) return; // 30 fps (15 on lighter devices)
+    lastDraw = t;
     ctx.clearRect(0, 0, w, h);
     const step = 9; // finer bars: 3 px wide, 9 px apart
     const bars = Math.floor(w / step);
@@ -122,10 +123,12 @@
   const clock = $("#syncClock");
   const bars = $$(".sync, .sync-bars span", document);
   const duration = 164; // 2:44
-  let pos = 31, last = performance.now(), pausedUntil = 0, nextPause = performance.now() + 7000;
+  let pos = 31, last = performance.now(), pausedUntil = 0, nextPause = performance.now() + 7000, networkVisible = false, shown = "";
+  new IntersectionObserver(([e]) => { networkVisible = e.isIntersecting; }).observe(network);
   const tick = now => {
     requestAnimationFrame(tick);
-    const dt = (now - last) / 1000; last = now;
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    if (!networkVisible) return;
     if (now > nextPause) { pausedUntil = now + 1600; nextPause = now + 9000; }
     const paused = now < pausedUntil;
     network.classList.toggle("paused", paused);
@@ -133,7 +136,8 @@
     const pct = (pos / duration * 100).toFixed(2) + "%";
     bars.forEach(b => b.style.setProperty("--sync", pct));
     const m = Math.floor(pos / 60), sec = Math.floor(pos % 60);
-    clock.textContent = paused ? "Pausado" : `${m}:${String(sec).padStart(2, "0")}`;
+    const label = paused ? "Pausado" : `${m}:${String(sec).padStart(2, "0")}`;
+    if (label !== shown) clock.textContent = shown = label;
   };
   requestAnimationFrame(tick);
 
@@ -231,7 +235,7 @@
   const snow = document.createElement("div");
   snow.className = "xmas-snow";
   snow.setAttribute("aria-hidden", "true");
-  const count = matchMedia("(max-width: 760px), (hover: none)").matches ? 12 : 45;
+  const count = matchMedia("(max-width: 760px), (hover: none)").matches ? 12 : 26;
   for (let i = 0; i < count; i++) {
     const f = document.createElement("i");
     const size = 2 + Math.random() * 4;
